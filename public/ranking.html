@@ -87,6 +87,9 @@ input,select,textarea{padding:7px;font-size:14px}
 .pl{padding:6px 8px;font-size:13px}
 }
 .clubb{background:none;border:0;border-bottom:2px dotted var(--mut);color:inherit;font:inherit;font-weight:inherit;padding:0 2px;cursor:pointer}
+#msg{position:relative}
+.uarrow{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:1px solid var(--bd);background:var(--bg);color:var(--mut);font-size:15px;line-height:1;cursor:pointer;padding:0}
+.uask{margin-top:8px;font-size:13px}.uask button{margin-left:6px;padding:4px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:13px;cursor:pointer}.uask button.y{background:var(--bad);color:#fff;border-color:var(--bad)}
 </style>
 </head>
 <body>
@@ -100,6 +103,7 @@ input,select,textarea{padding:7px;font-size:14px}
     <div class="score2"><div class="sl" id="n1"></div><div></div><div class="sl" id="n2"></div><div class="sq5" id="sc1"></div><div class="x">x</div><div class="sq5" id="sc2"></div></div>
     <h2>Quem ganhou?</h2>
     <div class="wrow"><button class="pri" id="w1"></button><button class="pri" id="w2"></button></div>
+    <div id="multiBox" style="text-align:center;margin-top:8px"></div>
     <div class="legend" id="h2h"></div>
   </div>
   <div class="msg" id="msg" hidden></div>
@@ -154,6 +158,15 @@ input,select,textarea{padding:7px;font-size:14px}
 
 <div class="modal" id="admM"><div class="sheet"><div id="admB"></div><button class="sec" data-close>Fechar</button></div></div>
 
+<div class="modal" id="impM"><div class="sheet wide"><h3>Importar jogadores</h3>
+  <label class="field"><span>Importar do clube</span><select id="impFrom" style="width:100%"></select></label>
+  <div class="sub">O que levar?</div>
+  <div class="seg" id="impMode" style="grid-template-columns:1fr 1fr"><button data-m="names" class="on"><b>Só os nomes</b><br><small>ranking atual, com a pontuação inicial dele</small></button><button data-m="keep"><b>Com a pontuação atual</b><br><small>mantém os pontos de hoje</small></button></div>
+  <div class="sub">Jogadores <button class="lnk" id="impAll">marcar todos</button></div>
+  <div id="impL" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px"></div>
+  <div id="impE" class="dn"></div>
+  <button class="pri" id="impGo">Importar</button><button class="sec" data-close>Cancelar</button></div></div>
+
 <div class="modal" id="rstM"><div class="sheet"><h3 id="rstT"></h3><p class="legend" id="rstD"></p><label class="field"><span>Digite <b>ZERAR</b> para confirmar</span><input id="rstI" autocomplete="off"></label><div id="rstE" class="dn"></div><button class="pri" id="rstOk" style="background:var(--bad)">Confirmar</button><button class="sec" data-close>Cancelar</button></div></div>
 
 <div class="modal" id="adjM"><div class="sheet">
@@ -176,7 +189,7 @@ window.claude={use:async function(n){
 <script>
 const START={A:1800,B:1500,C:1200};
 const DEF={id:'main',maxScore:4,margin:50,inactiveDays:0,pin:'',seasonStart:0,seasons:[]};
-let G={raw:[],matches:[],sets:[],clubs:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
+let G={raw:[],matches:[],sets:[],clubs:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
 const $=id=>document.getElementById(id), op=id=>$(id).classList.contains('on');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -203,8 +216,9 @@ function calc(w,l){const E=1/(1+Math.pow(10,(l.rating-w.rating)/400));return [Ma
 function setTier(p){const m=+S.settings.margin||0;
   if(p.tier==='C'&&p.rating>=1500)p.tier='B'; if(p.tier==='B'&&p.rating>=1800)p.tier='A';
   if(p.tier==='A'&&p.rating<1800-m)p.tier='B'; if(p.tier==='B'&&p.rating<1500-m)p.tier='C'}
+const r0p=p=>p.start!=null?p.start:START[p.group];
 function compute(){
-  const M={}; S.raw.forEach(p=>M[p.id]={...p,rating:START[p.group],tier:p.group,wins:0,losses:0,tw:0,tl:0,st0:p.group,r0:START[p.group],hist:[START[p.group]],last:0});
+  const M={}; S.raw.forEach(p=>M[p.id]={...p,rating:r0p(p),tier:p.group,wins:0,losses:0,tw:0,tl:0,st0:p.group,r0:r0p(p),hist:[r0p(p)],last:0});
   const ss=S.settings.seasonStart||0, AM=[...S.matches].sort((a,b)=>a.at-b.at); D={}; let crossed=false;
   const snap=()=>{Object.values(M).forEach(x=>{x.st0=x.tier;x.r0=x.rating;x.wins=0;x.losses=0});crossed=true};
   AM.forEach(m=>{const w=M[m.winner],l=M[m.loser]; if(!crossed&&m.at>=ss)snap(); if(!w||!l)return;
@@ -226,8 +240,8 @@ function scope(){
 }
 function saveLocal(){try{['raw','matches','sets','clubs'].forEach(k=>localStorage.setItem('tm_'+k,JSON.stringify(G[k])))}catch(e){}}
 function refresh(){scope();compute();render()}
-async function put(col,o){
-  if(col==='players'||col==='matches')o={...o,club:cur};
+async function put(col,o,club){
+  if(col==='players'||col==='matches')o={...o,club:club||cur};
   const a=G[GK[col]], i=a.findIndex(x=>x.id===o.id); i>=0?a[i]=o:a.push(o);
   if(db){try{await db.collection(col).doc(o.id).set(o)}catch(e){msg('⚠️ Sem permissão para gravar.')}} else saveLocal();
   refresh();
@@ -259,11 +273,16 @@ document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.m
 document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
 function msg(h){const m=$('msg');m.innerHTML=h;m.hidden=false}
 function undoUi(mid,wn,ln){
-  const box=document.createElement('div'); box.style.marginTop='10px'; $('msg').appendChild(box);
+  const box=document.createElement('div'); $('msg').appendChild(box);
   const draw=ask=>{
-    box.innerHTML=ask?`<b>Quer desfazer?</b><div class="wrow" style="margin-top:6px"><button class="pri" id="uY">Sim, desfazer</button><button class="sec" id="uN" style="margin:0">Não</button></div>`:`<button class="sec" id="uB" style="margin:0">↩️ Desfazer</button>`;
+    box.innerHTML=ask?`<div class="uask">Quer desfazer? <button class="y" id="uY">Sim</button><button id="uN">Não</button></div>`:`<button class="uarrow" id="uB" title="Desfazer partida" aria-label="Desfazer partida">↩</button>`;
     if(ask){
-      $('uY').onclick=async()=>{ if(S.matches.some(x=>x.id===mid)){await del('matches',mid);await logA(`Partida desfeita: ${wn} x ${ln}`)} msg(`↩️ Partida desfeita: <b>${esc(wn)}</b> x ${esc(ln)}. Os pontos voltaram.`)};
+      $('uY').onclick=async()=>{
+        const lk=(G.matches.find(x=>x.id===mid)||{}).link, ids=G.matches.filter(x=>x.id===mid||(lk&&x.link===lk)).map(x=>x.id);
+        for(const id of ids)await del('matches',id);
+        if(ids.length)await logA(`Partida desfeita: ${wn} x ${ln}`+(ids.length>1?` (e em ${ids.length-1} outro(s) clube(s))`:''));
+        msg(`↩ Partida desfeita: <b>${esc(wn)}</b> x ${esc(ln)}. Os pontos voltaram.`+(ids.length>1?' Também nos outros clubes.':''));
+      };
       $('uN').onclick=()=>draw(false);
     } else $('uB').onclick=()=>draw(true);
   };
@@ -282,7 +301,7 @@ function render(){
     b.innerHTML=p?`<small>Jogador ${i+1} · Ranking ${tier(p)}</small><span class="nm">${esc(p.name)}</span><span class="rt">${p.rating}</span>`:`<span style="font-size:28px">＋</span><span>Selecionar<br>Jogador ${i+1}</span>`});
   const a=sel[0]&&byId(sel[0]), b=sel[1]&&byId(sel[1]); $('match').hidden=!(a&&b); $('clrBtn').hidden=!(sel[0]||sel[1]);
   if(a&&b){
-    $('w1').textContent='🏆 '+a.name+' venceu'; $('w2').textContent='🏆 '+b.name+' venceu'; $('n1').textContent=a.name; $('n2').textContent=b.name; drawScore();
+    $('w1').textContent='🏆 '+a.name+' venceu'; $('w2').textContent='🏆 '+b.name+' venceu'; $('n1').textContent=a.name; $('n2').textContent=b.name; drawScore(); drawMulti(a,b);
     const c=L=>L.filter(m=>m.winner===a.id&&m.loser===b.id).length+' x '+L.filter(m=>m.winner===b.id&&m.loser===a.id).length, [x,y]=calc(a,b), [u,v]=calc(b,a);
     $('h2h').innerHTML=`<b>Estatística do Encontro</b><div class="h2h-line">Desde sempre: ${esc(a.name)} <b>${c(S.matches)}</b> ${esc(b.name)}</div><div class="h2h-line">${esc(sN(curS()))}: ${esc(a.name)} <b>${c(MV)}</b> ${esc(b.name)}</div><div class="h2h-cap">Pontuação no Ranking</div><div class="h2h-points">${esc(a.name)} vence: +${x} / ${esc(b.name)} −${y}</div><div class="h2h-line">${esc(b.name)} vence: +${u} / ${esc(a.name)} −${v}</div>`;
   }
@@ -292,14 +311,14 @@ function render(){
 
 /* ---- escolher jogadores ---- */
 $('s1').onclick=()=>pick(0); $('s2').onclick=()=>pick(1);
-$('clrBtn').onclick=()=>{sel=[null,null];sc=[null,null];render()};
+$('clrBtn').onclick=()=>{sel=[null,null];sc=[null,null];multi.clear();render()};
 function pick(i){pickIdx=i;$('pickT').textContent='Jogador '+(i+1);$('pq').value='';renderPick();open('pickM')}
 $('pq').oninput=()=>renderPick();
 function renderPick(){
   const other=sel[1-pickIdx], q=$('pq').value.trim().toLowerCase();
   const l=vis().filter(p=>p.name.toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
   $('pickL').innerHTML=l.length?l.map(p=>`<button class="pl t${tier(p)}" data-id="${p.id}" ${p.id===other?'disabled':''}><span>${esc(p.name)}</span><b style="color:var(--t)">${p.rating}</b></button>`).join(''):'<p style="color:var(--mut);grid-column:1/-1">Nenhum jogador encontrado.</p>';
-  $('pickL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>{sel[pickIdx]=b.dataset.id;sc=[null,null];$('msg').hidden=true;$('pickM').classList.remove('on');render()});
+  $('pickL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>{sel[pickIdx]=b.dataset.id;sc=[null,null];multi.clear();$('msg').hidden=true;$('pickM').classList.remove('on');render()});
 }
 
 /* ---- novo jogador ---- */
@@ -315,16 +334,28 @@ $('aSave').onclick=async()=>{
 /* ---- placar e resultado ---- */
 function drawScore(){const mx=4;[0,1].forEach(i=>{$('sc'+(i+1)).innerHTML=Array.from({length:mx+1},(_,n)=>{const v=i===0?mx-n:n;return `<button data-i="${i}" data-v="${v}" class="${sc[i]===v?'on':''}">${v}</button>`}).join('')})}
 ['sc1','sc2'].forEach(id=>$(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i,v=+b.dataset.v;sc[i]=sc[i]===v?null:v;drawScore()}));
+const findIn=(c,n)=>G.raw.find(x=>(x.club||'main')===c&&!x.hidden&&x.name.trim().toLowerCase()===n.trim().toLowerCase());
+function drawMulti(a,b){
+  const o=clubList().filter(c=>c.id!==cur&&findIn(c.id,a.name)&&findIn(c.id,b.name)), box=$('multiBox');
+  [...multi].forEach(id=>{if(!o.some(c=>c.id===id))multi.delete(id)});
+  if(!o.length){box.innerHTML='';return}
+  box.innerHTML=`<button class="lnk" id="mlB">${multiOpen?'▾':'＋'} valer também em outros clubes${multi.size?` (${multi.size})`:''}</button>`+(multiOpen?`<div style="margin-top:6px;text-align:left;display:inline-block">${o.map(c=>`<label style="display:block;font-size:14px"><input type="checkbox" data-c="${c.id}" ${multi.has(c.id)?'checked':''}> ${esc(c.name)}</label>`).join('')}</div>`:'');
+  $('mlB').onclick=()=>{multiOpen=!multiOpen;drawMulti(a,b)};
+  box.querySelectorAll('input').forEach(i=>i.onchange=()=>{i.checked?multi.add(i.dataset.c):multi.delete(i.dataset.c);drawMulti(a,b)});
+}
 async function win(wi){
   if(busy)return; const w=byId(sel[wi]), l=byId(sel[1-wi]); if(!w||!l)return;
   const ws=sc[wi], ls=sc[1-wi], has=ws!==null&&ls!==null;
   if(has&&ws<=ls){msg('⚠️ O placar não bate com o vencedor escolhido.');return}
   busy=true; const t0=w.tier,t1=l.tier,r0=w.rating,r1=l.rating;
-  const mid=uid(); await put('matches',{id:mid,winner:w.id,loser:l.id,wn:w.name,ln:l.name,score:has?ws+'x'+ls:'',at:Date.now()});
+  const mid=uid(), at=Date.now(), lk=multi.size?uid()+'k':'', extra=[], sc2=has?ws+'x'+ls:'';
+  await put('matches',{id:mid,winner:w.id,loser:l.id,wn:w.name,ln:l.name,score:sc2,at,...(lk?{link:lk}:{})});
+  if(lk){let i=0; for(const cid of [...multi]){const pw=findIn(cid,w.name), pl=findIn(cid,l.name);
+    if(pw&&pl){await put('matches',{id:uid()+'x'+(i++),winner:pw.id,loser:pl.id,wn:w.name,ln:l.name,score:sc2,at,link:lk},cid);extra.push(clubName(cid))}}}
   const nw=byId(w.id), nl=byId(l.id);
   msg(`<b>${esc(w.name)}</b> venceu${has?' por '+ws+'x'+ls:''}<br><span class="up">${esc(w.name)}: ${r0} → ${nw.rating} (+${nw.rating-r0})</span><br><span class="dn">${esc(l.name)}: ${r1} → ${nl.rating} (−${r1-nl.rating})</span>`
-    +(t0!==nw.tier?`<br>${nw.tier<t0?'⬆️':'⬇️'} ${esc(w.name)} agora está no Ranking ${nw.tier}.`:'')+(t1!==nl.tier?`<br>${nl.tier<t1?'⬆️':'⬇️'} ${esc(l.name)} agora está no Ranking ${nl.tier}.`:''));
-  sel=[null,null]; sc=[null,null]; busy=false; render(); undoUi(mid,w.name,l.name);
+    +(t0!==nw.tier?`<br>${nw.tier<t0?'⬆️':'⬇️'} ${esc(w.name)} agora está no Ranking ${nw.tier}.`:'')+(t1!==nl.tier?`<br>${nl.tier<t1?'⬆️':'⬇️'} ${esc(l.name)} agora está no Ranking ${nl.tier}.`:'')+(extra.length?`<br>🔗 Também valeu em: ${extra.map(esc).join(', ')}`:''));
+  sel=[null,null]; sc=[null,null]; multi.clear(); multiOpen=false; busy=false; render(); undoUi(mid,w.name,l.name);
 }
 $('w1').onclick=()=>win(0); $('w2').onclick=()=>win(1);
 
@@ -357,7 +388,7 @@ $('undoBtn').onclick=e=>{const m=MV[MV.length-1]; if(!m)return; sure(e.currentTa
 function renderMatches(){
   const l=matchView().reverse(), so=seasOpts(false,'Todas as temporadas',mSel); if($('mSeas').dataset.h!==so){$('mSeas').innerHTML=so;$('mSeas').dataset.h=so}
   $('undoBtn').hidden=!(mSel==='cur'&&l.length);
-  $('matchL').innerHTML=l.length?`<table><tr><th>Data</th><th>Vencedor</th><th>Perdedor</th><th class="n">Placar</th>${admin?'<th></th>':''}</tr>`+l.map(m=>{const d=D[m.id]||[0,0];return `<tr><td>${fmt(m.at)}</td><td><b class="up">${esc(nameOf(m.winner,m.wn))}</b> <small>+${d[0]}</small></td><td>${esc(nameOf(m.loser,m.ln))} <small>−${d[1]}</small></td><td class="n">${m.score?esc(m.score):'–'}</td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:''}</tr>`}).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>';
+  $('matchL').innerHTML=l.length?`<table><tr><th>Data</th><th>Vencedor</th><th>Perdedor</th><th class="n">Placar</th>${admin?'<th></th>':''}</tr>`+l.map(m=>{const d=D[m.id]||[0,0];return `<tr><td>${fmt(m.at)}${m.link?' 🔗':''}</td><td><b class="up">${esc(nameOf(m.winner,m.wn))}</b> <small>+${d[0]}</small></td><td>${esc(nameOf(m.loser,m.ln))} <small>−${d[1]}</small></td><td class="n">${m.score?esc(m.score):'–'}</td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:''}</tr>`}).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>';
   $('matchL').querySelectorAll('.rm').forEach(b=>b.onclick=()=>sure(b,async()=>{const m=S.matches.find(x=>x.id===b.dataset.id);await del('matches',b.dataset.id);if(m)await logA(`Partida apagada: ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)} (${fmt(m.at)})`)}));
   $('matchL').querySelectorAll('.ed').forEach(b=>b.onclick=()=>editMatch(b.dataset.id));
 }
@@ -391,7 +422,7 @@ function renderPlayers(){
   }
   $('playT').textContent=p.name; const g=games(p);
   const all=S.matches.filter(m=>m.winner===p.id||m.loser===p.id).sort((a,b)=>a.at-b.at);
-  let rr=START[p.group]; const ser=[rr]; all.forEach(m=>{const d=D[m.id]||[0,0]; rr+=m.winner===p.id?d[0]:-d[1]; ser.push(rr)});
+  let rr=r0p(p); const ser=[rr]; all.forEach(m=>{const d=D[m.id]||[0,0]; rr+=m.winner===p.id?d[0]:-d[1]; ser.push(rr)});
   const idx=all.map((m,i)=>i).filter(i=>inSeason(all[i],pSel)), ms=idx.map(i=>all[i]).reverse(), hist=idx.length?[ser[idx[0]],...idx.map(i=>ser[i+1])]:[];
   const nw=ms.filter(m=>m.winner===p.id).length, nl=ms.length-nw;
   let h=`<div class="phead t${tier(p)}"><span class="badge">${tier(p)}</span><b style="font-size:22px;color:var(--t)">${p.rating}</b> pts · ${nw}V ${nl}D`+(pSel==='cur'&&g<3?` · <span style="color:var(--mut)">${g}/3 partidas para entrar no ranking</span>`:'')+`<div style="margin-top:8px"><select id="pS" style="width:100%">${seasOpts(true,'Geral (todas as temporadas)',pSel)}</select></div>`+chart(hist)+`</div>`;
@@ -406,7 +437,7 @@ function renderPlayers(){
   $('playD').innerHTML=h; $('pS').onchange=()=>{pSel=$('pS').value;renderPlayers()};
   if(admin){
     $('rnB').onclick=async()=>{const n=$('rn').value.trim(); if(!n)return; if(S.raw.some(x=>x.id!==p.id&&x.name.toLowerCase()===n.toLowerCase()))return flash($('rnB'),'Nome já existe'); const o=p.name; await put('players',{...S.raw.find(x=>x.id===p.id),name:n}); await logA(`Nome alterado: ${o} → ${n}`); flash($('rnB'),'✅ Salvo')};
-    $('pg').querySelectorAll('button').forEach(b=>b.onclick=()=>sure(b,async()=>{const g=b.dataset.g;if(g===p.group)return;const o=p.group;await put('players',{...S.raw.find(x=>x.id===p.id),group:g});await logA(`Ranking inicial de ${p.name}: ${o} → ${g}`)}));
+    $('pg').querySelectorAll('button').forEach(b=>b.onclick=()=>sure(b,async()=>{const g=b.dataset.g;if(g===p.group)return;const o=p.group;const q={...S.raw.find(x=>x.id===p.id),group:g}; delete q.start; await put('players',q);await logA(`Ranking inicial de ${p.name}: ${o} → ${g}`)}));
     $('mgB').onclick=e=>{const did=$('mgP').value; if(!did)return; sure(e.currentTarget,async()=>{const dp=S.raw.find(x=>x.id===did); if(!dp)return;
       for(const m of S.matches.filter(m=>m.winner===did||m.loser===did)){const nm={...m}; if(nm.winner===did){nm.winner=p.id;nm.wn=p.name} if(nm.loser===did){nm.loser=p.id;nm.ln=p.name} if(nm.winner===nm.loser)await del('matches',m.id); else await put('matches',nm)}
       await del('players',did); await logA(`Cadastro juntado: ${dp.name} → ${p.name}`)})};
@@ -433,6 +464,8 @@ function renderAdm(){
   <div class="sub">Clube</div><div class="wrow" style="margin-bottom:10px"><input id="cnI" maxlength="40" value="${esc(clubName(cur))}"><button class="sec" id="cnB" style="margin:0">Salvar nome</button></div><div class="sub">Temporada</div><div class="wrow" style="margin-bottom:10px"><input id="snI" maxlength="40" value="${esc(sN(curS()))}"><button class="sec" id="snB" style="margin:0">Salvar nome</button></div><button class="sec" id="ns" style="margin:0">🏁 Encerrar temporada (pontos continuam)</button>
   ${(st.seasons||[]).slice().reverse().map(s=>`<details style="margin-top:8px"><summary>${esc(sN(s.n))} · ${new Date(s.end).toLocaleDateString('pt-BR')}</summary><table>${s.rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r[0])}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td></tr>`).join('')}</table></details>`).join('')}
   <div class="sub">📜 Registro de alterações</div>${(st.log||[]).length?`<details><summary>Ver últimas ${Math.min(50,st.log.length)} alterações</summary><table>${st.log.slice(0,50).map(x=>`<tr><td style="white-space:nowrap">${fmt(x.at)}</td><td>${esc(x.t)}</td></tr>`).join('')}</table></details>`:'<p class="legend">Nenhuma alteração registrada ainda.</p>'}
+  <div class="sub">Importar jogadores</div>
+  <button class="sec" id="impB" style="margin:0">📥 Importar jogadores de outro clube</button>
   <div class="sub">Backup</div>
   <button class="sec" id="bkE" ${dl?'':'hidden'} style="margin:0">⬇️ Baixar backup (JSON)</button>
   <input type="file" id="bkF" accept=".json,application/json" style="width:100%;margin-top:8px"><textarea id="bk" rows="3" placeholder="Cole aqui o conteúdo do backup..." style="width:100%;margin-top:8px"></textarea>
@@ -474,10 +507,10 @@ function renderAdm(){
     const keepP=new Set(Object.values(pm)), keepM=new Set(Object.values(mm));
     for(const x of S.raw.filter(x=>!keepP.has(x.id)))await del('players',x.id);
     for(const x of S.matches.filter(x=>!keepM.has(x.id)))await del('matches',x.id);
-    for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{})});
+    for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.start!=null?{start:x.start}:{})});
     for(const x of d.matches)await put('matches',{...x,id:mm[x.id],winner:pm[x.winner]||x.winner,loser:pm[x.loser]||x.loser});
     if(d.settings)await put('settings',{...DEF,...d.settings,id:sid(),pin:S.settings.pin||d.settings.pin||''}); await logA('Backup restaurado'); flash($('bkR'),'✅ Backup restaurado')});
-  $('rsP').onclick=()=>resetUi('scores'); $('rsA').onclick=()=>resetUi('all');
+  $('impB').onclick=openImport; $('rsP').onclick=()=>resetUi('scores'); $('rsA').onclick=()=>resetUi('all');
   $('out').onclick=()=>{admin=false;render();renderAdm()};
 }
 
@@ -509,7 +542,7 @@ function renderClubs(){
     return `<button class="pl" data-id="${c.id}" style="--t:${c.id===cur?'var(--ac)':'var(--bd)'};padding:12px 10px"><span>${c.id===cur?'✓ ':''}${esc(c.name)}</span><b style="color:var(--mut)">${n} jogador${n===1?'':'es'}</b></button>`}).join('');
   $('clubL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>b.dataset.id===cur?$('clubM').classList.remove('on'):switchClub(b.dataset.id));
 }
-$('clubBtn').onclick=()=>{$('clubErr').textContent='';renderClubs();open('clubM')};
+$('clubBtn').onclick=()=>needAdmin(()=>{$('clubErr').textContent='';renderClubs();open('clubM')});
 $('clubNew').onclick=()=>{
   const n=$('clubNm').value.trim(); if(!n){$('clubErr').textContent='Digite o nome do clube.';return}
   if(clubList().some(c=>c.name.toLowerCase()===n.toLowerCase())){$('clubErr').textContent='Já existe um clube com esse nome.';return}
@@ -517,6 +550,41 @@ $('clubNew').onclick=()=>{
     await put('clubs',{id,name:n});
     await put('settings',{...DEF,id:'s_'+id,pin:st.pin,margin:st.margin,inactiveDays:st.inactiveDays});
     $('clubNm').value=''; switchClub(id); msg(`✅ Clube <b>${esc(n)}</b> criado. Ele começa sem jogadores.`)});
+};
+
+/* ---- importar jogadores de outro clube ---- */
+let impMode='names', impSel=new Set(), impP=[];
+function clubSnapshot(id){ /* calcula os pontos atuais de OUTRO clube sem mexer no clube aberto */
+  const sv=[S.raw,S.matches,S.settings,P,MV,D];
+  S.raw=G.raw.filter(x=>(x.club||'main')===id); S.matches=G.matches.filter(x=>(x.club||'main')===id);
+  const d=G.sets.find(x=>x.id===(id==='main'?'main':'s_'+id)); S.settings={...DEF,...(d||{})};
+  compute(); const out=P; [S.raw,S.matches,S.settings,P,MV,D]=sv; return out;
+}
+function openImport(){
+  const o=clubList().filter(c=>c.id!==cur);
+  if(!o.length){flash($('impB'),'Crie outro clube primeiro');return}
+  $('impFrom').innerHTML=o.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join(''); impMode='names'; loadImp(); open('impM');
+}
+function loadImp(){impP=clubSnapshot($('impFrom').value).filter(p=>!p.hidden).sort((a,b)=>a.name.localeCompare(b.name)); impSel=new Set(); $('impE').textContent=''; drawImp()}
+const haveNames=()=>new Set(S.raw.map(p=>p.name.trim().toLowerCase()));
+function drawImp(){
+  const have=haveNames();
+  $('impMode').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.m===impMode));
+  $('impL').innerHTML=impP.length?impP.map(p=>{const dup=have.has(p.name.trim().toLowerCase());
+    return `<label class="pl t${p.tier}" style="${dup?'opacity:.45':''}"><span><input type="checkbox" data-id="${p.id}" ${impSel.has(p.id)?'checked':''} ${dup?'disabled':''}> ${esc(p.name)}${dup?' (já existe)':''}</span><b style="color:var(--t)">${impMode==='keep'?p.rating:START[p.tier]}</b></label>`}).join(''):'<p style="color:var(--mut)">Nenhum jogador neste clube.</p>';
+  const cnt=()=>$('impGo').textContent='Importar '+impSel.size+' jogador(es)'; cnt();
+  $('impL').querySelectorAll('input').forEach(i=>i.onchange=()=>{i.checked?impSel.add(i.dataset.id):impSel.delete(i.dataset.id);cnt()});
+}
+$('impFrom').onchange=loadImp;
+$('impMode').querySelectorAll('button').forEach(b=>b.onclick=()=>{impMode=b.dataset.m;drawImp()});
+$('impAll').onclick=()=>{const have=haveNames(); impSel=new Set(impP.filter(p=>!have.has(p.name.trim().toLowerCase())).map(p=>p.id)); drawImp()};
+$('impGo').onclick=async()=>{
+  if(!impSel.size){$('impE').textContent='Marque pelo menos um jogador.';return}
+  const b=$('impGo'), from=$('impFrom').value, have=haveNames(); b.disabled=true; let n=0;
+  for(const p of impP.filter(x=>impSel.has(x.id))){ if(have.has(p.name.trim().toLowerCase()))continue;
+    await put('players',{id:uid()+'i'+n,name:p.name,group:p.tier,...(impMode==='keep'?{start:p.rating}:{})}); n++ }
+  await logA(`Importados ${n} jogador(es) de ${clubName(from)} (${impMode==='keep'?'com pontuação atual':'só os nomes'})`);
+  b.disabled=false; $('impM').classList.remove('on'); renderAdm(); flash($('impB'),'✅ '+n+' importado(s)');
 };
 
 /* ---- resetar dados ---- */
@@ -540,7 +608,7 @@ async function doReset(kind){
   const st=S.settings, all=kind==='all';
   for(const m of [...S.matches])await del('matches',m.id);
   if(all){for(const p of [...S.raw])await del('players',p.id)}
-  else{for(const p of [...S.raw]){const {adj,...rest}=p; if(adj)await put('players',rest)}}
+  else{for(const p of [...S.raw]){const {adj,start,...rest}=p; if(adj||start!=null)await put('players',rest)}}
   await put('settings',{...DEF,id:sid(),pin:st.pin,margin:st.margin,inactiveDays:st.inactiveDays,seasonStart:0,seasons:[],sNames:{},
     log:[{at:Date.now(),t:all?'Banco de dados resetado (tudo apagado)':'Pontuações zeradas (jogadores mantidos)'},...(all?[]:(st.log||[]))].slice(0,300)});
 }
