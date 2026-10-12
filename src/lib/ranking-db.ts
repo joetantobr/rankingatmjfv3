@@ -16,9 +16,21 @@ export function createRankingDb() {
     listeners[col]?.forEach((fn) => fn(snap));
   };
 
+  const refetch = async (col: string) => {
+    const { data, error } = await supabase.from("docs").select("id,data").eq("collection", col);
+    if (error) return;
+    cache[col] = new Map((data ?? []).map((r) => [r.id, r.data as Doc]));
+    emit(col);
+  };
+
   const startChannel = () => {
     if (channelStarted) return;
     channelStarted = true;
+    // Backup refresh in case a live update is missed.
+    setInterval(() => Object.keys(listeners).forEach(refetch), 8000);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") Object.keys(listeners).forEach(refetch);
+    });
     supabase
       .channel("ranking-docs")
       .on("postgres_changes", { event: "*", schema: "public", table: "docs" }, (p) => {
