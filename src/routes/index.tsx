@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { createRankingDb } from "@/lib/ranking-db";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,11 +17,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    (window as unknown as { __rankingDb: unknown }).__rankingDb = createRankingDb();
+    setReady(true);
+  }, []);
+  if (!ready) return null;
   return (
-    <iframe
-      src="/ranking.html"
-      title="Ranking ATMJF"
-      className="fixed inset-0 h-full w-full border-0"
-    />
+    <iframe src="/ranking.html" title="Ranking ATMJF" className="fixed inset-0 h-full w-full border-0" />
   );
 }
