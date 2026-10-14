@@ -93,12 +93,14 @@ input,select,textarea{padding:7px;font-size:14px}
 @media (max-width:560px),(orientation:landscape) and (max-height:520px){#pickL{display:block;column-count:2;column-gap:6px}#pickL .pl{margin-bottom:6px;break-inside:avoid}#pickL p{column-span:all}}
 button.pri:disabled{opacity:.4;cursor:not-allowed}
 .lockn{margin-top:10px;text-align:center;font-size:13px;color:var(--bad);font-weight:700}
+.cadt{text-align:center;font-weight:800;font-size:15px;letter-spacing:.06em;margin:0 0 10px}
 </style>
 </head>
 <body>
 <main>
   <h1>🏓 Ranking <button id="clubBtn" class="clubb"></button> 🏓</h1>
   <div class="season" id="seasonLbl"></div>
+  <div class="cadt">⬇️ CADASTRAR PARTIDA ⬇️</div>
   <div class="row"><button class="sq" id="s1"></button><div class="vs">X</div><button class="sq" id="s2"></button></div>
   <div style="text-align:center;margin-top:6px"><button class="lnk" id="clrBtn" hidden>✕ limpar seleção</button></div>
   <div class="panel" id="match" hidden>
@@ -141,12 +143,13 @@ button.pri:disabled{opacity:.4;cursor:not-allowed}
 </div></div>
 
 <div class="modal" id="playM"><div class="sheet wide">
-  <h3 id="playT">Jogadores</h3><div id="playL"></div><div id="playD" hidden></div>
+  <h3 id="playT">Jogadores</h3><div class="wrow" id="plCode" style="margin-bottom:10px"><input id="plCi" placeholder="Colar link ou código de jogador" autocomplete="off"><button class="sec" id="plCb" style="margin:0">Abrir</button></div><div id="playL"></div><div id="playD" hidden></div>
   <button class="sec" id="playBack" hidden>← Voltar à lista</button><button class="sec" data-close>Fechar</button>
 </div></div>
 
 <div class="modal" id="matchM"><div class="sheet">
-  <h3>Partidas</h3><select id="mSeas" style="width:100%;margin-bottom:10px"></select><button class="sec" id="undoBtn" style="margin:0 0 10px">↩️ Desfazer última partida</button>
+  <h3>Partidas</h3><select id="mSeas" style="width:100%;margin-bottom:10px"></select>
+  <div class="wrow" style="margin-bottom:6px"><label class="field" style="margin:0"><span>De</span><input id="mdA" type="date" style="width:100%"></label><label class="field" style="margin:0"><span>Até</span><input id="mdB" type="date" style="width:100%"></label></div><button class="lnk" id="mdC" hidden style="margin-bottom:8px">✕ limpar datas</button><button class="sec" id="undoBtn" style="margin:0 0 10px">↩️ Desfazer última partida</button>
   <div id="matchL"></div>
   <button class="sec" id="mvB" hidden>🔗 Levar partidas para outro clube</button>
   <button class="sec" data-exp hidden id="jpgMatches">🖼️ Exportar partidas (JPG)</button>
@@ -207,7 +210,8 @@ window.claude={use:async function(n){
 <script>
 const START={A:1800,B:1500,C:1200};
 const DEF={id:'main',maxScore:4,margin:50,inactiveDays:0,pin:'',seasonStart:0,seasons:[]};
-let G={raw:[],matches:[],sets:[],clubs:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
+const APP_URL='https://claude.ai/artifact/LxsmojLDdHGGd1MPaJBewD';
+let G={raw:[],matches:[],sets:[],clubs:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
 const $=id=>document.getElementById(id), op=id=>$(id).classList.contains('on');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -221,7 +225,9 @@ const sN=n=>((S.settings.sNames||{})[n]||'Temporada '+n);
 const curS=()=>(S.settings.seasons||[]).length+1;
 const seasonOf=m=>1+(S.settings.seasons||[]).filter(s=>m.at>=s.end).length;
 const inSeason=(m,v)=>v==='all'||seasonOf(m)===(v==='cur'?curS():+v);
-const matchView=()=>[...S.matches].sort((a,b)=>a.at-b.at).filter(m=>inSeason(m,mSel));
+const inRange=m=>{let a=mFrom,b=mUntil; if(a&&b&&a>b)[a,b]=[b,a]; return (!a||m.at>=new Date(a+'T00:00:00').getTime())&&(!b||m.at<=new Date(b+'T23:59:59.999').getTime())};
+const matchView=()=>[...S.matches].sort((a,b)=>a.at-b.at).filter(m=>inSeason(m,mSel)&&inRange(m));
+const fmtD=d=>d.split('-').reverse().join('/');
 function seasOpts(allFirst,allLabel,sv){
   const o=(v,t)=>`<option value="${v}"${String(v)===String(sv)?' selected':''}>${t}</option>`, n=curS();
   let h=allFirst?o('all',allLabel):''; h+=o('cur',sN(n)+' (atual)'); for(let i=n-1;i>=1;i--)h+=o(i,sN(i)); return h+(allFirst?'':o('all',allLabel));
@@ -257,7 +263,7 @@ function scope(){
   const d=G.sets.find(x=>x.id===sid()); S.settings={...DEF,...(d||{}),id:sid()};
 }
 function saveLocal(){try{['raw','matches','sets','clubs'].forEach(k=>localStorage.setItem('tm_'+k,JSON.stringify(G[k])))}catch(e){}}
-function refresh(){scope();compute();render()}
+function refresh(){scope();compute();render(); if(pendingJ&&G.raw.some(x=>x.id===pendingJ))openPlayerById(pendingJ)}
 async function put(col,o,club){
   if(col==='players'||col==='matches')o={...o,club:club||cur};
   const a=G[GK[col]], i=a.findIndex(x=>x.id===o.id); i>=0?a[i]=o:a.push(o);
@@ -401,7 +407,9 @@ $('shareB').onclick=async()=>{
 };
 
 /* ---- partidas ---- */
-$('matchBtn').onclick=()=>{mSel='cur';renderMatches();open('matchM')};
+$('matchBtn').onclick=()=>{mSel='cur';mFrom=mUntil='';$('mdA').value=$('mdB').value='';$('mdC').hidden=true;renderMatches();open('matchM')};
+const setRange=()=>{mFrom=$('mdA').value;mUntil=$('mdB').value; if((mFrom||mUntil)&&mSel==='cur')mSel='all'; $('mdC').hidden=!(mFrom||mUntil); renderMatches()};
+$('mdA').onchange=setRange; $('mdB').onchange=setRange; $('mdC').onclick=()=>{$('mdA').value=$('mdB').value='';setRange()};
 $('mSeas').onchange=()=>{mSel=$('mSeas').value;renderMatches()};
 $('undoBtn').onclick=e=>{const m=MV[MV.length-1]; if(!m)return; sure(e.currentTarget,async()=>{await del('matches',m.id);await logA(`Partida desfeita: ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)}`)})};
 function renderMatches(){
@@ -441,7 +449,7 @@ function chart(h){
 }
 function renderPlayers(){
   const p=histId?byId(histId):null; if(!p)histId=null;
-  $('playL').hidden=!!p; $('playD').hidden=!p; $('playBack').hidden=!p;
+  $('playL').hidden=!!p; $('playD').hidden=!p; $('playBack').hidden=!p; $('plCode').hidden=!!p;
   if(!p){
     const l=(admin?P:vis()).sort((a,b)=>a.name.localeCompare(b.name)); $('playT').textContent='Jogadores ('+vis().length+')';
     $('playL').innerHTML=l.length?l.map(q=>`<button class="pl t${tier(q)} ${q.hidden?'arq':''}" data-id="${q.id}"><span>${esc(q.name)}${q.hidden?' (arquivado)':''}</span><b style="color:var(--t)">${q.rating}</b></button>`).join(''):'<p style="color:var(--mut);grid-column:1/-1">Nenhum jogador cadastrado ainda.</p>';
@@ -462,6 +470,13 @@ function renderPlayers(){
   h+=ms.length?`<table><tr><th>Data</th><th>Adversário</th><th>Resultado</th><th class="n">Placar</th><th class="n">Pontos</th></tr>`+ms.map(m=>{const won=m.winner===p.id,d=D[m.id]||[0,0],s=m.score?(won?m.score:m.score.split('x').reverse().join('x')):'–';
     return `<tr><td>${fmt(m.at)}</td><td>${esc(won?nameOf(m.loser,m.ln):nameOf(m.winner,m.wn))}</td><td class="${won?'up':'dn'}">${won?'Vitória':'Derrota'}</td><td class="n">${esc(s)}</td><td class="n ${won?'up':'dn'}">${won?'+'+d[0]:'−'+d[1]}</td></tr>`}).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida neste período.</p>';
   $('playD').innerHTML=h; $('pS').onchange=()=>{pSel=$('pS').value;renderPlayers()};
+  { const ph=$('playD').querySelector('.phead'), lk=APP_URL+'#j='+p.id;
+    const box=`<div style="margin:6px 0 10px"><button class="sec" id="plk" style="margin:0">🔗 Link deste jogador</button><div id="plkBox" ${plkOpen?'':'hidden'} style="margin-top:8px"><input id="plkI" readonly value="${lk}" style="width:100%" onfocus="this.select()"><div class="wrow" style="margin-top:6px"><button class="sec" id="plkC" style="margin:0">Copiar</button><button class="sec" id="plkS" style="margin:0">Compartilhar</button></div></div></div>`;
+    (ph||$('playD')).insertAdjacentHTML(ph?'afterend':'afterbegin',box);
+    $('plk').onclick=()=>{plkOpen=!plkOpen;$('plkBox').hidden=!plkOpen};
+    $('plkC').onclick=async e=>{const b=e.currentTarget;try{await navigator.clipboard.writeText(lk);flash(b,'✅ Copiado')}catch(x){$('plkI').select();try{document.execCommand('copy');flash(b,'✅ Copiado')}catch(y){flash(b,'Selecione e copie')}}};
+    $('plkS').onclick=async e=>{const b=e.currentTarget; if(navigator.share){try{await navigator.share({title:p.name+' · Ranking '+clubName(cur),url:lk})}catch(x){}} else flash(b,'Use Copiar')};
+  }
   if(admin){
     $('rnB').onclick=async()=>{const n=$('rn').value.trim(); if(!n)return; if(S.raw.some(x=>x.id!==p.id&&x.name.toLowerCase()===n.toLowerCase()))return flash($('rnB'),'Nome já existe'); const o=p.name; await put('players',{...S.raw.find(x=>x.id===p.id),name:n}); await logA(`Nome alterado: ${o} → ${n}`); flash($('rnB'),'✅ Salvo')};
     $('pg').querySelectorAll('button').forEach(b=>b.onclick=()=>sure(b,async()=>{const g=b.dataset.g;if(g===p.group)return;const o=p.group;const q={...S.raw.find(x=>x.id===p.id),group:g}; delete q.start; await put('players',q);await logA(`Ranking inicial de ${p.name}: ${o} → ${g}`)}));
@@ -560,7 +575,7 @@ $('seasOk').onclick=e=>sure(e.currentTarget,async()=>{
 });
 
 /* ---- versão + exportar JPG ---- */
-const APP_VERSION='0.3.6'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.3.7'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -599,7 +614,7 @@ $('jpgRank').onclick=e=>{
     imgFoot(x,W,H)});
 };
 $('jpgMatches').onclick=e=>{
-  const all=matchView().reverse(), cap=200, l=all.slice(0,cap), W=900, RH=40, lbl=mSel==='all'?'Todas as temporadas':sN(mSel==='cur'?curS():+mSel);
+  const all=matchView().reverse(), cap=200, l=all.slice(0,cap), W=900, RH=40, lbl=(mSel==='all'?'Todas as temporadas':sN(mSel==='cur'?curS():+mSel))+(mFrom||mUntil?' · '+(mFrom?fmtD(mFrom):'início')+' a '+(mUntil?fmtD(mUntil):'hoje'):'');
   const H=92+48+Math.max(l.length,1)*RH+(all.length>cap?36:0)+60;
   saveJpg(e.currentTarget,`partidas-${slug(clubName(cur))}-${today()}.jpg`,W,H,x=>{
     imgHead(x,W,'🏓 Partidas · '+clubName(cur),`${lbl} · ${all.length} partida${all.length===1?'':'s'}`);
@@ -616,6 +631,14 @@ $('jpgMatches').onclick=e=>{
 
 /* ---- trancar lançamentos ---- */
 $('lockBtn').onclick=()=>needAdmin(async()=>{const v=!S.settings.locked; await put('settings',{...S.settings,locked:v}); await logA(v?'Lançamentos trancados':'Lançamentos destrancados')});
+
+/* ---- abrir jogador por link/código ---- */
+function openPlayerById(id){
+  pendingJ=''; const p=G.raw.find(x=>x.id===id); if(!p)return false;
+  const c=p.club||'main'; if(c!==cur)switchClub(c);
+  histId=id; pSel='all'; renderPlayers(); open('playM'); return true;
+}
+$('plCb').onclick=()=>{const v=$('plCi').value.trim(), m=v.match(/[?#&]j=([A-Za-z0-9_-]+)/), id=m?m[1]:v; if(id&&openPlayerById(id))$('plCi').value=''; else flash($('plCb'),'Não encontrado')};
 
 /* ---- clubes ---- */
 function switchClub(id){
