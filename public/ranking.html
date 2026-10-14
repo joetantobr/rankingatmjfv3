@@ -90,7 +90,7 @@ input,select,textarea{padding:7px;font-size:14px}
 #msg{position:relative}
 .uarrow{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:1px solid var(--bd);background:var(--bg);color:var(--mut);font-size:15px;line-height:1;cursor:pointer;padding:0}
 .uask{margin-top:8px;font-size:13px}.uask button{margin-left:6px;padding:4px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:13px;cursor:pointer}.uask button.y{background:var(--bad);color:#fff;border-color:var(--bad)}
-@media (max-width:560px),(orientation:landscape) and (max-height:520px){#pickL{grid-template-columns:1fr}}
+@media (max-width:560px),(orientation:landscape) and (max-height:520px){#pickL{display:block;column-count:2;column-gap:6px}#pickL .pl{margin-bottom:6px;break-inside:avoid}#pickL p{column-span:all}}
 button.pri:disabled{opacity:.4;cursor:not-allowed}
 .lockn{margin-top:10px;text-align:center;font-size:13px;color:var(--bad);font-weight:700}
 </style>
@@ -148,6 +148,7 @@ button.pri:disabled{opacity:.4;cursor:not-allowed}
 <div class="modal" id="matchM"><div class="sheet">
   <h3>Partidas</h3><select id="mSeas" style="width:100%;margin-bottom:10px"></select><button class="sec" id="undoBtn" style="margin:0 0 10px">↩️ Desfazer última partida</button>
   <div id="matchL"></div>
+  <button class="sec" id="mvB" hidden>🔗 Levar partidas para outro clube</button>
   <button class="sec" data-exp hidden id="jpgMatches">🖼️ Exportar partidas (JPG)</button>
   <button class="sec" data-exp hidden id="expMatches">⬇️ Exportar partidas (CSV)</button><button class="sec" data-close>Fechar</button>
 </div></div>
@@ -174,6 +175,15 @@ button.pri:disabled{opacity:.4;cursor:not-allowed}
   <div id="impL" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px"></div>
   <div id="impE" class="dn"></div>
   <button class="pri" id="impGo">Importar</button><button class="sec" data-close>Cancelar</button></div></div>
+
+<div class="modal" id="mvM"><div class="sheet wide"><h3>🔗 Levar partidas para outro clube</h3>
+  <label class="field"><span>Levar para o clube</span><select id="mvTo" style="width:100%"></select></label>
+  <label class="field"><span>Partidas de</span><select id="mvSe" style="width:100%"></select></label>
+  <p class="legend">Só dá para levar partidas em que os dois jogadores existem no clube de destino com o mesmo nome. Lá, a partida entra com a data original e os pontos são recalculados.</p>
+  <div class="sub">Partidas <button class="lnk" id="mvAll">marcar todas</button></div>
+  <div id="mvL" style="display:grid;gap:6px"></div>
+  <div id="mvE" class="dn"></div>
+  <button class="pri" id="mvGo">Levar</button><button class="sec" data-close>Cancelar</button></div></div>
 
 <div class="modal" id="rstM"><div class="sheet"><h3 id="rstT"></h3><p class="legend" id="rstD"></p><label class="field"><span>Digite <b>ZERAR</b> para confirmar</span><input id="rstI" autocomplete="off"></label><div id="rstE" class="dn"></div><button class="pri" id="rstOk" style="background:var(--bad)">Confirmar</button><button class="sec" data-close>Cancelar</button></div></div>
 
@@ -396,7 +406,7 @@ $('mSeas').onchange=()=>{mSel=$('mSeas').value;renderMatches()};
 $('undoBtn').onclick=e=>{const m=MV[MV.length-1]; if(!m)return; sure(e.currentTarget,async()=>{await del('matches',m.id);await logA(`Partida desfeita: ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)}`)})};
 function renderMatches(){
   const l=matchView().reverse(), so=seasOpts(false,'Todas as temporadas',mSel); if($('mSeas').dataset.h!==so){$('mSeas').innerHTML=so;$('mSeas').dataset.h=so}
-  $('undoBtn').hidden=!(mSel==='cur'&&l.length);
+  $('undoBtn').hidden=!(mSel==='cur'&&l.length); $('mvB').hidden=!admin;
   $('matchL').innerHTML=l.length?`<table><tr><th>Data</th><th>Vencedor</th><th>Perdedor</th><th class="n">Placar</th>${admin?'<th></th>':''}</tr>`+l.map(m=>{const d=D[m.id]||[0,0];return `<tr><td>${fmt(m.at)}${m.link?' 🔗':''}</td><td><b class="up">${esc(nameOf(m.winner,m.wn))}</b> <small>+${d[0]}</small></td><td>${esc(nameOf(m.loser,m.ln))} <small>−${d[1]}</small></td><td class="n">${m.score?esc(m.score):'–'}</td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:''}</tr>`}).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>';
   $('matchL').querySelectorAll('.rm').forEach(b=>b.onclick=()=>sure(b,async()=>{const m=S.matches.find(x=>x.id===b.dataset.id);await del('matches',b.dataset.id);if(m)await logA(`Partida apagada: ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)} (${fmt(m.at)})`)}));
   $('matchL').querySelectorAll('.ed').forEach(b=>b.onclick=()=>editMatch(b.dataset.id));
@@ -483,6 +493,7 @@ function renderAdm(){
   <div class="sub">📜 Registro de alterações</div>${(st.log||[]).length?`<details><summary>Ver últimas ${Math.min(50,st.log.length)} alterações</summary><table>${st.log.slice(0,50).map(x=>`<tr><td style="white-space:nowrap">${fmt(x.at)}</td><td>${esc(x.t)}</td></tr>`).join('')}</table></details>`:'<p class="legend">Nenhuma alteração registrada ainda.</p>'}
   <div class="sub">Importar jogadores</div>
   <button class="sec" id="impB" style="margin:0">📥 Importar jogadores de outro clube</button>
+  <button class="sec" id="mvOpen" style="margin:8px 0 0">🔗 Levar partidas para outro clube</button>
   <div class="sub">Backup</div>
   <button class="sec" id="bkE" ${dl?'':'hidden'} style="margin:0">⬇️ Baixar backup (JSON)</button>
   <input type="file" id="bkF" accept=".json,application/json" style="width:100%;margin-top:8px"><textarea id="bk" rows="3" placeholder="Cole aqui o conteúdo do backup..." style="width:100%;margin-top:8px"></textarea>
@@ -527,7 +538,7 @@ function renderAdm(){
     for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.start!=null?{start:x.start}:{})});
     for(const x of d.matches)await put('matches',{...x,id:mm[x.id],winner:pm[x.winner]||x.winner,loser:pm[x.loser]||x.loser});
     if(d.settings)await put('settings',{...DEF,...d.settings,id:sid(),pin:S.settings.pin||d.settings.pin||'',locked:S.settings.locked}); await logA('Backup restaurado'); flash($('bkR'),'✅ Backup restaurado')});
-  $('impB').onclick=openImport; $('rsP').onclick=()=>resetUi('scores'); $('rsA').onclick=()=>resetUi('all');
+  $('impB').onclick=openImport; $('mvOpen').onclick=openMv; $('rsP').onclick=()=>resetUi('scores'); $('rsA').onclick=()=>resetUi('all');
   $('out').onclick=()=>{admin=false;render();renderAdm()};
 }
 
@@ -549,7 +560,7 @@ $('seasOk').onclick=e=>sure(e.currentTarget,async()=>{
 });
 
 /* ---- versão + exportar JPG ---- */
-const APP_VERSION='0.3.5'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.3.6'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -660,6 +671,39 @@ $('impGo').onclick=async()=>{
     await put('players',{id:uid()+'i'+n,name:p.name,group:p.tier,...(impMode==='keep'?{start:p.rating}:{})}); n++ }
   await logA(`Importados ${n} jogador(es) de ${clubName(from)} (${impMode==='keep'?'com pontuação atual':'só os nomes'})`);
   b.disabled=false; $('impM').classList.remove('on'); renderAdm(); flash($('impB'),'✅ '+n+' importado(s)');
+};
+
+/* ---- levar partidas já registradas para outro clube ---- */
+let mvSel=new Set();
+function mvInfo(m,cid){
+  const wn=nameOf(m.winner,m.wn), ln=nameOf(m.loser,m.ln), pw=findIn(cid,wn), pl=findIn(cid,ln);
+  if(!pw||!pl)return {ok:false,why:(!pw?wn:ln)+' não existe no clube de destino'};
+  const dup=G.matches.some(x=>(x.club||'main')===cid&&((m.link&&x.link===m.link)||(x.at===m.at&&x.winner===pw.id&&x.loser===pl.id)));
+  return dup?{ok:false,why:'já vale nesse clube'}:{ok:true,pw,pl};
+}
+function openMv(){
+  const o=clubList().filter(c=>c.id!==cur);
+  if(!o.length){const b=$('mvOpen');if(b)flash(b,'Crie outro clube primeiro');return}
+  $('mvTo').innerHTML=o.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join(''); $('mvSe').innerHTML=seasOpts(false,'Todas as temporadas','cur');
+  mvSel=new Set(); $('mvE').textContent=''; drawMv(); open('mvM');
+}
+function drawMv(){
+  const cid=$('mvTo').value, sv=$('mvSe').value, l=[...S.matches].sort((a,b)=>b.at-a.at).filter(m=>inSeason(m,sv));
+  $('mvL').innerHTML=l.length?l.map(m=>{const i=mvInfo(m,cid);
+    return `<label class="pl" style="--t:var(--bd);${i.ok?'':'opacity:.5'}"><span><input type="checkbox" data-id="${m.id}" ${mvSel.has(m.id)?'checked':''} ${i.ok?'':'disabled'}> ${fmt(m.at)} · <b>${esc(nameOf(m.winner,m.wn))}</b> x ${esc(nameOf(m.loser,m.ln))}${m.score?' ('+esc(m.score)+')':''}${i.ok?'':`<br><small>${esc(i.why)}</small>`}</span></label>`}).join(''):'<p style="color:var(--mut)">Nenhuma partida neste período.</p>';
+  const cnt=()=>$('mvGo').textContent='Levar '+mvSel.size+' partida(s)'; cnt();
+  $('mvL').querySelectorAll('input').forEach(i=>i.onchange=()=>{i.checked?mvSel.add(i.dataset.id):mvSel.delete(i.dataset.id);cnt()});
+}
+$('mvTo').onchange=()=>{mvSel=new Set();drawMv()}; $('mvSe').onchange=()=>{mvSel=new Set();drawMv()}; $('mvB').onclick=openMv;
+$('mvAll').onclick=()=>{const cid=$('mvTo').value, sv=$('mvSe').value; mvSel=new Set(S.matches.filter(m=>inSeason(m,sv)&&mvInfo(m,cid).ok).map(m=>m.id)); drawMv()};
+$('mvGo').onclick=async()=>{
+  if(!mvSel.size){$('mvE').textContent='Marque pelo menos uma partida.';return}
+  const cid=$('mvTo').value, b=$('mvGo'); b.disabled=true; let n=0;
+  for(const m of S.matches.filter(x=>mvSel.has(x.id)).sort((a,c)=>a.at-c.at)){
+    const i=mvInfo(m,cid); if(!i.ok)continue; const lk=m.link||(uid()+'k'); if(!m.link)await put('matches',{...m,link:lk});
+    await put('matches',{id:uid()+'v'+n,winner:i.pw.id,loser:i.pl.id,wn:nameOf(m.winner,m.wn),ln:nameOf(m.loser,m.ln),score:m.score||'',at:m.at,link:lk},cid); n++ }
+  await logA(`${n} partida(s) levada(s) para o clube ${clubName(cid)}`);
+  b.disabled=false; $('mvM').classList.remove('on'); const f=$('mvOpen')||$('mvB'); if(f&&!f.hidden)flash(f,'✅ '+n+' partida(s) levada(s)');
 };
 
 /* ---- resetar dados ---- */
