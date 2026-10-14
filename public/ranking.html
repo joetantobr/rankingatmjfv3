@@ -90,6 +90,9 @@ input,select,textarea{padding:7px;font-size:14px}
 #msg{position:relative}
 .uarrow{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:1px solid var(--bd);background:var(--bg);color:var(--mut);font-size:15px;line-height:1;cursor:pointer;padding:0}
 .uask{margin-top:8px;font-size:13px}.uask button{margin-left:6px;padding:4px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:13px;cursor:pointer}.uask button.y{background:var(--bad);color:#fff;border-color:var(--bad)}
+@media (max-width:560px),(orientation:landscape) and (max-height:520px){#pickL{grid-template-columns:1fr}}
+button.pri:disabled{opacity:.4;cursor:not-allowed}
+.lockn{margin-top:10px;text-align:center;font-size:13px;color:var(--bad);font-weight:700}
 </style>
 </head>
 <body>
@@ -103,12 +106,14 @@ input,select,textarea{padding:7px;font-size:14px}
     <div class="score2"><div class="sl" id="n1"></div><div></div><div class="sl" id="n2"></div><div class="sq5" id="sc1"></div><div class="x">x</div><div class="sq5" id="sc2"></div></div>
     <h2>Quem ganhou?</h2>
     <div class="wrow"><button class="pri" id="w1"></button><button class="pri" id="w2"></button></div>
+    <div class="lockn" id="lockNote" hidden>🔒 Lançamentos trancados. Peça ao administrador para destrancar.</div>
     <div id="multiBox" style="text-align:center;margin-top:8px"></div>
     <div class="legend" id="h2h"></div>
   </div>
   <div class="msg" id="msg" hidden></div>
   <div class="btns"><button class="sec" id="rankBtn">📊 Ver ranking</button><button class="sec add" id="addBtn">➕ Adicionar jogador</button><button class="sec" id="matchBtn">Visualizar Partidas</button><button class="sec" id="playBtn">Jogadores</button></div>
-  <div class="hint"><span id="hint"></span> · <button class="lnk" id="admBtn">🔒 Admin</button></div>
+  <div class="hint"><span id="hint"></span> · <button class="lnk" id="lockBtn"></button> · <button class="lnk" id="admBtn">🔒 Admin</button></div>
+  <div class="hint" style="margin-top:4px">v<span id="ver"></span></div>
 </main>
 
 <div class="modal" id="pickM"><div class="sheet wide"><h3 id="pickT"></h3><input id="pq" placeholder="🔍 Buscar jogador..." autocomplete="off" style="width:100%;margin-bottom:10px"><div id="pickL"></div><button class="sec" data-close>Cancelar</button></div></div>
@@ -131,6 +136,7 @@ input,select,textarea{padding:7px;font-size:14px}
   <p class="legend"><span class="badge tA">A</span>1800+ <span class="badge tB">B</span>1500+ <span class="badge tC">C</span>1200+</p>
   <div id="rankL"></div><p class="legend" id="rankNote"></p><div id="rankHi"></div>
   <button class="sec" id="shareB">📤 Compartilhar ranking (WhatsApp)</button>
+  <button class="sec" data-exp hidden id="jpgRank">🖼️ Exportar ranking com estatísticas (JPG)</button>
   <button class="sec" data-exp hidden id="expPlayers">⬇️ Exportar jogadores (CSV)</button><button class="sec" data-close>Fechar</button>
 </div></div>
 
@@ -142,6 +148,7 @@ input,select,textarea{padding:7px;font-size:14px}
 <div class="modal" id="matchM"><div class="sheet">
   <h3>Partidas</h3><select id="mSeas" style="width:100%;margin-bottom:10px"></select><button class="sec" id="undoBtn" style="margin:0 0 10px">↩️ Desfazer última partida</button>
   <div id="matchL"></div>
+  <button class="sec" data-exp hidden id="jpgMatches">🖼️ Exportar partidas (JPG)</button>
   <button class="sec" data-exp hidden id="expMatches">⬇️ Exportar partidas (CSV)</button><button class="sec" data-close>Fechar</button>
 </div></div>
 
@@ -294,14 +301,14 @@ async function logA(t){await put('settings',{...S.settings,log:[{at:Date.now(),t
 function needAdmin(fn){ if(admin){fn();return} pend=fn; renderAdm(); open('admM') }
 
 function render(){
-  $('clubBtn').textContent=clubName(cur)+' ▾'; document.title='Ranking '+clubName(cur);
+  $('lockBtn').textContent=S.settings.locked?'🔒 Lançamentos trancados':'🔓 Lançamentos liberados'; $('lockBtn').style.color=S.settings.locked?'var(--bad)':''; $('clubBtn').textContent=clubName(cur)+' ▾'; document.title='Ranking '+clubName(cur);
   $('seasonLbl').textContent=sN(curS());
   [0,1].forEach(i=>{const p=sel[i]?byId(sel[i]):null; if(!p)sel[i]=null; const b=$('s'+(i+1));
     b.className='sq'+(p?' filled t'+tier(p):'');
     b.innerHTML=p?`<small>Jogador ${i+1} · Ranking ${tier(p)}</small><span class="nm">${esc(p.name)}</span><span class="rt">${p.rating}</span>`:`<span style="font-size:28px">＋</span><span>Selecionar<br>Jogador ${i+1}</span>`});
   const a=sel[0]&&byId(sel[0]), b=sel[1]&&byId(sel[1]); $('match').hidden=!(a&&b); $('clrBtn').hidden=!(sel[0]||sel[1]);
   if(a&&b){
-    $('w1').textContent='🏆 '+a.name+' venceu'; $('w2').textContent='🏆 '+b.name+' venceu'; $('n1').textContent=a.name; $('n2').textContent=b.name; drawScore(); drawMulti(a,b);
+    $('w1').textContent='🏆 '+a.name+' venceu'; $('w2').textContent='🏆 '+b.name+' venceu'; $('n1').textContent=a.name; $('n2').textContent=b.name; drawScore(); drawMulti(a,b); $('w1').disabled=$('w2').disabled=!!S.settings.locked; $('lockNote').hidden=!S.settings.locked;
     const c=L=>L.filter(m=>m.winner===a.id&&m.loser===b.id).length+' x '+L.filter(m=>m.winner===b.id&&m.loser===a.id).length, [x,y]=calc(a,b), [u,v]=calc(b,a);
     $('h2h').innerHTML=`<b>Estatística do Encontro</b><div class="h2h-line">Desde sempre: ${esc(a.name)} <b>${c(S.matches)}</b> ${esc(b.name)}</div><div class="h2h-line">${esc(sN(curS()))}: ${esc(a.name)} <b>${c(MV)}</b> ${esc(b.name)}</div><div class="h2h-cap">Pontuação no Ranking</div><div class="h2h-points">${esc(a.name)} vence: +${x} / ${esc(b.name)} −${y}</div><div class="h2h-line">${esc(b.name)} vence: +${u} / ${esc(a.name)} −${v}</div>`;
   }
@@ -334,9 +341,10 @@ $('aSave').onclick=async()=>{
 /* ---- placar e resultado ---- */
 function drawScore(){const mx=4;[0,1].forEach(i=>{$('sc'+(i+1)).innerHTML=Array.from({length:mx+1},(_,n)=>{const v=i===0?mx-n:n;return `<button data-i="${i}" data-v="${v}" class="${sc[i]===v?'on':''}">${v}</button>`}).join('')})}
 ['sc1','sc2'].forEach(id=>$(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i,v=+b.dataset.v;sc[i]=sc[i]===v?null:v;drawScore()}));
+const isLocked=id=>{const d=G.sets.find(x=>x.id===(id==='main'?'main':'s_'+id));return !!(d&&d.locked)};
 const findIn=(c,n)=>G.raw.find(x=>(x.club||'main')===c&&!x.hidden&&x.name.trim().toLowerCase()===n.trim().toLowerCase());
 function drawMulti(a,b){
-  const o=clubList().filter(c=>c.id!==cur&&findIn(c.id,a.name)&&findIn(c.id,b.name)), box=$('multiBox');
+  const o=clubList().filter(c=>c.id!==cur&&!isLocked(c.id)&&findIn(c.id,a.name)&&findIn(c.id,b.name)), box=$('multiBox');
   [...multi].forEach(id=>{if(!o.some(c=>c.id===id))multi.delete(id)});
   if(!o.length){box.innerHTML='';return}
   box.innerHTML=`<button class="lnk" id="mlB">${multiOpen?'▾':'＋'} valer também em outros clubes${multi.size?` (${multi.size})`:''}</button>`+(multiOpen?`<div style="margin-top:6px;text-align:left;display:inline-block">${o.map(c=>`<label style="display:block;font-size:14px"><input type="checkbox" data-c="${c.id}" ${multi.has(c.id)?'checked':''}> ${esc(c.name)}</label>`).join('')}</div>`:'');
@@ -344,7 +352,7 @@ function drawMulti(a,b){
   box.querySelectorAll('input').forEach(i=>i.onchange=()=>{i.checked?multi.add(i.dataset.c):multi.delete(i.dataset.c);drawMulti(a,b)});
 }
 async function win(wi){
-  if(busy)return; const w=byId(sel[wi]), l=byId(sel[1-wi]); if(!w||!l)return;
+  if(busy)return; if(S.settings.locked){msg('🔒 Lançamentos trancados. Peça ao administrador para destrancar.');return} const w=byId(sel[wi]), l=byId(sel[1-wi]); if(!w||!l)return;
   const ws=sc[wi], ls=sc[1-wi], has=ws!==null&&ls!==null;
   if(has&&ws<=ls){msg('⚠️ O placar não bate com o vencedor escolhido.');return}
   busy=true; const t0=w.tier,t1=l.tier,r0=w.rating,r1=l.rating;
@@ -509,7 +517,7 @@ function renderAdm(){
     for(const x of S.matches.filter(x=>!keepM.has(x.id)))await del('matches',x.id);
     for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.start!=null?{start:x.start}:{})});
     for(const x of d.matches)await put('matches',{...x,id:mm[x.id],winner:pm[x.winner]||x.winner,loser:pm[x.loser]||x.loser});
-    if(d.settings)await put('settings',{...DEF,...d.settings,id:sid(),pin:S.settings.pin||d.settings.pin||''}); await logA('Backup restaurado'); flash($('bkR'),'✅ Backup restaurado')});
+    if(d.settings)await put('settings',{...DEF,...d.settings,id:sid(),pin:S.settings.pin||d.settings.pin||'',locked:S.settings.locked}); await logA('Backup restaurado'); flash($('bkR'),'✅ Backup restaurado')});
   $('impB').onclick=openImport; $('rsP').onclick=()=>resetUi('scores'); $('rsA').onclick=()=>resetUi('all');
   $('out').onclick=()=>{admin=false;render();renderAdm()};
 }
@@ -530,6 +538,64 @@ $('seasOk').onclick=e=>sure(e.currentTarget,async()=>{
   await put('settings',{...S.settings,seasonStart:Date.now(),seasons:[...ss,{n:ss.length+1,end:Date.now(),rows}]});
   await logA('Temporada encerrada: '+sN(ss.length+1)); $('seasM').classList.remove('on');
 });
+
+/* ---- versão + exportar JPG ---- */
+const APP_VERSION='0.3.4'; $('ver').textContent=APP_VERSION;
+async function saveJpg(btn,name,W,H,paint){
+  if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
+  const x=c.getContext('2d'); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
+  const o=btn.textContent; let t='✅ Imagem salva';
+  try{const blob=await new Promise((r,j)=>c.toBlob(b=>b?r(b):j(new Error('blob')),'image/jpeg',.92)); await dl.save({filename:name,data:blob})}
+  catch(e){t=(e&&e.code==='declined')?o:'⚠️ Não foi possível exportar'}
+  btn.textContent=t; setTimeout(()=>btn.textContent=o,2500);
+}
+const TC={A:'#d99100',B:'#1c7ed6',C:'#2f9e44'}, slug=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'').toLowerCase();
+const fitTxt=(x,t,w)=>{if(x.measureText(t).width<=w)return t;while(t.length>1&&x.measureText(t+'…').width>w)t=t.slice(0,-1);return t+'…'};
+function imgHead(x,W,title,sub){x.fillStyle='#e8590c';x.fillRect(0,0,W,92);x.fillStyle='#fff';x.font='bold 32px system-ui,sans-serif';x.fillText(title,30,36);x.font='17px system-ui,sans-serif';x.fillText(sub,30,69)}
+function imgFoot(x,W,H){x.fillStyle='#9aa3ad';x.font='13px system-ui,sans-serif';x.textAlign='right';x.fillText('Ranking '+clubName(cur)+' · v'+APP_VERSION+' · gerado em '+new Date().toLocaleDateString('pt-BR'),W-30,H-22);x.textAlign='left'}
+$('jpgRank').onclick=e=>{
+  const l=ranked(), W=900, RH=44, act=vis().filter(p=>games(p)>0), top=f=>act.slice().sort(f)[0], lines=[];
+  ['A','B','C'].forEach(t=>{const p=l.find(q=>q.tier===t); if(p)lines.push(`🥇 Líder do Ranking ${t}: ${p.name} (${p.rating})`)});
+  const up=top((a,b)=>(b.rating-b.r0)-(a.rating-a.r0)), many=top((a,b)=>games(b)-games(a)), wn=top((a,b)=>b.wins-a.wins);
+  if(up&&up.rating>up.r0)lines.push(`🚀 Quem mais subiu: ${up.name} (+${up.rating-up.r0})`);
+  if(many)lines.push(`🏓 Quem mais jogou: ${many.name} (${games(many)} partidas)`);
+  if(wn&&wn.wins)lines.push(`🏆 Mais vitórias: ${wn.name} (${wn.wins})`);
+  const run={},best={}; MV.forEach(m=>{run[m.winner]=(run[m.winner]||0)+1;run[m.loser]=0;best[m.winner]=Math.max(best[m.winner]||0,run[m.winner])});
+  const bs=Object.entries(best).sort((a,b)=>b[1]-a[1])[0]; if(bs&&bs[1]>=2)lines.push(`🔥 Maior sequência de vitórias: ${nameOf(bs[0])} (${bs[1]})`);
+  lines.push(`📅 ${MV.length} partida${MV.length===1?'':'s'} na temporada`);
+  const H=92+(l.length?48+l.length*RH:70)+60+lines.length*34+60;
+  saveJpg(e.currentTarget,`ranking-${slug(clubName(cur))}-${today()}.jpg`,W,H,x=>{
+    imgHead(x,W,'🏓 Ranking '+clubName(cur),`${sN(curS())} · ${l.length} jogador${l.length===1?'':'es'} no ranking`);
+    let y=92; x.font='bold 13px system-ui,sans-serif'; x.fillStyle='#6b7280'; x.fillText('#',30,y+24); x.fillText('JOGADOR',84,y+24); x.textAlign='right'; [['V',590],['D',660],['APROV.',770],['PONTOS',870]].forEach(([t,px])=>x.fillText(t,px,y+24)); x.textAlign='left';
+    y+=48; if(!l.length){x.fillStyle='#6b7280';x.font='18px system-ui,sans-serif';x.fillText('Ninguém no ranking ainda (mínimo de 3 partidas).',30,y+30);y+=70}
+    l.forEach((p,i)=>{ if(i%2===0){x.fillStyle='#f6f7f9';x.fillRect(0,y,W,RH)}
+      const cy=y+RH/2; x.fillStyle='#1b1f24'; x.font='bold 18px system-ui,sans-serif'; x.fillText(String(i+1),30,cy);
+      x.fillStyle=TC[p.tier]; x.beginPath(); x.arc(96,cy,14,0,7); x.fill(); x.fillStyle='#fff'; x.font='bold 15px system-ui,sans-serif'; x.textAlign='center'; x.fillText(p.tier,96,cy+1); x.textAlign='left';
+      x.fillStyle='#1b1f24'; x.font='18px system-ui,sans-serif'; x.fillText(fitTxt(x,p.name,380),122,cy);
+      x.textAlign='right'; x.fillText(String(p.wins),590,cy); x.fillText(String(p.losses),660,cy); x.fillText(games(p)?Math.round(p.wins/games(p)*100)+'%':'–',770,cy);
+      x.fillStyle=TC[p.tier]; x.font='bold 20px system-ui,sans-serif'; x.fillText(String(p.rating),870,cy); x.textAlign='left'; y+=RH});
+    y+=26; x.fillStyle='#1b1f24'; x.font='bold 20px system-ui,sans-serif'; x.fillText('⭐ Estatísticas · '+sN(curS()),30,y+14); y+=44;
+    x.font='18px system-ui,sans-serif'; lines.forEach(t=>{x.fillText(fitTxt(x,t,W-60),30,y+10);y+=34});
+    imgFoot(x,W,H)});
+};
+$('jpgMatches').onclick=e=>{
+  const all=matchView().reverse(), cap=200, l=all.slice(0,cap), W=900, RH=40, lbl=mSel==='all'?'Todas as temporadas':sN(mSel==='cur'?curS():+mSel);
+  const H=92+48+Math.max(l.length,1)*RH+(all.length>cap?36:0)+60;
+  saveJpg(e.currentTarget,`partidas-${slug(clubName(cur))}-${today()}.jpg`,W,H,x=>{
+    imgHead(x,W,'🏓 Partidas · '+clubName(cur),`${lbl} · ${all.length} partida${all.length===1?'':'s'}`);
+    let y=92; x.font='bold 13px system-ui,sans-serif'; x.fillStyle='#6b7280'; x.fillText('DATA',30,y+24); x.fillText('VENCEDOR',170,y+24); x.fillText('PERDEDOR',520,y+24); x.textAlign='right'; x.fillText('PLACAR',870,y+24); x.textAlign='left'; y+=48;
+    if(!l.length){x.fillStyle='#6b7280';x.font='18px system-ui,sans-serif';x.fillText('Nenhuma partida neste período.',30,y+20);y+=RH}
+    l.forEach((m,i)=>{ if(i%2===0){x.fillStyle='#f6f7f9';x.fillRect(0,y,W,RH)} const d=D[m.id]||[0,0], cy=y+RH/2;
+      x.fillStyle='#6b7280'; x.font='15px system-ui,sans-serif'; x.fillText(fmt(m.at)+(m.link?' 🔗':''),30,cy);
+      x.fillStyle='#2f9e44'; x.font='bold 17px system-ui,sans-serif'; const wn=fitTxt(x,nameOf(m.winner,m.wn),230); x.fillText(wn,170,cy); const ww=x.measureText(wn).width; x.font='13px system-ui,sans-serif'; x.fillText('+'+d[0],170+ww+8,cy);
+      x.fillStyle='#1b1f24'; x.font='17px system-ui,sans-serif'; const ln=fitTxt(x,nameOf(m.loser,m.ln),230); x.fillText(ln,520,cy); const lw=x.measureText(ln).width; x.fillStyle='#e03131'; x.font='13px system-ui,sans-serif'; x.fillText('−'+d[1],520+lw+8,cy);
+      x.fillStyle='#1b1f24'; x.font='bold 18px system-ui,sans-serif'; x.textAlign='right'; x.fillText(m.score||'–',870,cy); x.textAlign='left'; y+=RH});
+    if(all.length>cap){x.fillStyle='#6b7280';x.font='14px system-ui,sans-serif';x.fillText(`Mostrando as ${cap} partidas mais recentes de ${all.length}.`,30,y+18)}
+    imgFoot(x,W,H)});
+};
+
+/* ---- trancar lançamentos ---- */
+$('lockBtn').onclick=()=>needAdmin(async()=>{const v=!S.settings.locked; await put('settings',{...S.settings,locked:v}); await logA(v?'Lançamentos trancados':'Lançamentos destrancados')});
 
 /* ---- clubes ---- */
 function switchClub(id){
@@ -609,7 +675,7 @@ async function doReset(kind){
   for(const m of [...S.matches])await del('matches',m.id);
   if(all){for(const p of [...S.raw])await del('players',p.id)}
   else{for(const p of [...S.raw]){const {adj,start,...rest}=p; if(adj||start!=null)await put('players',rest)}}
-  await put('settings',{...DEF,id:sid(),pin:st.pin,margin:st.margin,inactiveDays:st.inactiveDays,seasonStart:0,seasons:[],sNames:{},
+  await put('settings',{...DEF,id:sid(),pin:st.pin,locked:st.locked,margin:st.margin,inactiveDays:st.inactiveDays,seasonStart:0,seasons:[],sNames:{},
     log:[{at:Date.now(),t:all?'Banco de dados resetado (tudo apagado)':'Pontuações zeradas (jogadores mantidos)'},...(all?[]:(st.log||[]))].slice(0,300)});
 }
 
