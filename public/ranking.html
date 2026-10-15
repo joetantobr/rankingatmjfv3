@@ -306,6 +306,7 @@ async function del(col,id){
     db.collection('clubs').onSnapshot(x=>{G.clubs=x.docs.map(d=>({...d.data(),id:d.id}));if(!clubList().some(c=>c.id===cur)){cur=(clubList()[0]||{id:'main'}).id;try{localStorage.setItem('tm_club',cur)}catch(e){}}refresh()},()=>{});
   }
   try{dl=await claude.use('downloads')}catch(e){dl=null}
+  try{userNS=await claude.use('user'); if(userNS){const m=await userNS.me(); myId=(m&&m.id)||''}}catch(e){userNS=null}
   document.querySelectorAll('[data-exp]').forEach(b=>b.hidden=!dl);
   $('hint').textContent=db?'Dados compartilhados com quem abrir este link.':'Dados salvos apenas neste navegador.';
 })();
@@ -333,7 +334,28 @@ function undoUi(mid,wn,ln){
 }
 function flash(b,t){const o=b.textContent;b.textContent=t;setTimeout(()=>b.textContent=o,2500)}
 function sure(b,fn){ if(b.dataset.s){delete b.dataset.s;fn();return} b.dataset.s=1; const o=b.textContent; b.textContent='Toque de novo para confirmar'; setTimeout(()=>{delete b.dataset.s;b.textContent=o},3000)}
-async function logA(t){await put('settings',{...S.settings,log:[{at:Date.now(),t},...(S.settings.log||[])].slice(0,300)})}
+/* ---- quem lançou / de onde (versão de teste) ---- */
+let myId='', userNS=null, UN={};
+function deviceInfo(){
+  const ua=navigator.userAgent||''; let o='?', b='?';
+  if(/android/i.test(ua))o='Android'; else if(/iphone|ipod/i.test(ua))o='iPhone'; else if(/ipad/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))o='iPad'; else if(/windows/i.test(ua))o='Windows'; else if(/cros/i.test(ua))o='ChromeOS'; else if(/mac os/i.test(ua))o='Mac'; else if(/linux/i.test(ua))o='Linux';
+  if(/edg\//i.test(ua))b='Edge'; else if(/opr\/|opera/i.test(ua))b='Opera'; else if(/samsungbrowser/i.test(ua))b='Samsung Internet'; else if(/firefox|fxios/i.test(ua))b='Firefox'; else if(/crios|chrome/i.test(ua))b='Chrome'; else if(/safari/i.test(ua))b='Safari';
+  let sc='',tz=''; try{sc=screen.width+'x'+screen.height; tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+  return {o,b,s:sc,t:tz,l:navigator.language||''};
+}
+const devTxt=d=>d?`${d.o||'?'} · ${d.b||'?'}`:'';
+const whoTxt=id=>id?(UN[id]||'Usuário'):'';
+async function loadNames(ids){
+  if(!userNS)return false; const need=[...new Set(ids.filter(i=>i&&UN[i]===undefined))]; if(!need.length)return false;
+  try{const ps=await userNS.profiles(need); need.forEach(i=>UN[i]=(ps&&ps[i]&&ps[i].name)||'')}catch(e){need.forEach(i=>UN[i]='')} return true;
+}
+const devTitle=m=>(m.by||m.dev)?'Lançada por '+(whoTxt(m.by)||'—')+(m.dev?' · '+devTxt(m.dev):'')+(m.cr?' · '+fmt(m.cr):''):'';
+function recentHtml(st){
+  const rec=[...S.matches].sort((a,b)=>(b.cr||b.at)-(a.cr||a.at)).slice(0,40);
+  loadNames([...(st.log||[]).slice(0,50).map(x=>x.by),...rec.map(m=>m.by)]).then(c=>{if(c&&admin&&op('admM')&&admTab==='adv')renderAdm()});
+  return `<div class="agroup"><h4>📱 Lançamentos de partidas</h4>${rec.length?`<details><summary>Ver os últimos ${rec.length} lançamentos</summary><table><tr><th>Cadastrada em</th><th>Partida</th><th>Quem · aparelho</th></tr>${rec.map(m=>`<tr><td style="white-space:nowrap">${fmt(m.cr||m.at)}</td><td>${esc(nameOf(m.winner,m.wn))} x ${esc(nameOf(m.loser,m.ln))}${m.score?' ('+esc(m.score)+')':''}</td><td>${(m.by||m.dev)?esc(whoTxt(m.by)||'—')+' · '+esc(devTxt(m.dev)):'<span style="color:var(--mut)">sem registro</span>'}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma partida ainda.</p>'}<p class="legend" style="margin:4px 0 8px">Cada partida guarda a conta de quem lançou, o aparelho e o navegador. Partidas antigas não têm esse registro.</p></div>`;
+}
+async function logA(t){await put('settings',{...S.settings,log:[{at:Date.now(),t,by:myId,dev:deviceInfo()},...(S.settings.log||[])].slice(0,300)})}
 function needAdmin(fn){ if(admin){fn();return} pend=fn; renderAdm(); open('admM') }
 
 function render(){
@@ -393,9 +415,9 @@ async function win(wi){
   if(has&&ws<=ls){msg('⚠️ O placar não bate com o vencedor escolhido.');return}
   busy=true; const t0=w.tier,t1=l.tier,r0=w.rating,r1=l.rating;
   const mid=uid(), at=Date.now(), lk=multi.size?uid()+'k':'', extra=[], sc2=has?ws+'x'+ls:'';
-  await put('matches',{id:mid,winner:w.id,loser:l.id,wn:w.name,ln:l.name,score:sc2,at,...(lk?{link:lk}:{})});
+  await put('matches',{id:mid,winner:w.id,loser:l.id,wn:w.name,ln:l.name,score:sc2,at,cr:at,by:myId,dev:deviceInfo(),...(lk?{link:lk}:{})});
   if(lk){let i=0; for(const cid of [...multi]){const pw=findIn(cid,w.name), pl=findIn(cid,l.name);
-    if(pw&&pl){await put('matches',{id:uid()+'x'+(i++),winner:pw.id,loser:pl.id,wn:w.name,ln:l.name,score:sc2,at,link:lk},cid);extra.push(clubName(cid))}}}
+    if(pw&&pl){await put('matches',{id:uid()+'x'+(i++),winner:pw.id,loser:pl.id,wn:w.name,ln:l.name,score:sc2,at,link:lk,cr:at,by:myId,dev:deviceInfo()},cid);extra.push(clubName(cid))}}}
   const nw=byId(w.id), nl=byId(l.id);
   msg(`<b>${esc(w.name)}</b> venceu${has?' por '+ws+'x'+ls:''}<br><span class="up">${esc(w.name)}: ${r0} → ${nw.rating} (+${nw.rating-r0})</span><br><span class="dn">${esc(l.name)}: ${r1} → ${nl.rating} (−${r1-nl.rating})</span>`
     +(t0!==nw.tier?`<br>${nw.tier<t0?'⬆️':'⬇️'} ${esc(w.name)} agora está no Ranking ${nw.tier}.`:'')+(t1!==nl.tier?`<br>${nl.tier<t1?'⬆️':'⬇️'} ${esc(l.name)} agora está no Ranking ${nl.tier}.`:'')+(extra.length?`<br>🔗 Também valeu em: ${extra.map(esc).join(', ')}`:''));
@@ -434,14 +456,14 @@ $('undoBtn').onclick=e=>{const m=MV[MV.length-1]; if(!m)return; sure(e.currentTa
 function renderMatches(){
   const l=matchView().reverse(), so=seasOpts(false,'Todas as temporadas',mSel); if($('mSeas').dataset.h!==so){$('mSeas').innerHTML=so;$('mSeas').dataset.h=so}
   $('undoBtn').hidden=!(mSel==='cur'&&l.length); $('mvB').hidden=!admin;
-  $('matchL').innerHTML=l.length?`<table><tr><th>Data</th><th>Vencedor</th><th>Perdedor</th><th class="n">Placar</th>${admin?'<th></th>':''}</tr>`+l.map(m=>{const d=D[m.id]||[0,0];return `<tr><td>${fmt(m.at)}${m.link?' 🔗':''}</td><td><b class="up">${esc(nameOf(m.winner,m.wn))}</b> <small>+${d[0]}</small></td><td>${esc(nameOf(m.loser,m.ln))} <small>−${d[1]}</small></td><td class="n">${m.score?esc(m.score):'–'}</td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:''}</tr>`}).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>';
+  $('matchL').innerHTML=l.length?`<table><tr><th>Data</th><th>Vencedor</th><th>Perdedor</th><th class="n">Placar</th>${admin?'<th></th>':''}</tr>`+l.map(m=>{const d=D[m.id]||[0,0];return `<tr><td ${admin&&devTitle(m)?`title="${esc(devTitle(m))}"`:''}>${fmt(m.at)}${m.link?' 🔗':''}</td><td><b class="up">${esc(nameOf(m.winner,m.wn))}</b> <small>+${d[0]}</small></td><td>${esc(nameOf(m.loser,m.ln))} <small>−${d[1]}</small></td><td class="n">${m.score?esc(m.score):'–'}</td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:''}</tr>`}).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>';
   $('matchL').querySelectorAll('.rm').forEach(b=>b.onclick=()=>sure(b,async()=>{const m=S.matches.find(x=>x.id===b.dataset.id);await del('matches',b.dataset.id);if(m)await logA(`Partida apagada: ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)} (${fmt(m.at)})`)}));
   $('matchL').querySelectorAll('.ed').forEach(b=>b.onclick=()=>editMatch(b.dataset.id));
 }
 function editMatch(id){
   const m=S.matches.find(x=>x.id===id); if(!m)return; let w=m.winner;
   const ids=[m.winner,m.loser], draw=()=>{$('emW').innerHTML=ids.map(i=>`<button data-id="${i}" class="${w===i?'on':''}">${esc(nameOf(i,i===m.winner?m.wn:m.ln))}</button>`).join('');$('emW').querySelectorAll('button').forEach(b=>b.onclick=()=>{w=b.dataset.id;draw()})};
-  $('emInfo').textContent='Partida de '+fmt(m.at)+'. A pontuação de todos é recalculada automaticamente.'; $('emS').value=m.score||''; $('emErr').textContent=''; draw();
+  const info=()=>{$('emInfo').textContent='Partida de '+fmt(m.at)+(m.cr&&m.cr!==m.at?' (lançada em '+fmt(m.cr)+')':'')+'. '+((m.by||m.dev)?'Lançada por '+(whoTxt(m.by)||'—')+(m.dev?' · '+devTxt(m.dev):'')+'. ':'')+'A pontuação de todos é recalculada automaticamente.'}; info(); loadNames([m.by]).then(c=>c&&info()); $('emS').value=m.score||''; $('emErr').textContent=''; draw();
   const toIn=t=>{const d=new Date(t);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)};
   $('emD').value=toIn(m.at);
   const note=()=>{const t=new Date($('emD').value).getTime(); $('emSe').textContent=isNaN(t)?'':'Esta data fica na '+sN(seasonOf({at:t}))+'.'+(m.link?' Esta partida vale em outros clubes, mas a correção vale só neste clube.':'')};
@@ -537,7 +559,7 @@ function renderAdm(){
     <div class="agroup"><h4>Restaurar</h4>${arow('Arquivo de backup','<span id="bkN">Nenhum arquivo escolhido</span>','<label class="cb">📂 Escolher<input type="file" id="bkF" accept=".json,application/json" hidden></label>')}
       <details><summary>ou colar o conteúdo</summary><textarea id="bk" rows="3" placeholder="Cole aqui o conteúdo do backup..." style="width:100%;margin-top:6px;font-size:13px"></textarea></details>
       <p id="bkInfo" class="legend" style="margin:6px 0"></p>${arow('Restaurar','Backup de um clube substitui só o clube aberto · backup de todos os dados substitui tudo','<button class="cb bad" id="bkR">♻️ Restaurar</button>')}</div>`;
-  if(T==='adv')body=`<div class="agroup"><h4>📜 Registro de alterações</h4>${(st.log||[]).length?`<details><summary>Ver últimas ${Math.min(50,st.log.length)} alterações</summary><table>${st.log.slice(0,50).map(x=>`<tr><td style="white-space:nowrap">${fmt(x.at)}</td><td>${esc(x.t)}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma alteração registrada ainda.</p>'}</div>
+  if(T==='adv')body=`${recentHtml(st)}<div class="agroup"><h4>📜 Registro de alterações</h4>${(st.log||[]).length?`<details><summary>Ver últimas ${Math.min(50,st.log.length)} alterações</summary><table>${st.log.slice(0,50).map(x=>`<tr><td style="white-space:nowrap">${fmt(x.at)}</td><td>${esc(x.t)}${(x.by||x.dev)?`<br><small style="color:var(--mut)">${esc(whoTxt(x.by)||'—')} · ${esc(devTxt(x.dev))}</small>`:''}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma alteração registrada ainda.</p>'}</div>
     <div class="agroup" style="border-color:var(--bad)"><h4 style="color:var(--bad)">⚠️ Zona de perigo</h4>${arow('Zerar pontuações','Apaga partidas e temporadas · mantém os jogadores','<button class="cb bad" id="rsP">Zerar</button>')}${arow('Resetar tudo','Apaga jogadores e partidas deste clube','<button class="cb bad" id="rsA">Resetar</button>')}${arow('Excluir este clube','Remove o clube por completo','<button class="cb bad" id="rsC">Excluir</button>')}</div>`;
   B.innerHTML=admHead('⚙️ '+esc(clubName(cur)),'<button class="cb" id="out">Sair</button>')+`<div class="atabs">${ADM_TABS.map(([k,t])=>`<button data-t="${k}" class="${k===T?'on':''}">${t}</button>`).join('')}</div>`+body;
   $('admX').onclick=()=>$('admM').classList.remove('on'); bind('out',()=>{admin=false;render();renderAdm()});
@@ -640,7 +662,7 @@ $('seasOk').onclick=e=>sure(e.currentTarget,async()=>{
 });
 
 /* ---- versão + exportar JPG ---- */
-const APP_VERSION='0.3.8.1'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.3.8.2 (teste)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -866,7 +888,7 @@ async function exportCsv(btn,name,rows){
 }
 $('expPlayers').onclick=e=>{const r=ranked().map(p=>p.id);
   exportCsv(e.currentTarget,'ranking-jogadores-'+today()+'.csv',[['Posição','Jogador','Faixa','Pontos','Vitórias','Derrotas','Partidas','No ranking']].concat(vis().sort((a,b)=>b.rating-a.rating).map(p=>{const i=r.indexOf(p.id);return [i>=0?i+1:'',p.name,tier(p),p.rating,p.wins,p.losses,games(p),i>=0?'Sim':'Não']})))};
-$('expMatches').onclick=e=>exportCsv(e.currentTarget,'partidas-'+today()+'.csv',[['Temporada','Data','Hora','Vencedor','Perdedor','Placar (vencedor x perdedor)','Pontos do vencedor','Pontos do perdedor']].concat(matchView().map(m=>{const d=D[m.id]||[0,0],t=new Date(m.at);return [seasonOf(m),t.toLocaleDateString('pt-BR'),t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),nameOf(m.winner,m.wn),nameOf(m.loser,m.ln),m.score||'','+'+d[0],'-'+d[1]]})));
+$('expMatches').onclick=async e=>{const b=e.currentTarget; await loadNames(matchView().map(m=>m.by)); exportCsv(b,'partidas-'+today()+'.csv',[['Temporada','Data','Hora','Vencedor','Perdedor','Placar (vencedor x perdedor)','Pontos do vencedor','Pontos do perdedor','Lançada por','Aparelho','Lançada em']].concat(matchView().map(m=>{const d=D[m.id]||[0,0],t=new Date(m.at);return [seasonOf(m),t.toLocaleDateString('pt-BR'),t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),nameOf(m.winner,m.wn),nameOf(m.loser,m.ln),m.score||'','+'+d[0],'-'+d[1],whoTxt(m.by),devTxt(m.dev),m.cr?fmt(m.cr):'']})));};
 </script>
 </body>
 </html>
