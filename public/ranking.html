@@ -188,7 +188,7 @@ button.pri:disabled{opacity:.4;cursor:not-allowed}
   <div id="mvE" class="dn"></div>
   <button class="pri" id="mvGo">Levar</button><button class="sec" data-close>Cancelar</button></div></div>
 
-<div class="modal" id="rstM"><div class="sheet"><h3 id="rstT"></h3><p class="legend" id="rstD"></p><label class="field"><span>Digite <b>ZERAR</b> para confirmar</span><input id="rstI" autocomplete="off"></label><div id="rstE" class="dn"></div><button class="pri" id="rstOk" style="background:var(--bad)">Confirmar</button><button class="sec" data-close>Cancelar</button></div></div>
+<div class="modal" id="rstM"><div class="sheet"><h3 id="rstT"></h3><p class="legend" id="rstD"></p><label class="field"><span>Digite <b id="rstW">ZERAR</b> para confirmar</span><input id="rstI" autocomplete="off"></label><div id="rstE" class="dn"></div><button class="pri" id="rstOk" style="background:var(--bad)">Confirmar</button><button class="sec" data-close>Cancelar</button></div></div>
 
 <div class="modal" id="adjM"><div class="sheet">
   <h3>✏️ Alterar pontuação</h3>
@@ -210,7 +210,7 @@ window.claude={use:async function(n){
 <script>
 const START={A:1800,B:1500,C:1200};
 const DEF={id:'main',maxScore:4,margin:50,inactiveDays:0,pin:'',seasonStart:0,seasons:[]};
-const APP_URL='https://rankingatmjfv3.lovable.app/';
+const APP_URL='https://rankingatmjfv3.lovable.app';
 let G={raw:[],matches:[],sets:[],clubs:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
 const $=id=>document.getElementById(id), op=id=>$(id).classList.contains('on');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -256,7 +256,7 @@ function compute(){
 /* ---- armazenamento compartilhado (banco do artefato) · vários clubes ---- */
 const GK={players:'raw',matches:'matches',settings:'sets',clubs:'clubs'};
 const sid=()=>cur==='main'?'main':'s_'+cur;
-const clubList=()=>{const l=[...G.clubs];if(!l.some(c=>c.id==='main'))l.unshift({id:'main',name:'ATMJF'});return l};
+const clubList=()=>{const l=[...G.clubs];if(!l.some(c=>c.id==='main'))l.unshift({id:'main',name:'ATMJF'});return l.filter(c=>!c.deleted)};
 const clubName=id=>{const c=clubList().find(x=>x.id===id);return c?c.name:'ATMJF'};
 function scope(){
   S.raw=G.raw.filter(x=>(x.club||'main')===cur); S.matches=G.matches.filter(x=>(x.club||'main')===cur);
@@ -284,7 +284,7 @@ async function del(col,id){
     db.collection('players').onSnapshot(x=>{G.raw=x.docs.map(d=>d.data());refresh()},()=>{});
     db.collection('matches').onSnapshot(x=>{G.matches=x.docs.map(d=>d.data());refresh()},()=>{});
     db.collection('settings').onSnapshot(x=>{G.sets=x.docs.map(d=>({...d.data(),id:d.id}));refresh()},()=>{});
-    db.collection('clubs').onSnapshot(x=>{G.clubs=x.docs.map(d=>({...d.data(),id:d.id}));if(!clubsInit){clubsInit=true;if(!clubList().some(c=>c.id===cur))cur='main'}refresh()},()=>{});
+    db.collection('clubs').onSnapshot(x=>{G.clubs=x.docs.map(d=>({...d.data(),id:d.id}));if(!clubList().some(c=>c.id===cur)){cur=(clubList()[0]||{id:'main'}).id;try{localStorage.setItem('tm_club',cur)}catch(e){}}refresh()},()=>{});
   }
   try{dl=await claude.use('downloads')}catch(e){dl=null}
   document.querySelectorAll('[data-exp]').forEach(b=>b.hidden=!dl);
@@ -516,6 +516,7 @@ function renderAdm(){
   <div class="sub" style="color:var(--bad)">⚠️ Zona de perigo</div>
   <button class="sec" id="rsP" style="margin:0 0 8px">🔄 Zerar pontuações (mantém os jogadores)</button>
   <button class="sec" id="rsA" style="margin:0 0 8px;border-color:var(--bad);color:var(--bad)">🗑️ Resetar tudo (apaga o banco de dados)</button>
+  <button class="sec" id="rsC" style="margin:0 0 8px;border-color:var(--bad);color:var(--bad)">🗑️ Excluir este clube</button>
   <button class="sec" id="out">Sair do modo administrador</button>`;
   $('mg').onchange=()=>put('settings',{...S.settings,margin:Math.max(0,+$('mg').value||0)});
   $('ia').onchange=()=>put('settings',{...S.settings,inactiveDays:Math.max(0,+$('ia').value||0)});
@@ -553,7 +554,7 @@ function renderAdm(){
     for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.start!=null?{start:x.start}:{})});
     for(const x of d.matches)await put('matches',{...x,id:mm[x.id],winner:pm[x.winner]||x.winner,loser:pm[x.loser]||x.loser});
     if(d.settings)await put('settings',{...DEF,...d.settings,id:sid(),pin:S.settings.pin||d.settings.pin||'',locked:S.settings.locked}); await logA('Backup restaurado'); flash($('bkR'),'✅ Backup restaurado')});
-  $('impB').onclick=openImport; $('mvOpen').onclick=openMv; $('rsP').onclick=()=>resetUi('scores'); $('rsA').onclick=()=>resetUi('all');
+  $('impB').onclick=openImport; $('mvOpen').onclick=openMv; $('rsP').onclick=()=>resetUi('scores'); $('rsA').onclick=()=>resetUi('all'); $('rsC').onclick=()=>resetUi('club');
   $('out').onclick=()=>{admin=false;render();renderAdm()};
 }
 
@@ -575,7 +576,7 @@ $('seasOk').onclick=e=>sure(e.currentTarget,async()=>{
 });
 
 /* ---- versão + exportar JPG ---- */
-const APP_VERSION='0.3.7'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.3.8'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -730,7 +731,29 @@ $('mvGo').onclick=async()=>{
 };
 
 /* ---- resetar dados ---- */
+function deleteUi(){
+  if(clubList().length<2){const b=$('rsC'); if(b)flash(b,'Não dá: é o único clube'); return}
+  const nm=clubName(cur);
+  $('rstT').textContent='🗑️ Excluir o clube "'+nm+'"';
+  $('rstD').textContent='Apaga o clube e TODOS os jogadores, partidas, temporadas e configurações dele ('+S.raw.length+' jogadores, '+S.matches.length+' partidas). Os outros clubes não são afetados. Baixe um backup antes. Não dá para desfazer.';
+  $('rstW').textContent='EXCLUIR'; $('rstI').value=''; $('rstE').textContent='';
+  $('rstOk').onclick=async()=>{
+    if($('rstI').value.trim().toUpperCase()!=='EXCLUIR'){$('rstE').textContent='Digite EXCLUIR para confirmar.';return}
+    const b=$('rstOk'); b.disabled=true; b.textContent='Excluindo...';
+    await doDeleteClub(); b.disabled=false; b.textContent='Confirmar'; $('rstM').classList.remove('on'); msg(`🗑️ Clube <b>${esc(nm)}</b> excluído.`);
+  };
+  open('rstM');
+}
+async function doDeleteClub(){
+  const id=cur, nm=clubName(id);
+  for(const m of [...S.matches])await del('matches',m.id);
+  for(const p of [...S.raw])await del('players',p.id);
+  await del('settings',sid());
+  if(id==='main')await put('clubs',{id:'main',name:nm,deleted:true}); else await del('clubs',id);
+  const next=clubList().find(c=>c.id!==id); switchClub(next?next.id:'main');
+}
 function resetUi(kind){
+  if(kind==='club')return deleteUi(); $('rstW').textContent='ZERAR';
   const all=kind==='all';
   $('rstT').textContent=all?'🗑️ Resetar tudo':'🔄 Zerar pontuações';
   $('rstD').textContent=all
