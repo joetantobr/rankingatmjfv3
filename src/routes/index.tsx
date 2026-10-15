@@ -24,6 +24,6 @@ function Index() {
   }, []);
   if (!ready) return null;
   return (
-    <iframe src="/ranking.html" title="Ranking ATMJF" className="fixed inset-0 h-full w-full border-0" />
+    <iframe src={"/ranking.html" + window.location.search + window.location.hash} title="Ranking ATMJF" className="fixed inset-0 h-full w-full border-0" />
   );
 }
