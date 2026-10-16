@@ -374,6 +374,7 @@ html.fx #match h2{color:#ff6b81;text-shadow:0 0 10px rgba(255,45,77,.7)}
 
 <div class="modal" id="seasM"><div class="sheet wide"><h3 id="seasT"></h3><div class="seg" id="seasTabs" style="grid-template-columns:1fr 1fr;margin-bottom:10px"></div><div id="seasB"></div><button class="pri" id="seasOk">🏁 Confirmar e encerrar temporada</button><button class="sec" data-close>Voltar</button></div></div>
 
+<script>
 window.claude={use:async function(n){
  if(n==='db'){const P=window.parent;if(P&&P!==window&&P.__rankingDb)return P.__rankingDb;throw new Error('no db')}
  if(n==='downloads')return{save:async function(o){const b=o.data instanceof Blob?o.data:new Blob([o.data],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=o.filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}};
