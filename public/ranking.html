@@ -2,6 +2,12 @@
 <html lang="pt-BR" class="fx">
 <script>try{var d=document.documentElement;if(localStorage.getItem("tm_visual")==="simple")d.classList.remove("fx");var t=localStorage.getItem("tm_theme");if(t)d.setAttribute("data-theme",t)}catch(e){}</script>
 <head>
+<script>
+window.claude={use:async function(n){
+ if(n==='db'){const P=window.parent;if(P&&P!==window&&P.__rankingDb)return P.__rankingDb;throw new Error('no db')}
+ if(n==='downloads')return{save:async function(o){const b=o.data instanceof Blob?o.data:new Blob([o.data],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=o.filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}};
+ throw new Error('unknown')}};
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>🏓 Ranking ATMJF 🏓</title>
@@ -228,6 +234,12 @@ html.fx .gbtn .gi{font-size:15px}
 html.fx .panel h2{font-size:11px}
 html.fx .bg-fx::before{display:none}}
 /* ===== novos recursos (0.3.8.6) ===== */
+@keyframes pickZoom{0%{transform:scale(.86);filter:brightness(1.9)}55%{transform:scale(1.06);filter:brightness(1.4)}100%{transform:scale(1);filter:none}}
+@keyframes pickRing{0%{opacity:.95;transform:scale(1)}100%{opacity:0;transform:scale(1.2)}}
+html.fx #s1.selpop{animation:pickZoom .6s cubic-bezier(.2,1.4,.4,1),neonspin 3.2s linear infinite,neonpulse 2.4s ease-in-out infinite}
+html.fx #s2.selpop{animation:pickZoom .6s cubic-bezier(.2,1.4,.4,1),neonspin 3.2s linear infinite reverse,neonpulse 2.4s ease-in-out infinite}
+html.fx .sq.selpop::after{content:'';position:absolute;inset:-3px;border-radius:18px;border:3px solid var(--nc);pointer-events:none;animation:pickRing .7s ease-out forwards}
+html.fx .sq.selpop .nm,html.fx .sq.selpop .rt{animation:popIn .45s ease-out}
 @keyframes zoomIn2{0%{opacity:0;transform:scale(.3)}60%{opacity:1;transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
 @keyframes blinkBtn{0%,100%{filter:none}50%{filter:brightness(1.7);box-shadow:0 0 28px #1fe38f}}
 @keyframes blinkGlow{0%,100%{box-shadow:0 0 0 rgba(31,227,143,0)}50%{box-shadow:0 0 18px #1fe38f}}
@@ -248,8 +260,7 @@ html.fx #match h2{color:#ff6b81;text-shadow:0 0 10px rgba(255,45,77,.7)}
 .xp{height:6px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;width:78%;margin-top:4px}
 .xp i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--t),#fff);box-shadow:0 0 8px var(--t)}
 .phead .xp{width:100%;margin-top:3px}.xpl{font-size:12px;color:var(--mut);margin-bottom:3px}
-.av{margin-right:4px}.fl{margin-left:4px}
-.avrow{display:flex;flex-wrap:wrap;gap:4px}.avb{width:34px;height:34px;border-radius:9px;border:1px solid var(--bd);background:var(--card);font-size:18px;cursor:pointer;padding:0}.avb.on{border-color:var(--cy,#22e6ff);box-shadow:0 0 10px rgba(34,230,255,.6)}
+.fl{margin-left:4px}
 .podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:6px 0 14px}
 .pc{flex:1;max-width:140px;text-align:center;min-width:0}.pav{font-size:30px;line-height:1.1}
 .pn{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -293,7 +304,6 @@ html.fx #match h2{color:#ff6b81;text-shadow:0 0 10px rgba(255,45,77,.7)}
 <div class="modal" id="addM"><div class="sheet">
   <h3>Novo jogador</h3>
   <label class="field"><span>Nome</span><input id="aName" maxlength="40" autocomplete="off"></label>
-  <div class="field fxonly"><span>Avatar (opcional)</span><div id="aAv" class="avrow"></div></div>
   <div class="field" id="aGrpF"><span>Ranking inicial (define só a pontuação de partida)</span>
     <div class="seg" id="aGrp">
       <button class="tC" data-g="C"><b>Ranking C</b><br><small>1200 pts</small></button>
@@ -375,16 +385,10 @@ html.fx #match h2{color:#ff6b81;text-shadow:0 0 10px rgba(255,45,77,.7)}
 <div class="modal" id="seasM"><div class="sheet wide"><h3 id="seasT"></h3><div class="seg" id="seasTabs" style="grid-template-columns:1fr 1fr;margin-bottom:10px"></div><div id="seasB"></div><button class="pri" id="seasOk">🏁 Confirmar e encerrar temporada</button><button class="sec" data-close>Voltar</button></div></div>
 
 <script>
-window.claude={use:async function(n){
- if(n==='db'){const P=window.parent;if(P&&P!==window&&P.__rankingDb)return P.__rankingDb;throw new Error('no db')}
- if(n==='downloads')return{save:async function(o){const b=o.data instanceof Blob?o.data:new Blob([o.data],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=o.filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}};
- throw new Error('unknown')}};
-</script>
-<script>
 const START={A:1800,B:1500,C:1200};
 const DEF={id:'main',maxScore:4,margin:50,inactiveDays:0,pin:'',seasonStart:0,seasons:[],bonusCfg:{CC:1.5,CB:1.5,CA:2,BC:1,BB:1,BA:1,AC:1,AB:1,AA:1},bonus:[],fire:[],fireF:1.5};
 const APP_URL='https://rankingatmjfv3.lovable.app';
-let G={raw:[],matches:[],sets:[],clubs:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, justAdded=null, lastPair='', newAv='', SND=(()=>{try{return localStorage.getItem('tm_snd')!=='off'}catch(e){return true}})(), pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
+let G={raw:[],matches:[],sets:[],clubs:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, justAdded=null, lastPair='', SND=(()=>{try{return localStorage.getItem('tm_snd')!=='off'}catch(e){return true}})(), pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
 const $=id=>document.getElementById(id), op=id=>$(id).classList.contains('on');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -520,7 +524,8 @@ function recentHtml(st){
   return `<div class="agroup"><h4>📱 Lançamentos de partidas</h4>${rec.length?`<details><summary>Ver os últimos ${rec.length} lançamentos</summary><table><tr><th>Cadastrada em</th><th>Partida</th><th>Quem · aparelho</th></tr>${rec.map(m=>`<tr><td style="white-space:nowrap">${fmt(m.cr||m.at)}</td><td>${esc(nameOf(m.winner,m.wn))} x ${esc(nameOf(m.loser,m.ln))}${m.score?' ('+esc(m.score)+')':''}</td><td>${(m.by||m.dev)?esc(whoTxt(m.by)||'—')+' · '+esc(devTxt(m.dev)):'<span style="color:var(--mut)">sem registro</span>'}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma partida ainda.</p>'}<p class="legend" style="margin:4px 0 8px">Cada partida guarda a conta de quem lançou, o aparelho e o navegador. Partidas antigas não têm esse registro.</p></div>`;
 }
 async function logA(t){await put('settings',{...S.settings,log:[{at:Date.now(),t,by:myId,dev:deviceInfo()},...(S.settings.log||[])].slice(0,300)})}
-function needAdmin(fn){ if(admin){fn();return} pend=fn; renderAdm(); open('admM') }
+function focusPin(){const el=$('pin'); if(el){try{el.focus({preventScroll:true});el.select()}catch(e){}}}
+function needAdmin(fn){ if(admin){fn();return} pend=fn; renderAdm(); open('admM'); focusPin(); setTimeout(focusPin,120) }
 
 function render(){
   $('lockBtn').textContent=S.settings.locked?'🔒 Lançamentos trancados':'🔓 Lançamentos liberados'; $('lockBtn').style.color=S.settings.locked?'var(--bad)':''; $('clubBtn').textContent=clubName(cur)+' ▾'; document.title='Ranking '+clubName(cur);
@@ -530,7 +535,7 @@ function render(){
    $('rulesBar').innerHTML=pr.map(esc).join('<br>'); $('rulesBar').hidden=!pr.length}
   [0,1].forEach(i=>{const p=sel[i]?byId(sel[i]):null; if(!p)sel[i]=null; const b=$('s'+(i+1));
     b.className='sq'+(p?' filled t'+tier(p):'');
-    b.innerHTML=p?`<small>Jogador ${i+1} · Ranking ${tier(p)}</small><span class="nm">${av(p)}${esc(p.name)}${fire(p)}</span><span class="rt">${p.rating}</span>${xpBarV(p)}`:`<span style="font-size:28px">＋</span><span>Selecionar<br>Jogador ${i+1}</span>`});
+    b.innerHTML=p?`<small>Jogador ${i+1} · Ranking ${tier(p)}</small><span class="nm">${esc(p.name)}${fire(p)}</span><span class="rt">${p.rating}</span>${xpBarV(p)}`:`<span style="font-size:28px">＋</span><span>Selecionar<br>Jogador ${i+1}</span>`});
   const a=sel[0]&&byId(sel[0]), b=sel[1]&&byId(sel[1]); $('match').hidden=!(a&&b); $('clrBtn').hidden=!(sel[0]||sel[1]);
   if(a&&b){const k=a.id+'|'+b.id; if(k!==lastPair){lastPair=k; setTimeout(focusMatch,160)}} else lastPair='';
   $('viewBtn').textContent=fx()?'🎮 Visual: Futurista':'🧊 Visual: Simples'; $('sndBtn').textContent=SND?'🔊 Som: ligado':'🔇 Som: desligado'; $('themeBtn').textContent=isDark()?'🌙 Tema: escuro':'☀️ Tema: claro';
@@ -552,18 +557,18 @@ function renderPick(){
   const other=sel[1-pickIdx], q=$('pq').value.trim().toLowerCase();
   const l=vis().filter(p=>p.name.toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
   $('pickL').innerHTML=l.length?l.map(p=>`<button class="pl t${tier(p)}" data-id="${p.id}" ${p.id===other?'disabled':''}><span>${esc(p.name)}</span><b style="color:var(--t)">${p.rating}</b></button>`).join(''):'<p style="color:var(--mut);grid-column:1/-1">Nenhum jogador encontrado.</p>';
-  $('pickL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>{sel[pickIdx]=b.dataset.id;sc=[null,null];multi.clear();$('msg').hidden=true;$('pickM').classList.remove('on');render()});
+  $('pickL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>{sel[pickIdx]=b.dataset.id;sc=[null,null];multi.clear();$('msg').hidden=true;$('pickM').classList.remove('on');render();popSel(pickIdx)});
 }
 
 /* ---- novo jogador ---- */
 function setGrp(g){newGrp=g;document.querySelectorAll('#aGrp button').forEach(b=>b.classList.toggle('on',b.dataset.g===g))}
 document.querySelectorAll('#aGrp button').forEach(b=>b.onclick=()=>setGrp(b.dataset.g));
-$('addBtn').onclick=()=>{$('aName').value='';setGrp('C');$('aGrpF').hidden=!admin;newAv='';drawAvAdd();$('aErr').textContent='';open('addM');setTimeout(()=>$('aName').focus(),50)};
+$('addBtn').onclick=()=>{$('aName').value='';setGrp('C');$('aGrpF').hidden=!admin;$('aErr').textContent='';open('addM');setTimeout(()=>$('aName').focus(),50)};
 $('aSave').onclick=async()=>{
   unlockAudio();
   const name=$('aName').value.trim(); if(!name){$('aErr').textContent='Digite o nome.';return}
   if(S.raw.some(p=>p.name.toLowerCase()===name.toLowerCase())){$('aErr').textContent='Já existe um jogador com esse nome.';return}
-  const g=admin?newGrp:'C', nid=uid(); await put('players',{id:nid,name,group:g,...(newAv?{av:newAv}:{})}); justAdded={id:nid,at:Date.now()}; sfx('add'); addAnim(name,g,newAv); msg(`✅ ${esc(name)} adicionado ao Ranking ${g} com ${START[g]} pontos.`);
+  const g=admin?newGrp:'C', nid=uid(); await put('players',{id:nid,name,group:g,}); justAdded={id:nid,at:Date.now()}; sfx('add'); addAnim(name,g); msg(`✅ ${esc(name)} adicionado ao Ranking ${g} com ${START[g]} pontos.`);
 };
 
 /* ---- animações: boas-vindas e confete ---- */
@@ -577,19 +582,15 @@ function focusMatch(){
 }
 function fx(){return document.documentElement.classList.contains('fx')}
 function isDark(){const t=document.documentElement.getAttribute('data-theme'); if(t)return t==='dark'; return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
-const AVS=['🏓','⚡','🔥','🚀','👾','🐉','🦊','🐯','🦅','🐺','🎯','👑','🤖','🥷','🧙','🦁'];
-const av=p=>p&&p.av?`<span class="av fxonly">${esc(p.av)}</span>`:'';
 const fire=p=>p&&p.str>=3?`<span class="fl fxonly" title="${p.str} vitórias seguidas">🔥${p.str>=5?p.str:''}</span>`:'';
 function xpInfo(p){const r=p.rating,t=p.tier; if(t==='A')return {pct:100,next:null,need:0}; const lo=t==='B'?1500:1200,hi=t==='B'?1800:1500; return {pct:Math.max(0,Math.min(100,Math.round((r-lo)/(hi-lo)*100))),next:t==='B'?'A':'B',need:Math.max(0,hi-r)}}
 const xpBar=p=>{const x=xpInfo(p); return `<div class="xp fxonly" title="${x.next?'faltam '+x.need+' pts para o Ranking '+x.next:'Ranking máximo'}" style="--t:${TCOL[x.next||'A']}"><i style="width:${x.pct}%"></i></div>`};
 const xpBarV=p=>{const x=xpInfo(p); return `<div class="xpv fxonly" title="${x.next?'XP: faltam '+x.need+' pts para o Ranking '+x.next:'Ranking máximo'}" style="--t:${TCOL[x.next||'A']}"><i style="height:${x.pct}%"></i></div>`};
 const xpFull=p=>{const x=xpInfo(p); return `<div class="fxonly" style="margin-top:8px"><div class="xpl">⚡ ${x.next?`<b>${x.pct}%</b> · faltam <b>${x.need}</b> pts para o Ranking ${x.next}`:'👑 Ranking máximo'}${p.str>=2?` · 🔥 ${p.str} vitórias seguidas`:''}</div>${xpBar(p)}</div>`};
-const avPicker=p=>`<div class="fxonly" style="margin:6px 0 4px"><div class="xpl">Avatar</div><div class="avrow">${AVS.map(a=>`<button class="avb ${p.av===a?'on':''}" data-a="${a}">${a}</button>`).join('')}${p.av?'<button class="avb" data-a="">✕</button>':''}</div></div>`;
-function drawAvAdd(){const el=$('aAv'); el.innerHTML=AVS.map(a=>`<button class="avb ${newAv===a?'on':''}" data-a="${a}">${a}</button>`).join(''); el.querySelectorAll('.avb').forEach(b=>b.onclick=()=>{newAv=newAv===b.dataset.a?'':b.dataset.a;drawAvAdd()})}
 function podium(l){
   if(!l.length)return ''; const hs=[100,74,56], cl=['g1','g2','g3'];
   return `<div class="podium fxonly">${[1,0,2].map(i=>{const p=l[i]; if(!p)return '<div class="pc"></div>';
-    return `<div class="pc ${cl[i]} t${tier(p)}"><div class="pav">${p.av?esc(p.av):['🥇','🥈','🥉'][i]}</div><div class="pn">${esc(p.name)}${fire(p)}</div><div class="pp">${p.rating}</div><div class="pb" style="--h:${hs[i]}px"><b>${i+1}</b></div></div>`}).join('')}</div>`;
+    return `<div class="pc ${cl[i]} t${tier(p)}"><div class="pav">${['🥇','🥈','🥉'][i]}</div><div class="pn">${esc(p.name)}${fire(p)}</div><div class="pp">${p.rating}</div><div class="pb" style="--h:${hs[i]}px"><b>${i+1}</b></div></div>`}).join('')}</div>`;
 }
 let AC=null;
 function unlockAudio(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume()}catch(e){}}
@@ -598,7 +599,7 @@ function tone(f,t0,d,type){const c=AC,o=c.createOscillator(),g=c.createGain(),t=
 function sfx(n){
   if(!SND||!fx())return;
   try{AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume();
-    const S={vs:[[196,0,.12],[294,.1,.12],[440,.2,.28]],win:[[523,0,.1],[659,.09,.1],[784,.18,.1],[1047,.27,.32]],rank:[[392,0,.12],[523,.12,.12],[659,.24,.12],[784,.36,.12],[1047,.48,.45]],hi:[[660,0,.08],[880,.08,.16]],add:[[523,0,.08],[659,.07,.08],[880,.14,.1],[1319,.24,.24]]}[n]||[];
+    const S={vs:[[196,0,.12],[294,.1,.12],[440,.2,.28]],win:[[523,0,.1],[659,.09,.1],[784,.18,.1],[1047,.27,.32]],rank:[[392,0,.12],[523,.12,.12],[659,.24,.12],[784,.36,.12],[1047,.48,.45]],hi:[[660,0,.08],[880,.08,.16]],p1:[[440,0,.07],[660,.06,.14]],p2:[[523,0,.07],[659,.06,.07],[988,.12,.16]],add:[[523,0,.08],[659,.07,.08],[880,.14,.1],[1319,.24,.24]]}[n]||[];
     S.forEach(([f,t,d])=>tone(f,t,d,n==='win'||n==='rank'?'square':'triangle'));
   }catch(e){}
 }
@@ -615,11 +616,14 @@ function splash(head,name,sub,color){
   document.body.appendChild(el);
   const close=()=>{el.classList.add('out');setTimeout(()=>el.remove(),420)}; el.onclick=close; setTimeout(close,1900+chars.length*70);
 }
-function addAnim(name,g,avt){ /* animação só do jogador que está sendo adicionado (visual Futurista) */
+function popSel(i){ /* zoom + anel de luz + som ao escolher o Jogador 1 (verde) ou o Jogador 2 (azul) */
+  if(!fx())return; const el=$('s'+(i+1)); el.classList.remove('selpop'); void el.offsetWidth; el.classList.add('selpop'); setTimeout(()=>el.classList.remove('selpop'),800); sfx(i===0?'p1':'p2');
+}
+function addAnim(name,g){ /* animação só do jogador que está sendo adicionado (visual Futurista) */
   if(!fx()){$('addM').classList.remove('on');return}
   const b=$('aSave'), h=$('addM').querySelector('h3'); b.disabled=true; b.classList.add('blink');
   const el=document.createElement('div'); el.className='addok';
-  el.innerHTML=`<span class="aoav">${avt?esc(avt):'🏓'}</span><span class="aonm">${esc(name)}</span><span class="aosb">entrou no Ranking ${g} · ${START[g]} pts</span>`;
+  el.innerHTML=`<span class="aoav">🏓</span><span class="aonm">${esc(name)}</span><span class="aosb">entrou no Ranking ${g} · ${START[g]} pts</span>`;
   h.after(el);
   setTimeout(()=>{el.remove();b.classList.remove('blink');b.disabled=false;$('addM').classList.remove('on')},1250);
 }
@@ -672,7 +676,7 @@ function renderRank(){
   $('rankNote').innerHTML=pend?`${pend} jogador(es) fora do ranking (menos de 3 partidas${S.settings.inactiveDays?' ou inativo há mais de '+S.settings.inactiveDays+' dias':''}). <button class="sec" id="rankPendB" style="margin:6px 0 0;padding:4px 10px;font-size:13px">Mostrar</button><div id="rankPend" hidden style="margin-top:8px">${pendL.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="sec pname" data-id="${p.id}" style="margin:0 6px 6px 0;padding:4px 10px;font-size:13px">${esc(p.name)}</button>`).join('')}</div>`:'';
   if(pend){$('rankPendB').onclick=()=>{const d=$('rankPend');d.hidden=!d.hidden;$('rankPendB').textContent=d.hidden?'Mostrar':'Ocultar'};
     $('rankNote').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id))}
-  $('rankL').innerHTML=podium(l)+(l.length?`<table><tr><th>#</th><th>Jogador</th><th class="n">V</th><th class="n">D</th><th class="n">Pontos</th></tr>`+l.map((p,i)=>`<tr class="t${tier(p)}"><td>${['🥇','🥈','🥉'][i]||i+1}</td><td><span class="badge">${tier(p)}</span><button class="pname" data-id="${p.id}" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px">${av(p)}${esc(p.name)}</button>${fire(p)}</td><td class="n">${p.wins}</td><td class="n">${p.losses}</td><td class="n"><b style="color:var(--t)">${p.rating}</b></td></tr>`).join('')+'</table>':'<p style="color:var(--mut)">Ninguém no ranking ainda. É preciso jogar pelo menos 3 partidas.</p>');
+  $('rankL').innerHTML=podium(l)+(l.length?`<table><tr><th>#</th><th>Jogador</th><th class="n">V</th><th class="n">D</th><th class="n">Pontos</th></tr>`+l.map((p,i)=>`<tr class="t${tier(p)}"><td>${['🥇','🥈','🥉'][i]||i+1}</td><td><span class="badge">${tier(p)}</span><button class="pname" data-id="${p.id}" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px">${esc(p.name)}</button>${fire(p)}</td><td class="n">${p.wins}</td><td class="n">${p.losses}</td><td class="n"><b style="color:var(--t)">${p.rating}</b></td></tr>`).join('')+'</table>':'<p style="color:var(--mut)">Ninguém no ranking ainda. É preciso jogar pelo menos 3 partidas.</p>');
   $('rankL').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id));
   const act=vis().filter(p=>p.wins+p.losses>0), top=(f)=>act.slice().sort(f)[0], lead=['A','B','C'].map(t=>[t,l.find(p=>p.tier===t)]).filter(x=>x[1]);
   const up=top((a,b)=>(b.rating-b.r0)-(a.rating-a.r0)), many=top((a,b)=>games(b)-games(a)), wins=top((a,b)=>b.wins-a.wins);
@@ -732,7 +736,7 @@ function renderPlayers(){
   $('playL').hidden=!!p; $('playD').hidden=!p; $('playBack').hidden=!p;
   if(!p){
     const l=[...(admin?P:vis())].sort(byNameArch); $('playT').textContent='Jogadores ('+vis().length+')';
-    $('playL').innerHTML=l.length?l.map(q=>`<div class="plw t${tier(q)}"><button class="pl t${tier(q)} ${q.hidden?'arq':''}${justAdded&&justAdded.id===q.id&&Date.now()-justAdded.at<8000?' newp':''}" data-id="${q.id}"><span>${av(q)}${esc(q.name)}${fire(q)}${q.hidden?' (arquivado)':''}</span><b style="color:var(--t)">${q.rating}</b></button>${admin?`<button class="pdel" data-id="${q.id}" title="Excluir jogador" aria-label="Excluir jogador">🗑</button>`:''}</div>`).join(''):'<p style="color:var(--mut);grid-column:1/-1">Nenhum jogador cadastrado ainda.</p>';
+    $('playL').innerHTML=l.length?l.map(q=>`<div class="plw t${tier(q)}"><button class="pl t${tier(q)} ${q.hidden?'arq':''}${justAdded&&justAdded.id===q.id&&Date.now()-justAdded.at<8000?' newp':''}" data-id="${q.id}"><span>${esc(q.name)}${fire(q)}${q.hidden?' (arquivado)':''}</span><b style="color:var(--t)">${q.rating}</b></button>${admin?`<button class="pdel" data-id="${q.id}" title="Excluir jogador" aria-label="Excluir jogador">🗑</button>`:''}</div>`).join(''):'<p style="color:var(--mut);grid-column:1/-1">Nenhum jogador cadastrado ainda.</p>';
     $('playL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>{histId=b.dataset.id;pSel='all';renderPlayers()});
     $('playL').querySelectorAll('.pdel').forEach(b=>b.onclick=()=>delPlayerUi(b.dataset.id)); return;
   }
@@ -741,7 +745,7 @@ function renderPlayers(){
   let rr=r0p(p); const ser=[rr]; all.forEach(m=>{const d=D[m.id]||[0,0]; rr+=m.winner===p.id?d[0]:-d[1]; ser.push(rr)});
   const idx=all.map((m,i)=>i).filter(i=>inSeason(all[i],pSel)), ms=idx.map(i=>all[i]).reverse(), hist=idx.length?[ser[idx[0]],...idx.map(i=>ser[i+1])]:[];
   const nw=ms.filter(m=>m.winner===p.id).length, nl=ms.length-nw;
-  let h=`<div class="phead t${tier(p)}">${av(p)}<span class="badge">${tier(p)}</span><b style="font-size:22px;color:var(--t)">${p.rating}</b> pts · ${nw}V ${nl}D`+(pSel==='cur'&&g<3?` · <span style="color:var(--mut)">${g}/3 partidas para entrar no ranking</span>`:'')+`<div style="margin-top:8px"><select id="pS" style="width:100%">${seasOpts(true,'Geral (todas as temporadas)',pSel)}</select></div>`+chart(hist)+xpFull(p)+`</div>`;
+  let h=`<div class="phead t${tier(p)}"><span class="badge">${tier(p)}</span><b style="font-size:22px;color:var(--t)">${p.rating}</b> pts · ${nw}V ${nl}D`+(pSel==='cur'&&g<3?` · <span style="color:var(--mut)">${g}/3 partidas para entrar no ranking</span>`:'')+`<div style="margin-top:8px"><select id="pS" style="width:100%">${seasOpts(true,'Geral (todas as temporadas)',pSel)}</select></div>`+chart(hist)+xpFull(p)+`</div>`;
   {const asc=[...ms].reverse(); let cur=0,cw=null,best=0,run=0; asc.forEach(m=>{const won=m.winner===p.id; run=won?run+1:0; if(run>best)best=run});
     for(const m of ms){const won=m.winner===p.id; if(cw===null)cw=won; if(won!==cw)break; cur++}
     const O={}; ms.forEach(m=>{const won=m.winner===p.id,o=won?m.loser:m.winner,n=won?m.ln:m.wn; O[o]=O[o]||{n:nameOf(o,n),w:0,l:0}; won?O[o].w++:O[o].l++});
@@ -752,10 +756,9 @@ function renderPlayers(){
     return `<tr><td>${fmt(m.at)}</td><td>${esc(won?nameOf(m.loser,m.ln):nameOf(m.winner,m.wn))}</td><td class="${won?'up':'dn'}">${won?'Vitória':'Derrota'}</td><td class="n">${esc(s)}</td><td class="n ${won?'up':'dn'}">${won?'+'+d[0]:'−'+d[1]}</td></tr>`}).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida neste período.</p>';
   $('playD').innerHTML=h; $('pS').onchange=()=>{pSel=$('pS').value;renderPlayers()};
   { const ph=$('playD').querySelector('.phead'), lk=APP_URL+'#j='+p.id;
-    const box=`${avPicker(p)}<div style="margin:6px 0 10px"><button class="sec" id="plk" style="margin:0">🔗 Link deste jogador</button><div id="plkBox" ${plkOpen?'':'hidden'} style="margin-top:8px"><input id="plkI" readonly value="${lk}" style="width:100%" onfocus="this.select()"><div class="wrow" style="margin-top:6px"><button class="sec" id="plkC" style="margin:0">Copiar</button><button class="sec" id="plkS" style="margin:0">Compartilhar</button></div></div></div>`;
+    const box=`<div style="margin:6px 0 10px"><button class="sec" id="plk" style="margin:0">🔗 Link deste jogador</button><div id="plkBox" ${plkOpen?'':'hidden'} style="margin-top:8px"><input id="plkI" readonly value="${lk}" style="width:100%" onfocus="this.select()"><div class="wrow" style="margin-top:6px"><button class="sec" id="plkC" style="margin:0">Copiar</button><button class="sec" id="plkS" style="margin:0">Compartilhar</button></div></div></div>`;
     (ph||$('playD')).insertAdjacentHTML(ph?'afterend':'afterbegin',box);
     $('plk').onclick=()=>{plkOpen=!plkOpen;$('plkBox').hidden=!plkOpen};
-    $('playD').querySelectorAll('.avb').forEach(b=>b.onclick=async()=>{await put('players',{...S.raw.find(x=>x.id===p.id),av:b.dataset.a});sfx('hi')});
     $('plkC').onclick=async e=>{const b=e.currentTarget;try{await navigator.clipboard.writeText(lk);flash(b,'✅ Copiado')}catch(x){$('plkI').select();try{document.execCommand('copy');flash(b,'✅ Copiado')}catch(y){flash(b,'Selecione e copie')}}};
     $('plkS').onclick=async e=>{const b=e.currentTarget; if(navigator.share){try{await navigator.share({title:p.name+' · Ranking '+clubName(cur),url:lk})}catch(x){}} else flash(b,'Use Copiar')};
   }
@@ -772,7 +775,7 @@ function renderPlayers(){
 
 /* ---- admin (PIN), configurações, backup, temporada ---- */
 const sha=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('tm:'+s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
-$('admBtn').onclick=()=>{pend=null;renderAdm();open('admM')};
+$('admBtn').onclick=()=>{pend=null;renderAdm();open('admM'); if(!admin){focusPin();setTimeout(focusPin,120)}};
 let admTab='geral', bkText='', bkData=null;
 const ADM_TABS=[['geral','Geral'],['pts','Pontuação'],['jog','Jogadores'],['temp','Temporada'],['bkp','Backup'],['adv','Avançado']];
 const arow=(l,sm,c)=>`<div class="arow"><div class="al">${l}${sm?`<small>${sm}</small>`:''}</div>${c}</div>`;
@@ -781,10 +784,10 @@ const bind=(id,fn)=>{const el=$(id); if(el)el.onclick=fn}, bindCh=(id,fn)=>{cons
 function renderAdm(){
   const B=$('admB'), st=S.settings;
   if(!admin){
-    B.innerHTML=admHead('🔒 Administrador')+`<p class="legend">${st.pin?'Digite o PIN do clube.':'Nenhum PIN criado ainda. Crie um (mínimo 4 dígitos).'}</p><div style="display:flex;gap:8px"><input id="pin" type="password" inputmode="numeric" autocomplete="off" style="flex:1;padding:8px"><button class="cb pri2" id="pinOk">${st.pin?'Entrar':'Criar PIN'}</button></div><div id="pinErr" class="dn" style="margin-top:6px"></div>`;
+    B.innerHTML=admHead('🔒 Administrador')+`<p class="legend">${st.pin?'Digite o PIN do clube.':'Nenhum PIN criado ainda. Crie um (mínimo 4 dígitos).'}</p><div style="display:flex;gap:8px"><input id="pin" type="password" inputmode="numeric" enterkeyhint="go" autocomplete="off" style="flex:1;padding:8px"><button class="cb pri2" id="pinOk">${st.pin?'Entrar':'Criar PIN'}</button></div><div id="pinErr" class="dn" style="margin-top:6px"></div>`;
     $('admX').onclick=()=>$('admM').classList.remove('on'); $('pin').onkeydown=e=>{if(e.key==='Enter')$('pinOk').click()};
     $('pinOk').onclick=async()=>{const v=$('pin').value.trim(); if(v.length<4){$('pinErr').textContent='Mínimo 4 dígitos.';return}
-      const h=await sha(v); if(st.pin&&h!==st.pin){$('pinErr').textContent='PIN incorreto.';return}
+      const h=await sha(v); if(st.pin&&h!==st.pin){$('pinErr').textContent='PIN incorreto.';focusPin();return}
       if(!st.pin)await put('settings',{...S.settings,pin:h}); admin=true; const f=pend; pend=null; if(f){$('admM').classList.remove('on');f()}; render(); renderAdm()};
     return;
   }
@@ -872,7 +875,7 @@ async function doRestoreClub(d){
   const keepP=new Set(Object.values(pm)), keepM=new Set(Object.values(mm));
   for(const x of S.raw.filter(x=>!keepP.has(x.id)))await del('players',x.id);
   for(const x of S.matches.filter(x=>!keepM.has(x.id)))await del('matches',x.id);
-  for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.av?{av:x.av}:{}),...(x.start!=null?{start:x.start}:{})});
+  for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.start!=null?{start:x.start}:{})});
   for(const x of d.matches)await put('matches',{...x,id:mm[x.id],winner:pm[x.winner]||x.winner,loser:pm[x.loser]||x.loser});
   if(d.settings&&!Array.isArray(d.settings))await put('settings',{...DEF,...d.settings,id:sid(),pin:S.settings.pin||d.settings.pin||'',locked:S.settings.locked});
   await logA('Backup do clube restaurado'); const b=$('bkR'); if(b)flash(b,'✅ Backup restaurado');
@@ -919,7 +922,7 @@ $('seasOk').onclick=e=>sure(e.currentTarget,async()=>{
 });
 
 /* ---- versão + exportar JPG ---- */
-const APP_VERSION='0.3.8.9 (teste)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.3.8.11 (teste)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -965,7 +968,7 @@ function drawPodium(x,W,P,l,y0){
     const g=x.createLinearGradient(0,top,0,bottom); g.addColorStop(0,c1); g.addColorStop(1,c2);
     x.shadowColor=hexA(c2,.7); x.shadowBlur=18; rr(x,X,top,200,h,14); x.fillStyle=g; x.fill(); x.shadowBlur=0;
     x.textAlign='center'; x.fillStyle='#10131c'; x.font=`900 46px ${P.FH}`; x.fillText(String(i+1),cx[i],top+h/2+2);
-    x.font='36px system-ui,sans-serif'; x.fillStyle=P.tx; x.fillText(p.av||['🥇','🥈','🥉'][i],cx[i],top-72);
+    x.font='36px system-ui,sans-serif'; x.fillStyle=P.tx; x.fillText(['🥇','🥈','🥉'][i],cx[i],top-72);
     x.font=`700 21px ${P.FB}`; x.fillText(fitTxt(x,p.name+(p.str>=3?' 🔥':''),196),cx[i],top-40);
     const tc=P.tier[p.tier]; x.font=`900 23px ${P.FH}`; x.fillStyle=tc; x.shadowColor=hexA(tc,.8); x.shadowBlur=12; x.fillText(String(p.rating),cx[i],top-13); x.shadowBlur=0;
   }); x.textAlign='left'; return y0+305;
@@ -980,7 +983,7 @@ $('jpgRank').onclick=async e=>{
   const run={},best={}; MV.forEach(m=>{run[m.winner]=(run[m.winner]||0)+1;run[m.loser]=0;best[m.winner]=Math.max(best[m.winner]||0,run[m.winner])});
   const bs=Object.entries(best).sort((a,b)=>b[1]-a[1])[0]; if(bs&&bs[1]>=2)lines.push(`🔥 Maior sequência: ${nameOf(bs[0])} (${bs[1]} vitórias)`);
   lines.push(`📅 ${MV.length} partida${MV.length===1?'':'s'} na temporada`);
-  const RH=f?58:44, statRows=f?Math.ceil(lines.length/2):lines.length, anyAv=l.some(q=>q.av);
+  const RH=f?58:44, statRows=f?Math.ceil(lines.length/2):lines.length;
   const H=f?150+(l.length?305+40+l.length*RH:90)+54+statRows*66+64:92+(l.length?48+l.length*RH:70)+60+lines.length*34+60;
   saveJpg(btn,`ranking-${slug(clubName(cur))}-${today()}.jpg`,W,H,x=>{
     imgBg(x,W,H,P); let y=imgHeader(x,W,P,'🏓 Ranking '+clubName(cur),`${sN(curS())} · ${l.length} jogador${l.length===1?'':'es'} no ranking`);
@@ -992,8 +995,8 @@ $('jpgRank').onclick=async e=>{
       if(f){
         rr(x,24,y+4,W-48,RH-8,12); x.fillStyle=P.card; x.fill(); x.strokeStyle=hexA(tc,.45); x.lineWidth=1.5; x.stroke(); rr(x,24,y+4,7,RH-8,3); x.fillStyle=tc; x.fill();
         x.textAlign='center'; if(i<3){x.font='26px system-ui,sans-serif';x.fillText(['🥇','🥈','🥉'][i],62,cy)}else{x.fillStyle=P.mut;x.font=`900 20px ${P.FH}`;x.fillText(String(i+1),62,cy)}
-        x.textAlign='left'; let nx=96; if(p.av){x.font='26px system-ui,sans-serif';x.fillStyle=P.tx;x.fillText(p.av,nx,cy-2)} if(anyAv)nx+=38;
-        x.fillStyle=P.tx; x.font=`700 22px ${P.FB}`; const nm=fitTxt(x,p.name,300-(anyAv?38:0)); x.fillText(nm,nx,cy-8); const nw=x.measureText(nm).width;
+        x.textAlign='left'; let nx=96;
+        x.fillStyle=P.tx; x.font=`700 22px ${P.FB}`; const nm=fitTxt(x,p.name,300); x.fillText(nm,nx,cy-8); const nw=x.measureText(nm).width;
         if(p.str>=3){x.font='18px system-ui,sans-serif';x.fillText('🔥'+(p.str>=5?p.str:''),nx+nw+8,cy-8)}
         const xp=xpInfo(p); rr(x,nx,cy+12,150,5,3); x.fillStyle=hexA(P.mut,.3); x.fill(); if(xp.pct>0){rr(x,nx,cy+12,Math.max(6,150*xp.pct/100),5,3); x.fillStyle=P.tier[xp.next||'A']; x.fill()}
         x.textAlign='right'; x.fillStyle=P.tx; x.font=`600 21px ${P.FB}`; x.fillText(String(p.wins),600,cy); x.fillText(String(p.losses),665,cy); x.fillText(games(p)?Math.round(p.wins/games(p)*100)+'%':'–',765,cy);
@@ -1114,7 +1117,7 @@ $('impGo').onclick=async()=>{
   if(!impSel.size){$('impE').textContent='Marque pelo menos um jogador.';return}
   const b=$('impGo'), from=$('impFrom').value, have=haveNames(); b.disabled=true; let n=0;
   for(const p of impP.filter(x=>impSel.has(x.id))){ if(have.has(p.name.trim().toLowerCase()))continue;
-    await put('players',{id:uid()+'i'+n,name:p.name,group:p.tier,...(p.av?{av:p.av}:{}),...(impMode==='keep'?{start:p.rating}:{})}); n++ }
+    await put('players',{id:uid()+'i'+n,name:p.name,group:p.tier,...(impMode==='keep'?{start:p.rating}:{})}); n++ }
   await logA(`Importados ${n} jogador(es) de ${clubName(from)} (${impMode==='keep'?'com pontuação atual':'só os nomes'})`);
   b.disabled=false; $('impM').classList.remove('on'); renderAdm(); flash($('impB'),'✅ '+n+' importado(s)');
 };
