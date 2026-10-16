@@ -132,9 +132,9 @@ html:not(.fx) .fxonly{display:none!important}
 @property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
 @keyframes neonspin{to{--ang:360deg}}
 @keyframes neonpulse{0%,100%{box-shadow:0 0 8px var(--nc0),0 0 18px var(--nc0),inset 0 0 8px var(--nc0)}50%{box-shadow:0 0 14px var(--nc),0 0 30px var(--nc0),inset 0 0 14px var(--nc0)}}
-html.fx #s1.sq,html.fx #s2.sq{border:2px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,conic-gradient(from var(--ang),var(--nc0) 0 35%,var(--nc) 62%,#fff 70%,var(--nc) 78%,var(--nc0) 100%) border-box;animation:neonspin 3.2s linear infinite,neonpulse 2.4s ease-in-out infinite}
-html.fx #s1.sq{--nc:#1fe38f;--nc0:rgba(31,227,143,.28)}
-html.fx #s2.sq{--nc:#2e9bff;--nc0:rgba(46,155,255,.28);animation-direction:reverse,normal}
+html.fx #s1.sq,html.fx #s2.sq{border:3px solid transparent;background:linear-gradient(var(--card),var(--card)) padding-box,conic-gradient(from var(--ang),var(--nc0) 0 35%,var(--nc) 62%,#fff 70%,var(--nc) 78%,var(--nc0) 100%) border-box;animation:neonspin 3.2s linear infinite,neonpulse 2.4s ease-in-out infinite}
+html.fx #s1.sq{--nc:#0e9f52;--nc0:rgba(14,159,82,.40)}
+html.fx #s2.sq{--nc:#2058d8;--nc0:rgba(32,88,216,.42);animation-direction:reverse,normal}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
 html.fx .cadt{animation:bob 1.6s ease-in-out infinite}
 html.fx button{transition:transform .12s ease,box-shadow .2s ease,background-color .2s ease,opacity .2s ease}
@@ -205,15 +205,15 @@ html.fx .g-match::after{animation-delay:2.4s}
 html.fx .g-play{--gc:#ff3df0;--gcs:rgba(255,61,240,.26)}
 html.fx .g-play::after{animation-delay:3.6s}
 html.fx button.pri{background:linear-gradient(135deg,#ff7a18,#ff2e93);color:#fff;font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 0 18px rgba(255,46,147,.35)}
-html.fx #w1{background:linear-gradient(135deg,#0fbf73,#1fe38f);color:#03170e;box-shadow:0 0 18px rgba(31,227,143,.5)}
-html.fx #w2{background:linear-gradient(135deg,#1676e0,#2e9bff);color:#021428;box-shadow:0 0 18px rgba(46,155,255,.5)}
+html.fx #w1{background:linear-gradient(135deg,#087a40,#0e9f52);color:#fff;box-shadow:0 0 18px rgba(14,159,82,.55)}
+html.fx #w2{background:linear-gradient(135deg,#1741a8,#2058d8);color:#fff;box-shadow:0 0 18px rgba(32,88,216,.55)}
 html.fx #w1,html.fx #w2{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:.02em;text-transform:none}
 html.fx button.sec{background:rgba(255,255,255,.03);border:1px solid var(--bd);color:var(--tx);font-weight:600}
 html.fx button.sec:hover{border-color:var(--cy)}
 html.fx .panel{background:linear-gradient(180deg,var(--p1),var(--p2));border:1px solid rgba(34,230,255,.3);box-shadow:0 0 22px rgba(34,230,255,.09)}
 html.fx .panel h2{font-family:'Orbitron',sans-serif;letter-spacing:.16em;text-transform:uppercase;font-size:13px;color:var(--cy)}
-html.fx #sc1 button.on{background:#1fe38f;border-color:#1fe38f;color:#03170e;box-shadow:0 0 12px rgba(31,227,143,.65)}
-html.fx #sc2 button.on{background:#2e9bff;border-color:#2e9bff;color:#021428;box-shadow:0 0 12px rgba(46,155,255,.65)}
+html.fx #sc1 button.on{background:#0e9f52;border-color:#0e9f52;color:#fff;box-shadow:0 0 12px rgba(14,159,82,.7)}
+html.fx #sc2 button.on{background:#2058d8;border-color:#2058d8;color:#fff;box-shadow:0 0 12px rgba(32,88,216,.7)}
 html.fx .sq5 button{font-family:'Orbitron',sans-serif}
 html.fx .sheet{background:linear-gradient(180deg,var(--sh1),var(--sh2));border-top:1px solid rgba(34,230,255,.45);box-shadow:0 -10px 40px rgba(34,230,255,.14)}
 html.fx .sheet h3,html.fx .ahead h3{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:15px;color:var(--cy)}
@@ -286,6 +286,7 @@ html.fx .ach.lv3.ok{animation:achGold 2s ease-in-out infinite}
 .aticon{font-size:38px;line-height:1;filter:drop-shadow(0 0 10px var(--ac2))}
 .athead{font-size:11px;letter-spacing:.22em;font-weight:800;color:var(--mut)}
 .atname{font-weight:900;font-size:17px;line-height:1.15;color:var(--ac2);text-shadow:0 0 12px var(--ac2)}
+.atlv{position:absolute;top:8px;right:12px;font-size:9px;letter-spacing:.2em;font-weight:900;color:var(--ac2);text-shadow:0 0 8px var(--ac2)}html.fx .atlv{font-family:'Orbitron',sans-serif}.athead{padding-right:64px}.atpn{font-size:13px;letter-spacing:.12em;text-shadow:0 0 8px currentColor}.atpn1{color:#0e9f52}.atpn2{color:#2058d8}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .atpn1{color:#22d07a}:root:not([data-theme="light"]) .atpn2{color:#5b92ff}}:root[data-theme="dark"] .atpn1{color:#22d07a}:root[data-theme="dark"] .atpn2{color:#5b92ff}
 .atok{font-size:11px;letter-spacing:.2em;font-weight:800;color:var(--tx)}.atwho{font-size:12px;color:var(--mut);margin-top:3px}.atwho .atp{font-size:16px;font-weight:900;color:var(--tx);letter-spacing:.01em}
 html.fx .achtoast{overflow:hidden;animation:achIn .5s cubic-bezier(.2,1.3,.3,1) both}
 html.fx .achtoast.out{animation:achOut .38s ease-in forwards}
@@ -514,16 +515,16 @@ function compute(){
 }
 
 /* ---- conquistas ---- */
-const LV=[{n:'Fácil',c:'#1fe38f'},{n:'Médio',c:'#2e9bff'},{n:'Difícil',c:'#b44cff'},{n:'Impossível',c:'#ffc400'}];
+const LV=[{n:'Fácil',c:'#ff8ac4'},{n:'Médio',c:'#b5173b'},{n:'Difícil',c:'#b44cff'},{n:'Impossível',c:'#ffc400'}];
 const ACH=[
  {k:'first',lv:0,n:'Primeiro Saque',i:'🏓',d:'Jogar a primeira partida'},
  {k:'firstWin',lv:0,n:'Estreia Vitoriosa',i:'🎉',d:'Vencer a primeira partida'},
  {k:'s3',lv:1,n:'Aquecendo',i:'🔥',d:'3 vitórias seguidas'},
  {k:'d5',lv:0,n:'Maratonista',i:'🏃',d:'Jogar 5 partidas no mesmo dia'},
- {k:'close',lv:1,n:'No Sufoco',i:'😅',d:'Vencer por apenas 1 game de diferença (ex.: 3x2)'},
+ {k:'close',lv:1,n:'No Sufoco',i:'😅',d:'Vencer por apenas 1 set de diferença (ex.: 3x2)'},
  {k:'social',lv:0,n:'Sociável',i:'🤝',d:'Jogar contra 5 adversários diferentes'},
  {k:'beatB',lv:1,n:'Desafiante',i:'🥊',d:'Vencer um jogador do Ranking B'},
- {k:'sweep',lv:1,n:'De Lavada',i:'🧹',d:'Vencer sem o adversário marcar nenhum game'},
+ {k:'sweep',lv:1,n:'De Lavada',i:'🧹',d:'Vencer sem o adversário marcar nenhum set'},
  {k:'revenge',lv:1,n:'Revanche',i:'😈',d:'Vencer quem te venceu na partida anterior'},
  {k:'s5',lv:1,n:'Embalado',i:'🚀',d:'5 vitórias seguidas'},
  {k:'w10',lv:1,n:'Pegando o Jeito',i:'⭐',d:'Somar 10 vitórias'},
@@ -539,7 +540,7 @@ const ACH=[
  {k:'colec',lv:1,n:'Colecionador',i:'🌍',d:'Jogar contra 10 adversários diferentes'},
  {k:'g50',lv:1,n:'Veterano',i:'🎖️',d:'Jogar 50 partidas'},
  {k:'subida',lv:1,n:'Subida Forte',i:'🧗',d:'Ficar 150 pontos acima da sua pontuação inicial'},
- {k:'trio',lv:2,n:'Trio de Lavadas',i:'🧱',d:'Vencer 3 partidas seguidas sem o adversário marcar nenhum game'},
+ {k:'trio',lv:2,n:'Trio de Lavadas',i:'🧱',d:'Vencer 3 partidas seguidas sem o adversário marcar nenhum set'},
  {k:'zebraD',lv:2,n:'Zebra em Dobro',i:'🐎',d:'Vencer 2 vezes alguém com 200 pontos ou mais acima de você'},
  {k:'cacador',lv:3,n:'Caçador de Gigantes',i:'🏹',d:'Somar 10 vitórias contra jogadores do Ranking A'},
  {k:'w100',lv:3,n:'Lenda do Clube',i:'🏆',d:'Somar 100 vitórias'},
@@ -733,7 +734,7 @@ function focusMatch(){
 }
 function fx(){return document.documentElement.classList.contains('fx')}
 function isDark(){const t=document.documentElement.getAttribute('data-theme'); if(t)return t==='dark'; return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
-const fire=p=>p&&p.str>=3?`<span class="fl fxonly" title="${p.str} vitórias seguidas">🔥${p.str>=5?p.str:''}</span>`:'';
+const fire=p=>p&&p.str>=3?`<span class="fl fxonly" title="${p.str} vitórias seguidas">🔥${p.str}</span>`:'';
 function xpInfo(p){const r=p.rating,t=p.tier; if(t==='A')return {pct:100,next:null,need:0}; const lo=t==='B'?1500:1200,hi=t==='B'?1800:1500; return {pct:Math.max(0,Math.min(100,Math.round((r-lo)/(hi-lo)*100))),next:t==='B'?'A':'B',need:Math.max(0,hi-r)}}
 const xpBar=p=>{const x=xpInfo(p); return `<div class="xp fxonly" title="${x.next?'faltam '+x.need+' pts para o Ranking '+x.next:'Ranking máximo'}" style="--t:${TCOL[x.next||'A']}"><i style="width:${x.pct}%"></i></div>`};
 const xpBarV=p=>{const x=xpInfo(p); return `<div class="xpv fxonly" title="${x.next?'XP: faltam '+x.need+' pts para o Ranking '+x.next:'Ranking máximo'}" style="--t:${TCOL[x.next||'A']}"><i style="height:${x.pct}%"></i></div>`};
@@ -768,7 +769,7 @@ function achRun(){
     els.forEach(e=>e.classList.add('out')); setTimeout(()=>{els.forEach(e=>e.remove()); if(!st.children.length)st.remove(); setTimeout(achRun,250)},420)};
   batch.forEach((it,i)=>setTimeout(()=>{ if(closed)return;
     const a=ACH.find(x=>x.k===it.k), el=document.createElement('div'); el.className='achtoast'; el.style.setProperty('--ac2',LV[a.lv].c);
-    el.innerHTML=`<div class="aticon">${a.i}</div><div class="attx"><div class="athead">🏅 CONQUISTA · <b style="color:var(--ac2)">${LV[a.lv].n.toUpperCase()}</b></div><div class="atname">${esc(a.n)}</div><div class="atok">DESBLOQUEADA!</div><div class="atwho"><b class="atp">${esc(it.p)}</b> · ${esc(a.d)}</div></div>`;
+    el.innerHTML=`<div class="aticon">${a.i}</div><div class="attx"><div class="athead">🏅 CONQUISTA · <b class="atpn atpn${it.s===1?2:1}">${esc(it.p)}</b></div><div class="atname">${esc(a.n)}</div><div class="atok">DESBLOQUEADA!</div><div class="atwho">${esc(a.d)}</div></div><div class="atlv">${LV[a.lv].n.toUpperCase()}</div>`;
     st.appendChild(el); els.push(el); shown++; sfx(i===0?'ach':'ach2'); if(a.lv>=2)confetti(); el.onclick=closeAll;
     if(i===batch.length-1)setTimeout(closeAll,3300);
   },i*450));
@@ -860,7 +861,7 @@ async function win(wi){
   await put('matches',{id:mid,winner:w.id,loser:l.id,wn:w.name,ln:l.name,score:sc2,at,cr:at,by:myId,dev:deviceInfo(),...(lk?{link:lk}:{})});
   if(lk){let i=0; for(const cid of [...multi]){const pw=findIn(cid,w.name), pl=findIn(cid,l.name);
     if(pw&&pl){await put('matches',{id:uid()+'x'+(i++),winner:pw.id,loser:pl.id,wn:w.name,ln:l.name,score:sc2,at,link:lk,cr:at,by:myId,dev:deviceInfo()},cid);extra.push(clubName(cid))}}}
-  const nw=byId(w.id), nl=byId(l.id), unl=[]; [nw,nl].forEach(q=>Object.keys(q.ach||{}).filter(k=>q.ach[k].m===mid&&ACH.some(a=>a.k===k)).sort((a,b)=>achOrd(a)-achOrd(b)).forEach(k=>unl.push({p:q.name,k})));
+  const nw=byId(w.id), nl=byId(l.id), unl=[]; [nw,nl].forEach(q=>Object.keys(q.ach||{}).filter(k=>q.ach[k].m===mid&&ACH.some(a=>a.k===k)).sort((a,b)=>achOrd(a)-achOrd(b)).forEach(k=>unl.push({p:q.name,k,s:sel.indexOf(q.id)})));
   msg(`<b>${esc(w.name)}</b> venceu${has?' por '+ws+'x'+ls:''}<br><span class="up">${esc(w.name)}: ${r0} → ${nw.rating} (+${nw.rating-r0})</span><br><span class="dn">${esc(l.name)}: ${r1} → ${nl.rating} (−${r1-nl.rating})</span>`
     +(t0!==nw.tier?`<br>${nw.tier<t0?'⬆️':'⬇️'} ${esc(w.name)} agora está no Ranking ${nw.tier}.`:'')+(t1!==nl.tier?`<br>${nl.tier<t1?'⬆️':'⬇️'} ${esc(l.name)} agora está no Ranking ${nl.tier}.`:'')+(extra.length?`<br>🔗 Também valeu em: ${extra.map(esc).join(', ')}`:'')+(mul>1?`<br>⚡ Bônus de vitória ×${mul}`:'')+unl.map(achLine).join(''));
   sel=[null,null]; sc=[null,null]; multi.clear(); multiOpen=false; busy=false; render(); undoUi(mid,w.name,l.name); confetti(); sfx('win');
@@ -938,7 +939,7 @@ function rubIcon(name){
   const RB='#ff3d5a',SP='#ffb020',WD='#9aa7bd',sw=2.2; let g=`<rect x="14" y="108" width="172" height="14" rx="5" fill="${WD}" fill-opacity=".16" stroke="${WD}" stroke-width="${sw}"/>`, r='';
   const sponge=(y,h)=>{let q=`<rect x="14" y="${y}" width="172" height="${h}" rx="2.5" fill="${SP}" fill-opacity=".14" stroke="${SP}" stroke-width="${sw}"/>`; if(h>=10)for(let i=0;i<15;i++)q+=`<circle cx="${24+i*11.6}" cy="${y+4+((i*5)%(h-8))}" r="1.4" fill="${SP}" fill-opacity=".7"/>`; return q};
   if(t==='Lisa'){ g+=sponge(96,12); r+=`<rect x="14" y="68" width="172" height="28" rx="5" fill="${RB}" fill-opacity=".2" stroke="${RB}" stroke-width="${sw}"/><path d="M26 76 H92" stroke="#fff" stroke-opacity=".7" stroke-width="1.6" stroke-linecap="round"/>`; }
-  else if(t==='Curto'){ g+=sponge(103,5); r+=`<rect x="14" y="88" width="172" height="15" rx="3" fill="${RB}" fill-opacity=".2" stroke="${RB}" stroke-width="${sw}"/>`; for(let i=0;i<11;i++){const x=26+i*14.6; r+=`<path d="M${x-6} 88 L${x-2.5} 71 Q${x} 68 ${x+2.5} 71 L${x+6} 88" fill="${RB}" fill-opacity=".2" stroke="${RB}" stroke-width="${sw}" stroke-linejoin="round"/>`} }
+  else if(t==='Curto'){ g+=sponge(103,5); r+=`<rect x="14" y="88" width="172" height="15" rx="3" fill="${RB}" fill-opacity=".2" stroke="${RB}" stroke-width="${sw}"/>`; for(let i=0;i<12;i++){const x=21+i*13.4; r+=`<rect x="${x}" y="80" width="7" height="7" rx="1.2" fill="${RB}" fill-opacity=".2" stroke="${RB}" stroke-width="${sw}" stroke-linejoin="round"/>`} }
   else { r+=`<rect x="14" y="96" width="172" height="12" rx="3" fill="${RB}" fill-opacity=".2" stroke="${RB}" stroke-width="${sw}"/>`; for(let i=0;i<10;i++){const x=24+i*17,l=[-3,2,-1,3,0,-3,2,-2,3,-1][i]; r+=`<path d="M${x-3} 96 L${x-2+l} 71 Q${x+l} 68 ${x+2+l} 71 L${x+3} 96" fill="${RB}" fill-opacity=".2" stroke="${RB}" stroke-width="${sw}" stroke-linejoin="round"/>`} }
   return `<div class="gitem"><svg class="rubi" viewBox="0 37 200 116" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Borracha ${name}"><defs><filter id="rbg" x="-10%" y="-20%" width="120%" height="140%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#rbg)">${g}${r}</g></svg><div class="gcap">${name==='Lisa'?'Borracha Lisa':name}</div></div>`;
 }
@@ -1007,7 +1008,7 @@ $('admBtn').onclick=()=>{pend=null;renderAdm();open('admM'); if(!admin){focusPin
 let admTab='geral', bkText='', bkData=null;
 const ADM_TABS=[['geral','Geral'],['pts','Pontuação'],['jog','Jogadores'],['temp','Temporada'],['bkp','Backup'],['adv','Avançado']];
 const arow=(l,sm,c)=>`<div class="arow"><div class="al">${l}${sm?`<small>${sm}</small>`:''}</div>${c}</div>`;
-const admHead=(t,extra)=>`<div class="ahead"><h3>${t}</h3><div style="display:flex;gap:6px;align-items:center">${extra||''}<button class="x2" id="admX" title="Fechar" aria-label="Fechar">✕</button></div></div>`;
+const admHead=(t,extra)=>`<div class="ahead"><h3>${t}</h3><div style="display:flex;gap:6px;align-items:center"><button class="x2" id="admLk" title="Copiar link desta tela" aria-label="Copiar link desta tela">🔗</button>${extra||''}<button class="x2" id="admX" title="Fechar" aria-label="Fechar">✕</button></div></div>`;
 const bind=(id,fn)=>{const el=$(id); if(el)el.onclick=fn}, bindCh=(id,fn)=>{const el=$(id); if(el)el.onchange=fn};
 function renderAdm(){
   const B=$('admB'), st=S.settings;
@@ -1152,7 +1153,7 @@ $('seasOk').onclick=e=>sure(e.currentTarget,async()=>{
 /* ---- versão + exportar JPG ---- */
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.3.9.32 (teste)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.3.9.42 (teste)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -1199,7 +1200,9 @@ function drawPodium(x,W,P,l,y0){
     x.shadowColor=hexA(c2,.7); x.shadowBlur=18; rr(x,X,top,200,h,14); x.fillStyle=g; x.fill(); x.shadowBlur=0;
     x.textAlign='center'; x.fillStyle='#10131c'; x.font=`900 46px ${P.FH}`; x.fillText(String(i+1),cx[i],top+h/2+2);
     x.font='36px system-ui,sans-serif'; x.fillStyle=P.tx; x.fillText(['🥇','🥈','🥉'][i],cx[i],top-72);
-    x.font=`700 21px ${P.FB}`; x.fillText(fitTxt(x,p.name+(p.str>=3?' 🔥':''),196),cx[i],top-40);
+    x.font=`700 21px ${P.FB}`; {const fe=p.str>=3, fn=fe?String(p.str):''; let ew=0,nw2=0; if(fe){x.font='21px system-ui,sans-serif'; ew=x.measureText(' 🔥').width; if(fn){x.font=`900 21px ${P.FH}`; nw2=x.measureText(fn).width+2} x.font=`700 21px ${P.FB}`}
+      const nm=fitTxt(x,p.name,196-ew-nw2), w1=x.measureText(nm).width, X0=cx[i]-(w1+ew+nw2)/2; x.textAlign='left'; x.fillText(nm,X0,top-40);
+      if(fe){x.font='21px system-ui,sans-serif'; x.fillText(' 🔥',X0+w1,top-40); if(fn){x.font=`900 21px ${P.FH}`; x.fillStyle='#ff9a3c'; x.fillText(fn,X0+w1+ew+2,top-40); x.fillStyle=P.tx}} x.textAlign='center'}
     const tc=P.tier[p.tier]; x.font=`900 23px ${P.FH}`; x.fillStyle=tc; x.shadowColor=hexA(tc,.8); x.shadowBlur=12; x.fillText(String(p.rating),cx[i],top-13); x.shadowBlur=0;
   }); x.textAlign='left'; return y0+305;
 }
@@ -1227,7 +1230,7 @@ $('jpgRank').onclick=async e=>{
         x.textAlign='center'; if(i<3){x.font='26px system-ui,sans-serif';x.fillText(['🥇','🥈','🥉'][i],62,cy)}else{x.fillStyle=P.mut;x.font=`900 20px ${P.FH}`;x.fillText(String(i+1),62,cy)}
         x.textAlign='left'; let nx=96;
         x.fillStyle=P.tx; x.font=`700 22px ${P.FB}`; const nm=fitTxt(x,p.name,300); x.fillText(nm,nx,cy-8); const nw=x.measureText(nm).width;
-        if(p.str>=3){x.font='18px system-ui,sans-serif';x.fillText('🔥'+(p.str>=5?p.str:''),nx+nw+8,cy-8)}
+        if(p.str>=3){x.font='18px system-ui,sans-serif';x.fillText('🔥',nx+nw+8,cy-8); if(p.str>=3){const ew=x.measureText('🔥').width; x.font=`900 19px ${P.FH}`; x.fillStyle='#ff9a3c'; x.fillText(String(p.str),nx+nw+8+ew+3,cy-8); x.fillStyle=P.tx}}
         const xp=xpInfo(p); rr(x,nx,cy+12,150,5,3); x.fillStyle=hexA(P.mut,.3); x.fill(); if(xp.pct>0){rr(x,nx,cy+12,Math.max(6,150*xp.pct/100),5,3); x.fillStyle=P.tier[xp.next||'A']; x.fill()}
         x.textAlign='right'; x.fillStyle=P.tx; x.font=`600 21px ${P.FB}`; x.fillText(String(p.wins),600,cy); x.fillText(String(p.losses),665,cy); x.fillText(games(p)?Math.round(p.wins/games(p)*100)+'%':'–',765,cy);
         x.fillStyle=tc; x.font=`900 24px ${P.FH}`; x.shadowColor=hexA(tc,.7); x.shadowBlur=10; x.fillText(String(p.rating),W-46,cy); x.shadowBlur=0; x.textAlign='left';
@@ -1235,7 +1238,7 @@ $('jpgRank').onclick=async e=>{
         if(i%2===0){x.fillStyle=P.zebra;x.fillRect(0,y,W,RH)}
         x.fillStyle=P.tx; x.font='bold 18px system-ui,sans-serif'; x.textAlign='left'; x.fillText(String(i+1),30,cy);
         x.fillStyle=tc; x.beginPath(); x.arc(96,cy,14,0,7); x.fill(); x.fillStyle='#fff'; x.font='bold 15px system-ui,sans-serif'; x.textAlign='center'; x.fillText(p.tier,96,cy+1); x.textAlign='left';
-        x.fillStyle=P.tx; x.font='18px system-ui,sans-serif'; x.fillText(fitTxt(x,p.name,380),122,cy);
+        x.fillStyle=P.tx; x.font='18px system-ui,sans-serif'; const nm=fitTxt(x,p.name,p.str>=3?330:380); x.fillText(nm,122,cy); if(p.str>=3){const w0=x.measureText(nm).width; x.fillText('🔥',122+w0+8,cy); if(p.str>=3){const ew=x.measureText('🔥').width; x.font='bold 18px system-ui,sans-serif'; x.fillStyle='#e8740c'; x.fillText(String(p.str),122+w0+8+ew+3,cy); x.fillStyle=P.tx; x.font='18px system-ui,sans-serif'}}
         x.textAlign='right'; x.fillText(String(p.wins),590,cy); x.fillText(String(p.losses),660,cy); x.fillText(games(p)?Math.round(p.wins/games(p)*100)+'%':'–',770,cy);
         x.fillStyle=tc; x.font='bold 20px system-ui,sans-serif'; x.fillText(String(p.rating),870,cy); x.textAlign='left';
       }
@@ -1285,8 +1288,10 @@ function viewLink(mid){
   else{h={rankM:'ranking',matchM:'partidas',playM:'jogadores',achAllM:'conquistas',admM:'admin'}[mid]; if(mid==='achAllM'){h+='&n='+achTab; if(achSel)h+='&k='+achSel} if(cur!=='main')h+='&c='+cur}
   return APP_URL+'#'+h;
 }
-['rankM','matchM','playM','achAllM','admM'].forEach(mid=>{const sh=$(mid).querySelector('.sheet'), b=document.createElement('button'); b.className='x2 lkb'; b.title='Copiar link desta tela'; b.setAttribute('aria-label','Copiar link desta tela'); b.textContent='🔗'; if(mid==='achAllM'||mid==='admM')b.style.right='54px';
-  b.onclick=async()=>{const u=viewLink(mid); try{await navigator.clipboard.writeText(u); flash(b,'✅')}catch(e){try{if(navigator.share){await navigator.share({title:'Ranking '+clubName(cur),url:u})}else{prompt('Copie o link:',u)}}catch(x){}}}; sh.appendChild(b)});
+['rankM','matchM','playM','achAllM'].forEach(mid=>{const sh=$(mid).querySelector('.sheet'), b=document.createElement('button'); b.className='x2 lkb'; b.title='Copiar link desta tela'; b.setAttribute('aria-label','Copiar link desta tela'); b.textContent='🔗'; if(mid==='achAllM')b.style.right='54px';
+  b.onclick=()=>copyViewLink(mid,b); sh.appendChild(b)});
+async function copyViewLink(mid,b){const u=viewLink(mid); try{await navigator.clipboard.writeText(u); flash(b,'✅')}catch(e){try{if(navigator.share){await navigator.share({title:'Ranking '+clubName(cur),url:u})}else{prompt('Copie o link:',u)}}catch(x){}}}
+$('admM').addEventListener('click',e=>{const b=e.target.closest('#admLk'); if(b)copyViewLink('admM',b)});
 
 /* ---- abrir jogador por link/código ---- */
 function openPlayerById(id){
