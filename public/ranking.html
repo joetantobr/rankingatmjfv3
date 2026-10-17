@@ -48,7 +48,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px 4px;text-align:left;
 .sq5{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px}
 .sq5 button{aspect-ratio:1;border:2px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font:inherit;font-weight:700;font-size:18px;cursor:pointer;padding:0}
 .sq5 button.on,.seg button.on{background:var(--ac);border-color:var(--ac);color:var(--acx)}
-.wrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.wrow .pri{margin-top:0}
+.wrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.wrow .field,.wrow input[type=date]{min-width:0;max-width:100%}.wrow input[type=date]{box-sizing:border-box}.wrow .pri{margin-top:0}
 .btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:30px}.btns .sec{margin-top:0;min-width:0;font-size:14px}.btns #rankBtn,.btns #addBtn{font-weight:700}
 #h2h{margin:10px 0 0;text-align:center;overflow-wrap:anywhere}.h2h-line{margin-top:3px}.h2h-points{margin-top:6px}.h2h-cap{margin-top:10px;font-weight:700;font-size:15px}
 .score2>*{min-width:0}.wrow .pri{min-width:0;overflow-wrap:anywhere}
@@ -445,6 +445,12 @@ html.fx.cl .pst>div{border-radius:6px}
 #achG .ach .ad{display:block;font-size:7px;line-height:1.15;margin:1px 0 0;overflow-wrap:anywhere}#achG .ach .adt{display:none}
 #achG .achlv{margin-top:7px}
 .gi2{display:inline-flex;align-items:center;justify-content:center;gap:0;white-space:nowrap}.gi2 .mir{display:inline-block;transform:scaleX(-1)}
+
+#achB.achbig{margin:2px 0 0;width:auto;display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:99px;border:2px solid #ff7a1a;background:linear-gradient(120deg,rgba(255,122,26,.28),rgba(255,196,0,.2));color:var(--tx);font-weight:800;font-size:15px;letter-spacing:.03em;box-shadow:0 0 12px rgba(255,122,26,.55);animation:achglow 1.8s ease-in-out infinite}
+#achB .mi{font-size:26px;line-height:1;display:inline-block}#achB .mt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}#achB .mt b{font-size:12px;color:#ff7a1a;font-weight:800;letter-spacing:.06em}
+html.fx #achB.achbig{background:linear-gradient(120deg,rgba(255,122,26,.55),rgba(255,196,0,.28) 50%,rgba(255,122,26,.5));text-shadow:0 0 10px rgba(255,160,40,.8)}html.fx #achB .mi{animation:achwob 2.4s ease-in-out infinite}
+html.fx.cl #achB.achbig{background:var(--g1);border:1px solid var(--g1);color:#f6f1e7;box-shadow:none;animation:none;text-shadow:none;font-weight:700}html.fx.cl #achB .mt b{color:#d9c58a}html.fx.cl #achB .mi{animation:none}
+@media (prefers-reduced-motion:reduce){#achB.achbig,#achB .mi{animation:none!important}}
 </style>
 </head>
 <body>
@@ -875,7 +881,7 @@ $('themeBtn').onclick=()=>{const d=!isDark(), h=document.documentElement; h.setA
 $('viewBtn').onclick=()=>{const h=document.documentElement; let m; if(!fx()){h.classList.add('fx');h.classList.remove('cl');m='fx'}else if(!cl()){h.classList.add('cl');m='classic'}else{h.classList.remove('cl','fx');m='simple'} try{localStorage.setItem('tm_visual',m)}catch(e){}; render()};
 $('sndBtn').onclick=()=>{SND=!SND; try{localStorage.setItem('tm_snd',SND?'on':'off')}catch(e){}; render(); if(SND)sfx('hi')};
 let achQ=[], achBusy=false, achId=null;
-const achLine=u=>{const a=ACH.find(x=>x.k===u.k);return `<br>🏅 <b>${u.id?pnl(u.id,u.p):esc(u.p)}</b> ganhou a conquista <b style="color:${LV[a.lv].c}">${esc(a.n)}</b>`};
+const achLine=u=>{const a=ACH.find(x=>x.k===u.k);return `<br>🏅 <b>${u.id?pnl(u.id,u.p):esc(u.p)}</b> ganhou a conquista ${u.id?`<b class="pnk ank" role="link" tabindex="0" data-pid="${u.id}" data-k="${u.k}" style="color:${LV[a.lv].c}">${esc(a.n)}</b>`:`<b style="color:${LV[a.lv].c}">${esc(a.n)}</b>`}`};
 function achNotify(list){if(S.settings.achOff)return; achQ.push(...list); if(!achBusy)achRun()}
 function achRun(){
   if(!achQ.length){achBusy=false;return} achBusy=true;
@@ -900,7 +906,7 @@ function renderAch(){
   $('achP').innerHTML=`<div class="legend" style="margin:0 0 6px"><b>${n}</b> de ${ACH.length} conquistas · ${f?'contando a partir de '+new Date(f).toLocaleDateString('pt-BR'):'começam a contar na próxima partida registrada'}</div><div class="achbar"><i style="width:${Math.round(n/ACH.length*100)}%"></i></div>`;
   $('achG').innerHTML=LV.map((lv,i)=>{const L=ACH.filter(a=>a.lv===i), un=L.filter(a=>got[a.k]).sort((a,b)=>got[b.k].at-got[a.k].at), lk=L.filter(a=>!got[a.k]);
     return `<div class="achlv" style="--c:${lv.c}"><b>${lv.n}</b><span>${un.length}/${L.length}</span></div><div class="achgrid">${un.map(a=>card(a,1)).join('')+lk.map(a=>card(a,0)).join('')}</div>`}).join('')+achDet(p);
-  $('achG').querySelectorAll('.ach').forEach(c=>{c.onclick=()=>{achPSel=achPSel===c.dataset.k?null:c.dataset.k;renderAch(); if(achPSel){const d=$('achG').querySelector('.atdet'); if(d)d.scrollIntoView({block:'nearest'})}}});
+  $('achG').querySelectorAll('.ach').forEach(c=>{c.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click()}};c.onclick=()=>{achPSel=achPSel===c.dataset.k?null:c.dataset.k;renderAch(); if(achPSel){const d=$('achG').querySelector('.atdet'); if(d)d.scrollIntoView({block:'nearest'})}}});
   const x=$('achG').querySelector('.atx'); if(x)x.onclick=()=>{achPSel=null;renderAch()};
 }
 function achProg(p,a){ /* partidas que contam (ou já contam) para a conquista */
@@ -971,9 +977,9 @@ const HELP={
    <li><b>Errou? Desfaça</b>Logo após salvar aparece a seta <b>↩</b>. Toque nela e confirme com <b>Sim</b> para desfazer a partida.</li>
   </ol>
   <h4>👥 Outras coisas que você pode fazer</h4>
-  <div class="bx"><b class="t">🏆 Ver ranking</b>A classificação de todos, com o pódio, destaques da temporada e botões para compartilhar ou exportar em imagem.</div>
+  <div class="bx"><b class="t">🏆 Ver ranking</b>A classificação de todos, com o pódio, destaques da temporada e botões para compartilhar ou exportar em imagem. Alterne entre <b>Pontos</b> e <b>Conquistas</b> para ver o ranking de cada tipo.</div>
   <div class="bx"><b class="t">➕ Adicionar jogador</b>Cadastre um novo jogador com o nome e a faixa (A, B ou C) em que ele começa.</div>
-  <div class="bx"><b class="t">⚔️ Visualizar partidas</b>Todas as partidas registradas, com filtro por temporada e por datas.</div>
+  <div class="bx"><b class="t">🏓 Visualizar partidas</b>Todas as partidas registradas, com filtro por temporada e por datas. O botão <b>Hoje</b> mostra só as partidas do dia. Toque em um nome para abrir a página do jogador.</div>
   <div class="bx"><b class="t">👥 Jogadores</b>Toque em um nome para ver a página dele: gráfico de pontos, estatísticas, últimas partidas, conquistas e a empunhadura e borracha.</div>
   <div class="bx"><b class="t">🏅 Conquistas</b>Medalhas que os jogadores ganham jogando. Tem 4 níveis: Fácil, Médio, Difícil e Impossível.</div>
   <div class="bx"><b class="t">🔒 Admin</b>Área do administrador (protegida por PIN): regras, temporadas, backup e ajustes.</div>`,
@@ -1011,7 +1017,8 @@ const HELP={
   <p>O administrador pode encerrar uma <b>temporada</b>. Os <b>pontos continuam</b> (ninguém volta ao zero), mas as <b>vitórias e derrotas</b> e os destaques começam uma contagem nova. As temporadas anteriores ficam guardadas para consulta.</p>`,
  extra:()=>`<h4>✨ Extras do app</h4>
   <div class="bx"><b class="t">🔥 Vitórias seguidas</b>A partir de 3 vitórias seguidas aparece um 🔥 com o número ao lado do nome. Perdeu, zera.</div>
-  <div class="bx"><b class="t">🏅 Conquistas</b>São 40 conquistas em 4 níveis, ganhas jogando, vencendo e enfrentando adversários diferentes. Veja todas em <b>Conquistas</b>.</div>
+  <div class="bx"><b class="t">🏅 Conquistas</b>São 40 conquistas em 4 níveis, ganhas jogando, vencendo e enfrentando adversários diferentes. Veja todas em <b>Conquistas</b>. Na página do jogador, toque em uma conquista para ver as partidas que contam para ela e o quanto falta. Se uma partida for corrigida ou apagada, as conquistas são recalculadas e podem sumir. O administrador pode desligar os avisos de conquista na tela.</div>
+  <div class="bx"><b class="t">❗ Possível conflito (admin)</b>Se duas pessoas lançarem a mesma partida (mesmo resultado e mesmo placar, em até 10 minutos, por aparelhos diferentes), o administrador vê um ❗ na lista de partidas para apagar a repetida.</div>
   <div class="bx"><b class="t">🎯 Bônus de faixa e 🔥 Semana ON FIRE</b>Opções do administrador: dão pontos a mais em certas vitórias (ex.: vencer um jogador de faixa acima). Só valem quando estão ligadas, e só para as próximas partidas.</div>
   <div class="bx"><b class="t">🏓 Mão, empunhadura e borracha</b>Cada jogador pode ter registrado se é destro ou canhoto, a empunhadura (clássica ou caneta) e o tipo de borracha. Aparece na página dele.</div>
   <div class="bx"><b class="t">🔗 Links diretos</b>Os botões 🔗 em cada tela copiam um link que abre direto naquela tela, bom para mandar no grupo.</div>
@@ -1094,12 +1101,14 @@ $('w1').onclick=()=>win(0); $('w2').onclick=()=>win(1);
 function enterRows(){const el=$('rankL'); el.querySelectorAll('tr').forEach((r,i)=>r.style.setProperty('--i',Math.min(i,14))); el.classList.add('enter'); const pd=el.querySelector('.podium'); if(pd)pd.classList.add('anim'); setTimeout(()=>{el.classList.remove('enter'); if(pd)pd.classList.remove('anim')},1100)}
 let rkMode='pts';
 $('rankBtn').onclick=()=>{rkMode='pts';renderRank();open('rankM');enterRows()};
-document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.pnk'); if(t){e.preventDefault();e.stopPropagation();goPlayer(t.dataset.pid)}},true);
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('pnk'))goPlayer(e.target.dataset.pid)});
+const goAch=t=>{const id=t.dataset.pid; document.querySelectorAll('.modal.on').forEach(m=>m.classList.remove('on')); achId=null; openAch(id); achPSel=t.dataset.k; renderAch()};
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.pnk'); if(t){e.preventDefault();e.stopPropagation(); t.dataset.k?goAch(t):goPlayer(t.dataset.pid)}},true);
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('pnk')){const t=e.target; t.dataset.k?goAch(t):goPlayer(t.dataset.pid)}});
 function goPlayer(id){histId=id;pSel='all';document.querySelectorAll('.modal.on').forEach(m=>m.classList.remove('on'));renderPlayers();open('playM')}
 function rkSet(h){const el=$('rankL'); if(el.dataset.h===h)return; el.dataset.h=h; el.innerHTML=h} /* não refaz (nem reanima) o ranking se nada mudou */
 function renderRank(){
   $('rkTab').querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.m===rkMode);b.onclick=()=>{rkMode=b.dataset.m;renderRank()}});
+  $('shareB').textContent='📤 Compartilhar ranking (WhatsApp)'; $('jpgRank').textContent='🖼️ Exportar ranking com estatísticas (JPG)';
   if(rkMode==='ach')return renderRankAch();
   $('rkLeg').hidden=false;
   const l=ranked(), pendL=vis().filter(p=>!l.includes(p)), pend=pendL.length;
@@ -1112,15 +1121,18 @@ function renderRank(){
   const up=top((a,b)=>(b.rating-b.r0)-(a.rating-a.r0)), many=top((a,b)=>games(b)-games(a)), wins=top((a,b)=>b.wins-a.wins);
   $('rankHi').innerHTML=act.length?`<div class="panel" style="margin:6px 0 0"><div class="sub" style="margin-top:0">⭐ Destaques · ${esc(sN(curS()))}</div><div class="legend" style="margin:0;color:var(--tx);line-height:1.6">${lead.map(([t,p])=>`🥇 Líder do Ranking ${t}: <b>${pnl(p.id,p.name)}</b> (${p.rating})`).join('<br>')}${up&&up.rating>up.r0?`<br>🚀 Quem mais subiu: <b>${pnl(up.id,up.name)}</b> (+${up.rating-up.r0})`:''}<br>🏓 Quem mais jogou: <b>${pnl(many.id,many.name)}</b> (${games(many)} partidas)${wins.wins?`<br>🏆 Mais vitórias: <b>${pnl(wins.id,wins.name)}</b> (${wins.wins})`:''}</div></div>`:'';
 }
+function achRankData(){const W=[1,2,3,5]; return vis().map(p=>{const g=p.ach||{}, c=[0,0,0,0]; ACH.forEach(a=>{if(g[a.k])c[a.lv]++}); return {p,c,n:c[0]+c[1]+c[2]+c[3],w:c.reduce((t,v,i)=>t+v*W[i],0)}}).filter(x=>x.n>0).sort((a,b)=>b.n-a.n||b.w-a.w||b.p.rating-a.p.rating)}
 function renderRankAch(){
-  const W=[1,2,3,5], pl=vis().map(p=>{const g=p.ach||{}, c=[0,0,0,0]; ACH.forEach(a=>{if(g[a.k])c[a.lv]++}); return {p,c,n:c[0]+c[1]+c[2]+c[3],w:c.reduce((t,v,i)=>t+v*W[i],0)}}).filter(x=>x.n>0).sort((a,b)=>b.n-a.n||b.w-a.w||b.p.rating-a.p.rating);
+  const pl=achRankData();
+  $('shareB').textContent='📤 Compartilhar ranking de conquistas (WhatsApp)'; $('jpgRank').textContent='🖼️ Exportar ranking de conquistas (JPG)';
   $('rkLeg').hidden=true; $('rankNote').innerHTML=''; $('rankHi').innerHTML='';
   rkSet(pl.length?`<table><tr><th>#</th><th>Jogador</th><th class="n">Conquistas</th></tr>`+pl.map((x,i)=>`<tr class="t${tier(x.p)}"><td>${['🥇','🥈','🥉'][i]||i+1}</td><td><span class="badge">${tier(x.p)}</span><button class="pname" data-id="${x.p.id}" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px">${esc(x.p.name)}</button><div class="adm" style="margin-top:2px">${x.c.map((v,j)=>v?`<span style="color:${LV[j].c}">●</span> ${v}`:'').filter(Boolean).join(' &nbsp; ')}</div></td><td class="n"><b style="color:var(--t)">${x.n}</b><small style="color:var(--mut)">/${ACH.length}</small></td></tr>`).join('')+'</table><p class="legend">Desempate: conquistas mais difíceis valem mais (Fácil 1 · Médio 2 · Difícil 3 · Impossível 5).</p>':'<p style="color:var(--mut)">Ninguém conquistou ainda.</p>');
   $('rankL').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id));
 }
 $('shareB').onclick=async()=>{
   const l=ranked(); let t=`🏓 Ranking ${clubName(cur)} 🏓\n${sN(curS())}\n`;
-  ['A','B','C'].forEach(g=>{const x=l.filter(p=>p.tier===g); if(x.length)t+=`\n*Ranking ${g}*\n`+x.map(p=>`${l.indexOf(p)+1}º ${p.name} — ${p.rating} pts (${p.wins}V ${p.losses}D)`).join('\n')+'\n'});
+  if(rkMode==='ach'){t=`🏅 Ranking de Conquistas ${clubName(cur)} 🏅\n\n`+achRankData().map((x,i)=>`${i+1}º ${x.p.name} — ${x.n}/${ACH.length} conquistas`).join('\n')+'\n';}
+  else ['A','B','C'].forEach(g=>{const x=l.filter(p=>p.tier===g); if(x.length)t+=`\n*Ranking ${g}*\n`+x.map(p=>`${l.indexOf(p)+1}º ${p.name} — ${p.rating} pts (${p.wins}V ${p.losses}D)`).join('\n')+'\n'});
   t+=`\nVeja completo: https://rankingatmjf.lovable.app`;
   try{if(navigator.share){await navigator.share({text:t});return}}catch(e){if(e&&e.name==='AbortError')return}
   window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');
@@ -1140,7 +1152,7 @@ function conflicts(){ /* mesmos 2 jogadores, lançadas com poucos minutos de dif
   S.matches.forEach(m=>{const k=[m.winner,m.loser].sort().join('|'); (by[k]=by[k]||[]).push(m)});
   Object.values(by).forEach(g=>{ if(g.length<2)return; g.sort((a,b)=>(a.cr||a.at)-(b.cr||b.at));
     for(let i=0;i<g.length;i++)for(let j=i+1;j<g.length;j++){const a=g[i],b=g[j], ta=a.cr||a.at, tb=b.cr||b.at; if(tb-ta>CONF_MIN*60000)break;
-      if(key(a)!==key(b)&&(key(a)!=='|'||key(b)!=='|')){(C[a.id]=C[a.id]||[]).push(b);(C[b.id]=C[b.id]||[]).push(a)}}});
+      if(key(a)!==key(b)&&(key(a)!=='|'||key(b)!=='|')&&a.winner===b.winner&&(a.score||'')===(b.score||'')){(C[a.id]=C[a.id]||[]).push(b);(C[b.id]=C[b.id]||[]).push(a)}}});
   return C;
 }
 function renderMatches(){
@@ -1148,7 +1160,7 @@ function renderMatches(){
   $('undoBtn').hidden=!(mSel==='cur'&&l.length); $('mvB').hidden=!admin;
   const CF=admin?conflicts():{}, nCf=l.filter(m=>CF[m.id]).length, nm=(id,n)=>nameOf(id,n), pn=(id,n)=>byId(id)?`<button class="pl" data-id="${id}">${esc(nm(id,n))}</button>`:esc(nm(id,n));
   const det=m=>{const who=x=>(whoTxt(x.by)||'—')+(x.dev?' · '+devTxt(x.dev):''), one=x=>`<b>${esc(nm(x.winner,x.wn))} ${x.score?esc(x.score)+' ':'x '}${esc(nm(x.loser,x.ln))}</b> · ${fmt(x.at)} (lançada em ${fmt(x.cr||x.at)}) por ${esc(who(x))}`;
-    return `<tr class="cfd"><td colspan="5">❗ <b>Possível conflito</b> — duas partidas entre os mesmos jogadores, lançadas com menos de ${CONF_MIN} min de diferença por aparelhos diferentes:<br>• Esta: ${one(m)}${CF[m.id].map(o=>`<br>• Outra: ${one(o)}`).join('')}<br><small>Se for a mesma partida lançada duas vezes, apague uma delas (✕).</small></td></tr>`};
+    return `<tr class="cfd"><td colspan="5">❗ <b>Possível conflito</b> — duas partidas com o mesmo resultado e o mesmo placar entre os mesmos jogadores, lançadas com menos de ${CONF_MIN} min de diferença por aparelhos diferentes:<br>• Esta: ${one(m)}${CF[m.id].map(o=>`<br>• Outra: ${one(o)}`).join('')}<br><small>Se for a mesma partida lançada duas vezes, apague uma delas (✕).</small></td></tr>`};
   $('matchL').innerHTML=(nCf?`<div class="cfbar">❗ ${nCf} partida${nCf===1?'':'s'} com possível conflito (toque no ❗ para ver).</div>`:'')+(l.length?`<table class="mt${admin?' ad':''}"><tr><th>Data</th><th>Vencedor</th><th class="sc">Placar</th><th>Perdedor</th>${admin?'<th></th>':''}</tr>`+l.map(m=>{const d=D[m.id]||[0,0];return `<tr><td ${admin&&devTitle(m)?`title="${esc(devTitle(m))}"`:''}>${fmt(m.at).replace(',','')}${m.link?' 🔗':''}${CF[m.id]?` <button class="cfb" data-id="${m.id}" title="Possível conflito" aria-label="Possível conflito">❗</button>`:''}</td><td><div class="mc"><b class="up nm">${pn(m.winner,m.wn)}</b><small class="up">+${d[0]}${d[2]>1?' ×'+d[2]:''}</small></div></td><td class="sc">${m.score?esc(m.score):'–'}</td><td><div class="mc"><span class="nm">${pn(m.loser,m.ln)}</span><small class="dn">−${d[1]}</small></div></td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:''}</tr>`+(CF[m.id]&&confOpen.has(m.id)?det(m):'')}).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>');
 
   $('matchL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id));
@@ -1192,15 +1204,18 @@ function rubIcon(name){
   return `<div class="gitem"><svg class="rubi" viewBox="0 37 200 116" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Borracha ${name}"><defs><filter id="rbg" x="-10%" y="-20%" width="120%" height="140%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#rbg)">${g}${r}</g></svg><div class="gcap">${name==='Lisa'?'Borracha Lisa':name}</div></div>`;
 }
 function sideCards(r){const a=gripCard(r.hand,r.grip)+rubIcon(r.rubber); return a?`<div class="gwrap">${a}</div>`:''}
-function chart(h){
-  if(h.length<2)return''; const W=320,H=120,mn=Math.min(...h),mx=Math.max(...h),pad=(mx-mn)||10,lo=mn-pad*.28,hi=mx+pad*.28,X=i=>14+i*(W-28)/(h.length-1),Y=v=>H-8-(v-lo)/(hi-lo)*(H-16);
-  let dots='',txt='',lastX=-99;
+function chart(h,dt){
+  if(h.length<2)return''; dt=dt||[]; const W=320,H=dt.some(Boolean)?138:120,B=dt.some(Boolean)?16:0,mn=Math.min(...h),mx=Math.max(...h),pad=(mx-mn)||10,lo=mn-pad*.28,hi=mx+pad*.28,X=i=>14+i*(W-28)/(h.length-1),Y=v=>H-B-8-(v-lo)/(hi-lo)*(H-B-16);
+  let dots='',txt='',lastX=-99,days='',lastD=-99,pd=null;
+  dt.forEach((t,i)=>{if(!t)return; const d=new Date(t), k=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate(); if(k===pd)return; pd=k; const x=X(i);
+    days+=`<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="4" y2="${H-B}" stroke="var(--mut)" stroke-width=".5" stroke-dasharray="2 2" opacity=".55"/>`;
+    if(x-lastD>=27||lastD<-90){lastD=x; const lb=String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); days+=`<text x="${Math.max(12,Math.min(W-12,x)).toFixed(1)}" y="${H-3}" font-size="7.5" font-weight="700" text-anchor="middle" fill="var(--t)">${lb}</text>`}});
   h.forEach((v,i)=>{const x=X(i),y=Y(v),pv=i?h[i-1]:null,nx=i<h.length-1?h[i+1]:null, turn=i===0||i===h.length-1||(v-pv)*(nx-v)<0||(v===pv)!==(v===nx);
     dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${h.length>40?1.4:2.2}" fill="var(--t)"/>`;
     if(!turn&&h.length>14)return; if(x-lastX<15&&i!==h.length-1)return; if(i===h.length-1&&x-lastX<15&&lastX>-99)return;
     const up=pv===null?(nx!==null&&nx<v):(v>=pv&&(nx===null||v>=nx)), ty=up?y-5:y+10;
     txt+=`<text x="${Math.max(10,Math.min(W-10,x)).toFixed(1)}" y="${Math.max(8,Math.min(H-2,ty)).toFixed(1)}" font-size="7" text-anchor="middle" fill="var(--mut)">${v}</text>`; lastX=x});
-  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:460px;display:block;margin:8px 0"><polyline fill="none" stroke="var(--t)" stroke-width="1.6" stroke-linejoin="round" points="${h.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ')}"/>${dots}${txt}</svg>`;
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:460px;display:block;margin:8px 0"><polyline fill="none" stroke="var(--t)" stroke-width="1.6" stroke-linejoin="round" points="${h.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ')}"/>${days}${dots}${txt}</svg>`;
 }
 function renderPlayers(){
   const p=histId?byId(histId):null; if(!p)histId=null;
@@ -1216,7 +1231,7 @@ function renderPlayers(){
   let rr=r0p(p); const ser=[rr]; all.forEach(m=>{const d=D[m.id]||[0,0]; rr+=m.winner===p.id?d[0]:-d[1]; ser.push(rr)});
   const idx=all.map((m,i)=>i).filter(i=>inSeason(all[i],pSel)), ms=idx.map(i=>all[i]).reverse(), hist=idx.length?[ser[idx[0]],...idx.map(i=>ser[i+1])]:[];
   const nw=ms.filter(m=>m.winner===p.id).length, nl=ms.length-nw;
-  let h=`${(()=>{const r=S.raw.find(x=>x.id===p.id)||{},gc=sideCards(r);return `<div class="phd"><div class="pmid"><div class="pbig t${tier(p)}">${esc(p.name)}</div>${gc}<div style="text-align:center;margin:6px 0 0"><button class="sec" id="achB" style="margin:0;width:auto;display:inline-block;padding:6px 16px;font-size:13px;border-radius:99px">🏅 Conquistas · ${Object.keys(p.ach||{}).filter(k=>ACH.some(a=>a.k===k)).length}/${ACH.length}</button></div></div></div>`})()}<div class="phead t${tier(p)}"><span class="badge">${tier(p)}</span><b style="font-size:22px;color:var(--t)">${p.rating}</b> pts · ${nw}V ${nl}D`+(pSel==='cur'&&g<3?` · <span style="color:var(--mut)">${g}/3 partidas para entrar no ranking</span>`:'')+`<div style="margin-top:8px"><select id="pS" style="width:100%">${seasOpts(true,'Geral (todas as temporadas)',pSel)}</select></div>`+chart(hist)+xpFull(p)+`</div>`;
+  let h=`${(()=>{const r=S.raw.find(x=>x.id===p.id)||{},gc=sideCards(r);return `<div class="phd"><div class="pmid"><div class="pbig t${tier(p)}">${esc(p.name)}</div>${gc}<div style="text-align:center;margin:6px 0 0"><button class="sec achbig" id="achB"><span class="mi">🏅</span><span class="mt">Conquistas<b>${Object.keys(p.ach||{}).filter(k=>ACH.some(a=>a.k===k)).length}/${ACH.length}</b></span></button></div></div></div>`})()}<div class="phead t${tier(p)}"><span class="badge">${tier(p)}</span><b style="font-size:22px;color:var(--t)">${p.rating}</b> pts · ${nw}V ${nl}D`+(pSel==='cur'&&g<3?` · <span style="color:var(--mut)">${g}/3 partidas para entrar no ranking</span>`:'')+`<div style="margin-top:8px"><select id="pS" style="width:100%">${seasOpts(true,'Geral (todas as temporadas)',pSel)}</select></div>`+chart(hist,[null,...idx.map(i=>all[i].at)])+xpFull(p)+`</div>`;
   {const asc=[...ms].reverse(); let cur=0,cw=null,best=0,run=0; asc.forEach(m=>{const won=m.winner===p.id; run=won?run+1:0; if(run>best)best=run});
     for(const m of ms){const won=m.winner===p.id; if(cw===null)cw=won; if(won!==cw)break; cur++}
     const O={}; ms.forEach(m=>{const won=m.winner===p.id,o=won?m.loser:m.winner,n=won?m.ln:m.wn; O[o]=O[o]||{id:o,n:nameOf(o,n),w:0,l:0}; won?O[o].w++:O[o].l++});
@@ -1342,8 +1357,9 @@ function renderAdm(){
       if(bkData.all)restoreAllUi(bkData); else sure(e.currentTarget,()=>doRestoreClub(bkData)); };
   }
 }
+const noAch=p=>{const {ach,...r}=p;return r}; /* conquistas são sempre recalculadas: não vão no backup */
 async function saveBk(b,kind){
-  const all=kind==='all', data=all?{v:3,all:true,at:Date.now(),clubs:G.clubs,players:G.raw,matches:G.matches,settings:G.sets}:{v:2,club:{id:cur,name:clubName(cur)},players:S.raw,matches:S.matches,settings:S.settings};
+  const all=kind==='all', data=all?{v:3,all:true,at:Date.now(),clubs:G.clubs,players:G.raw.map(noAch),matches:G.matches,settings:G.sets}:{v:2,club:{id:cur,name:clubName(cur)},players:S.raw.map(noAch),matches:S.matches,settings:S.settings};
   const fn=all?`backup-todos-os-dados-${today()}.json`:`backup-${slug(clubName(cur))}-${today()}.json`;
   try{await dl.save({filename:fn,data:JSON.stringify(data)});flash(b,'✅ Salvo')}catch(x){if(!x||x.code!=='declined')flash(b,'⚠️ Erro')}
 }
@@ -1361,7 +1377,7 @@ async function doRestoreClub(d){
   const keepP=new Set(Object.values(pm)), keepM=new Set(Object.values(mm));
   for(const x of S.raw.filter(x=>!keepP.has(x.id)))await del('players',x.id);
   for(const x of S.matches.filter(x=>!keepM.has(x.id)))await del('matches',x.id);
-  for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.ach?{ach:x.ach}:{}),...(x.start!=null?{start:x.start}:{}),...(x.hand?{hand:x.hand}:{}),...(x.grip?{grip:x.grip}:{}),...(x.rubber?{rubber:x.rubber}:{})});
+  for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.start!=null?{start:x.start}:{}),...(x.hand?{hand:x.hand}:{}),...(x.grip?{grip:x.grip}:{}),...(x.rubber?{rubber:x.rubber}:{})});
   for(const x of d.matches)await put('matches',{...x,id:mm[x.id],winner:pm[x.winner]||x.winner,loser:pm[x.loser]||x.loser});
   if(d.settings&&!Array.isArray(d.settings))await put('settings',{...DEF,...d.settings,id:sid(),pin:S.settings.pin||d.settings.pin||'',locked:S.settings.locked});
   await logA('Backup do clube restaurado'); const b=$('bkR'); if(b)flash(b,'✅ Backup restaurado');
@@ -1412,7 +1428,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.3.9.66 (teste)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.3.9.71 (teste)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -1475,6 +1491,7 @@ function drawPodium(x,W,P,l,y0){
   }); x.textAlign='left'; return y0+305;
 }
 $('jpgRank').onclick=async e=>{
+  if(rkMode==='ach')return jpgAchRank(e.currentTarget);
   const btn=e.currentTarget; await imgFonts(); const P=imgPal(), f=P.fx, W=900, l=ranked(), act=vis().filter(p=>games(p)>0), top=fn=>act.slice().sort(fn)[0], lines=[];
   ['A','B','C'].forEach(t=>{const p=l.find(q=>q.tier===t); if(p)lines.push(`🥇 Líder do Ranking ${t}: ${p.name} (${p.rating})`)});
   const up=top((a,b)=>(b.rating-b.r0)-(a.rating-a.r0)), many=top((a,b)=>games(b)-games(a)), wn=top((a,b)=>b.wins-a.wins);
@@ -1517,6 +1534,24 @@ $('jpgRank').onclick=async e=>{
     else{x.fillStyle=P.tx; x.font='bold 20px system-ui,sans-serif'; x.fillText('⭐ Estatísticas · '+sN(curS()),30,y+14); y+=44; x.font='18px system-ui,sans-serif'; lines.forEach(t=>{x.fillText(fitTxt(x,t,W-60),30,y+10);y+=34})}
     imgFooter(x,W,H,P)});
 };
+async function jpgAchRank(btn){
+  await imgFonts(); const P=imgPal(), f=P.fx, W=900, l=achRankData(), RH=f?58:44, CX=[500,575,650,725], H=(f?150:92)+(f?44:48)+Math.max(l.length,1)*RH+90+64, tot=l.reduce((t,x)=>t+x.n,0);
+  saveJpg(btn,`ranking-conquistas-${slug(clubName(cur))}-${today()}.jpg`,W,H,x=>{
+    imgBg(x,W,H,P); let y=imgHeader(x,W,P,'🏅 Conquistas · '+clubName(cur),`${l.length} jogador${l.length===1?'':'es'} com conquistas · ${tot} conquista${tot===1?'':'s'} no total`);
+    x.fillStyle=P.mut; x.font=f?`700 12px ${P.FH}`:'bold 13px system-ui,sans-serif'; x.fillText('#',f?56:30,y+22); x.fillText('JOGADOR',f?96:84,y+22); x.textAlign='right';
+    ['FÁCIL','MÉDIO','DIFÍCIL','IMPOSSÍVEL'].forEach((t,i)=>{x.fillStyle=LV[i].c; x.fillText(t.slice(0,i===3?5:7)+(i===3?'.':''),CX[i]+(i===3?14:0),y+22)}); x.fillStyle=P.mut; x.fillText('TOTAL',W-46,y+22); x.textAlign='left'; y+=f?44:48;
+    if(!l.length){x.fillStyle=P.mut;x.font=`18px ${P.FB}`;x.fillText('Ninguém conquistou ainda.',30,y+30);y+=RH}
+    l.forEach((r,i)=>{const p=r.p, cy=y+RH/2, tc=P.tier[p.tier];
+      if(f){rr(x,24,y+4,W-48,RH-8,12); x.fillStyle=P.card; x.fill(); x.strokeStyle=hexA(tc,.45); x.lineWidth=1.5; x.stroke(); rr(x,24,y+4,7,RH-8,3); x.fillStyle=tc; x.fill()}
+      else if(i%2===0){x.fillStyle=P.zebra;x.fillRect(0,y,W,RH)}
+      x.textAlign='center'; if(i<3){x.font='26px system-ui,sans-serif';x.fillText(['🥇','🥈','🥉'][i],f?62:44,cy)}else{x.fillStyle=P.mut;x.font=f?`900 20px ${P.FH}`:'bold 18px system-ui,sans-serif';x.fillText(String(i+1),f?62:44,cy)}
+      x.textAlign='left'; x.fillStyle=P.tx; x.font=f?`700 22px ${P.FB}`:'18px system-ui,sans-serif'; x.fillText(fitTxt(x,p.name,340),f?96:84,cy);
+      x.textAlign='right'; x.font=f?`700 21px ${P.FB}`:'bold 18px system-ui,sans-serif'; r.c.forEach((v,j)=>{x.fillStyle=v?LV[j].c:hexA(P.mut,.45); x.fillText(String(v),CX[j]+(j===3?14:0),cy)});
+      x.fillStyle=P.tx; x.font=f?`900 24px ${P.FH}`:'bold 20px system-ui,sans-serif'; x.fillText(r.n+'/'+ACH.length,W-46,cy); x.textAlign='left';
+      y+=RH});
+    y+=18; x.fillStyle=P.mut; x.font='15px system-ui,sans-serif'; x.fillText('Desempate: conquistas mais difíceis valem mais (Fácil 1 · Médio 2 · Difícil 3 · Impossível 5).',30,y+10);
+    imgFooter(x,W,H,P)});
+}
 $('jpgMatches').onclick=async e=>{
   const btn=e.currentTarget; await imgFonts(); const P=imgPal(), f=P.fx, all=matchView().reverse(), cap=200, l=all.slice(0,cap), W=900, RH=f?54:40, MX=450;
   const lbl=(mSel==='all'?'Todas as temporadas':sN(mSel==='cur'?curS():+mSel))+(mFrom||mUntil?' · '+(mFrom?fmtD(mFrom):'início')+' a '+(mUntil?fmtD(mUntil):'hoje'):'');
@@ -1727,12 +1762,13 @@ async function doReset(kind){
 }
 
 /* ---- exportar CSV ---- */
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>localDay();
 async function exportCsv(btn,name,rows){
   if(!dl)return; const data='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(';')).join('\r\n'), o=btn.textContent; let t='✅ Arquivo salvo';
   try{await dl.save({filename:name,data})}catch(e){t=(e&&e.code==='declined')?o:'⚠️ Não foi possível exportar'} btn.textContent=t; setTimeout(()=>btn.textContent=o,2500);
 }
-$('expPlayers').onclick=e=>{const r=ranked().map(p=>p.id);
+$('expPlayers').onclick=e=>{ if(rkMode==='ach'){const L=ACH.length; return exportCsv(e.currentTarget,'ranking-conquistas-'+today()+'.csv',[['Posição','Jogador','Conquistas','Total','Fácil','Médio','Difícil','Impossível']].concat(achRankData().map((x,i)=>[i+1,x.p.name,x.n,L,x.c[0],x.c[1],x.c[2],x.c[3]])))}
+  const r=ranked().map(p=>p.id);
   exportCsv(e.currentTarget,'ranking-jogadores-'+today()+'.csv',[['Posição','Jogador','Faixa','Pontos','Vitórias','Derrotas','Partidas','No ranking','Mão dominante','Empunhadura','Borracha','Conquistas']].concat(vis().sort((a,b)=>b.rating-a.rating).map(p=>{const i=r.indexOf(p.id);return [i>=0?i+1:'',p.name,tier(p),p.rating,p.wins,p.losses,games(p),i>=0?'Sim':'Não',p.hand||'',p.grip||'',p.rubber||'',Object.keys(p.ach||{}).length]})))};
 $('expMatches').onclick=async e=>{const b=e.currentTarget; await loadNames(matchView().map(m=>m.by)); exportCsv(b,'partidas-'+today()+'.csv',[['Temporada','Data','Hora','Vencedor','Placar (vencedor x perdedor)','Perdedor','Pontos do vencedor','Pontos do perdedor','Lançada por','Aparelho','Lançada em','Bônus (×)']].concat(matchView().map(m=>{const d=D[m.id]||[0,0],t=new Date(m.at);return [seasonOf(m),t.toLocaleDateString('pt-BR'),t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),nameOf(m.winner,m.wn),m.score||'',nameOf(m.loser,m.ln),'+'+d[0],'-'+d[1],whoTxt(m.by),devTxt(m.dev),m.cr?fmt(m.cr):'',d[2]>1?d[2]:'']})));};
 </script>
