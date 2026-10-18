@@ -518,6 +518,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
 #playM.pdet .sheet>.ahead{display:block;height:0;margin:0}#playM.pdet .sheet>.ahead .ar{position:absolute;top:12px;right:14px;z-index:4}#playM.pdet .sheet>.ahead .al,#playM.pdet .sheet>.ahead h3{display:none}#playM .pbig{font-weight:800!important}
 #rkLeg,.ctr,#achP>.legend{text-align:center}.achtop{justify-content:center;text-align:center}.atabs{justify-content:safe center}
 .pfd{border:1px solid var(--bd);border-radius:8px;padding:8px 10px;margin:0 0 8px;background:var(--card)}.pfd summary{cursor:pointer;font-weight:700;font-size:14px}.pfd summary small{color:var(--ac);font-weight:700}
+@media (max-width:560px),(orientation:landscape) and (max-height:520px){.tpk{display:block;column-count:2;column-gap:6px}.tpk .pl{margin-bottom:6px;break-inside:avoid;width:100%}}
 </style>
 </head>
 <body>
@@ -1604,7 +1605,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.8.8 (Campeonatos)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.0 (Campeonatos)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -2232,7 +2233,7 @@ function tNewR(){
   ${n.fmt==='rr'||isG||isF?`<div class="tg2 tg4 tg4s"><div class="field"><span>${isG?'Ida e volta nos grupos':'Turnos'}</span>${seg('dbl',[[false,'Só ida'],[true,'Ida e volta']])}</div>${gRule}</div>${gRuleL}`:''}`}
   <div class="field"><div class="tph"><span>Participantes <b id="tCnt">${n.sel.size}</b> de ${pl.length}</span><button class="sec tadd" id="tAddP" title="Adicionar um jogador novo" aria-label="Adicionar um jogador novo">+</button></div>
     <div class="tqf"><button class="sec" data-q="all">Todos</button><button class="sec" data-q="none">Nenhum</button>${['A','B','C'].map(q=>{const ids=pl.filter(p=>p.tier===q).map(p=>p.id), all=ids.length>0&&ids.every(id=>n.sel.has(id));return `<button class="sec${all?' on':''}" data-q="${q}" ${ids.length?'':'disabled'} title="Marcar/desmarcar todos da faixa ${q}">Faixa ${q} (${ids.length})</button>`}).join('')}</div>
-    <div class="tpk">${pl.map(p=>`<button class="pl t${p.tier}${n.sel.has(p.id)?'':' off'}" data-id="${p.id}"><span><span class="badge">${p.tier}</span>${esc(p.name)}</span><b>${n.sel.has(p.id)?'✓':''}</b></button>`).join('')}</div></div>
+    <div class="tpk">${[...pl].sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="pl t${p.tier}${n.sel.has(p.id)?'':' off'}" data-id="${p.id}"><span><span class="badge">${p.tier}</span>${esc(p.name)}</span><b>${n.sel.has(p.id)?'✓':''}</b></button>`).join('')}</div></div>
   <div class="dn" id="tErr">${esc(n.err||'')}</div>
   <button class="pri" id="tGo">Continuar → prévia</button><button class="sec" id="tBk">Cancelar</button>`;
   const keep=()=>{n.name=$('tNm').value};
@@ -2333,7 +2334,7 @@ function tDetR(){
       return `<div class="tfx fin">${tag}<div class="l ${wl?'w':''}">${r.a?pnl(r.a,nameOf(r.a,PN[r.a]))+' '+sdl(r.a):r.la?`<i>${r.la}</i>`:lbl(f.sa)}</div><div class="sc">${r.w===r.a?sc:r.m&&r.m.score?esc(r.m.score.split('x').reverse().join('x')):sc}</div><div class="rr ${!wl?'w':''}">${r.b?sdl(r.b)+' '+pnl(r.b,nameOf(r.b,PN[r.b])):r.lb?`<i>${r.lb}</i>`:lbl(f.sb)}</div>${can?`<button class="tun" data-f="${f.id}" title="Desfazer resultado" aria-label="Desfazer resultado">↩</button>`:''}</div>`}
     if(r.a&&r.b)return `<button class="tfx rdy" data-f="${f.id}">${tag}<div class="l">${A}</div><div class="sc">x</div><div class="rr">${B}</div><div class="tgo">Toque para lançar o resultado</div></button>${r.bad?`<div class="dn tw">⚠️ Há uma partida lançada que não bate com os jogadores deste jogo (a fase anterior mudou). ${can?'Apague-a em Partidas.':'Peça a quem edita.'}</div>`:''}`;
     return `<div class="tfx fut">${tag}<div class="l">${A}</div><div class="sc">x</div><div class="rr">${B}</div>${r.bad?`<div class="dn tw">⚠️ Partida lançada fora de ordem. Apague-a em Partidas.</div>`:''}</div>`};
-  let h=tv.ren?`<div class="panel" style="margin:0 0 8px"><label class="field" style="margin:0"><span>Nome do campeonato</span><input id="tRn" value="${esc(tv.rn!=null?tv.rn:t.name)}" maxlength="60"></label><div class="field" style="margin-top:8px"><span>Quem pode lançar resultados?</span><div class="seg" style="grid-template-columns:repeat(3,1fr)">${[['any','Qualquer um'],['mgr','Só gerentes'],['admin','Só admin']].map(([v,l])=>`<button data-rs="${v}" class="${(tv.rs||t.res||'any')===v?'on':''}">${l}</button>`).join('')}</div>${(tv.rs||t.res||'any')==='mgr'?`<div class="tg2" style="margin-top:6px"><input id="tRq1" type="password" inputmode="numeric" autocomplete="off" placeholder="${t.rpin?'Novo PIN (vazio = manter o atual)':'Crie o PIN do gerente (mín. 4 dígitos)'}" value="${esc(tv.p1||'')}" style="padding:8px"><input id="tRq2" type="password" inputmode="numeric" autocomplete="off" placeholder="Repita o PIN" value="${esc(tv.p2||'')}" style="padding:8px"></div>`:''}</div><div class="dn" id="tRe2"></div><div class="wrow"><button class="pri" id="tRk">Salvar</button><button class="sec" id="tRc" style="margin-top:8px">Cancelar</button></div></div>`:'';
+  let h=tv.ren?tRulesHtml(t):'';
   h+=`<div class="phead" style="--t:var(--ac)"><div class="tcs">${tMini(t)}${t.edit==='admin'?' · 🔒 só o admin edita':''}${t.res==='mgr'?' · 🔑 resultados: só gerentes':t.res==='admin'?' · 🔑 resultados: só o admin':''}</div><div class="tcp">${pod?'🏁 Encerrado':`${pr.dn}/${pr.tot} partidas jogadas`}${(t.wt&&(t.wt.all>1||Object.values(t.wt.ph||{}).some(v=>v>1)))?' · ⚖️ peso no ranking':''}</div></div>`;
   if(tv.note)h+=`<div class="msg" style="margin:8px 0">${tv.note}</div>`;
   if(!(pod&&pr.dn>=pr.tot)){const nx=tNext(t,R); if(nx.length)h+=`<div class="tsh tnxh${tNxC?' c':''}" id="tNxH" style="margin-top:8px">▶️ Próximos jogos</div>`+(tNxC?'':`<div class="tnxg">`+nx.slice(0,8).map(f=>{const r=R[f.id]; return `<button class="tnx" data-f="${f.id}"><span><b>${esc(nameOf(r.a,PN[r.a]))}</b> x <b>${esc(nameOf(r.b,PN[r.b]))}</b></span><small>${esc(tLab(t,f))}</small></button>`}).join('')+`</div>`+(nx.length>8?`<p class="legend" style="margin:0 0 6px">+ ${nx.length-8} ${nx.length-8===1?'jogo pronto':'jogos prontos'} nas abas abaixo.</p>`:''))}
@@ -2369,7 +2370,7 @@ function tDetR(){
   Object.values(grp).sort((a,b)=>a.rd-b.rd||(a.ph==='p3'?-1:b.ph==='p3'?1:0)).forEach(g=>{const hd=t.fmt==='rr'?'Rodada '+g.rd:tPhN(g.ph), body=g.f.map(card).join(''); if(body.trim())h+=`<div class="tsh">${hd}</div>`+body});
   }
   const wds=Object.entries(t.wd||{}); if(wds.length)h+=`<div class="tsh">Desistências (W.O.)</div>`+wds.map(([pid,rd])=>{const fx=t.fx.find(g=>g.rd===+rd), lab=t.fmt==='rr'?'do campeonato (W.O. na rodada '+rd+')':(t.fmt==='gr'&&+rd<=t.gmax)?'da fase de grupos e do mata-mata':'na fase '+tPhN(fx?fx.ph:'',t); return `<div class="tpl"><span>${pnl(pid,nameOf(pid,PN[pid]))} <small>saiu ${lab}</small></span>${can?`<button class="tun" data-wd="${pid}" title="Reverter W.O." aria-label="Reverter W.O.">↩</button>`:''}</div>`}).join('')+`<p class="legend">Quem leva W.O. perde os jogos por W.O. e os adversários vencem pelo placar máximo. As partidas já lançadas continuam no ranking.</p>`;
-  {const I=dl?tJpgInfo(t,R):null, bs=[]; if(I){bs.push(`<button class="sec" id="tJpg" style="margin-top:0">${I.lab}</button>`); if(I.kind==='tb')bs.push(`<button class="sec" id="tJpgM" style="margin-top:0">🖼️ Salvar partidas (JPG)</button>`)} bs.push(`<button class="sec" id="tWt" title="Peso no ranking" style="margin-top:0">⚖️ Peso</button>`);
+  {const I=dl?tJpgInfo(t,R):null, bs=[]; if(I){bs.push(`<button class="sec" id="tJpg" style="margin-top:0">${I.lab}</button>`); if(I.kind==='tb')bs.push(`<button class="sec" id="tJpgM" style="margin-top:0">🖼️ Salvar partidas (JPG)</button>`)} if(can)bs.push(`<button class="sec" id="tRl" title="Editar as regras do campeonato" style="margin-top:0">⚙️ Regras</button>`); bs.push(`<button class="sec" id="tWt" title="Peso no ranking" style="margin-top:0">⚖️ Peso</button>`);
     h+=`<div class="tbt" style="grid-template-columns:repeat(${bs.length},minmax(0,1fr))">${bs.join('')}</div>`;
     if(can)h+=`<div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:6px"><button class="sec" id="tAr" title="${t.arch?'Desarquivar':'Arquivar'} campeonato" style="margin-top:0">📦 ${t.arch?'Restaurar':'Arquivar'}</button><button class="sec" id="tDl" title="Apagar campeonato" style="margin-top:0">🗑️ Apagar</button></div>`}
   if(tv.wt)h+=tWtHtml(t);
@@ -2386,18 +2387,22 @@ function tDetR(){
   $('tourB').querySelectorAll('.tun[data-wd]').forEach(b=>b.onclick=()=>sure(b,()=>tGate(t,async()=>{const wd={...(t.wd||{})}; delete wd[b.dataset.wd]; await put('tournaments',{...t,wd}); await logA(`W.O. revertido no campeonato “${t.name}”`); tv.note='↩ W.O. revertido.'; tourRender()})));
   if($('tJpg'))$('tJpg').onclick=e=>tJpgGo(e.currentTarget,'main',t); if($('tJpgM'))$('tJpgM').onclick=e=>tJpgGo(e.currentTarget,'mt',t); if($('tJpgP'))$('tJpgP').onclick=e=>tJpgGo(e.currentTarget,'pod',t);
   $('tWt').onclick=()=>needAdmin(()=>{tv.wt=!tv.wt;tourRender()});
-  $('tRnB').hidden=!can||!!tv.ren; $('tRnB').onclick=()=>tGate(t,()=>{tv.ren=true;tv.rn=t.name;tv.rs=t.res||'any';tv.p1='';tv.p2='';tourRender();const i=$('tRn');if(i){i.focus();i.select()}});
-  if(tv.ren){$('tRc').onclick=()=>{tv.ren=false;tv.rn=null;tv.rs=null;tourRender()};
+  const openRen=()=>tGate(t,()=>{Object.assign(tv,{ren:true,rn:t.name,rs:t.res||'any',ed:t.edit||'any',bo:t.bo,bog:t.bog||t.bo,bop:{...(t.bop||{})},ru:t.rule||'pts',pf:Object.keys(t.bop||{}).length>0,p1:'',p2:''});tourRender();$('tourM').querySelector('.sheet').scrollTop=0;const i=$('tRn');if(i){i.focus();i.select()}});
+  $('tRnB').hidden=!can||!!tv.ren; $('tRnB').onclick=openRen; if($('tRl'))$('tRl').onclick=openRen;
+  if(tv.ren){const clr=()=>{tv.ren=false;['rn','rs','ed','bo','bog','bop','ru','pf'].forEach(k=>tv[k]=null)};
+    $('tRc').onclick=()=>{clr();tourRender()};
     $('tRn').oninput=e=>tv.rn=e.target.value; if($('tRq1')){$('tRq1').oninput=e=>tv.p1=e.target.value; $('tRq2').oninput=e=>tv.p2=e.target.value}
-    $('tourB').querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{tv.rn=$('tRn').value; tv.rs=b.dataset.rs; tourRender()});
-    const sv=()=>tGate(t,async()=>{const nn=$('tRn').value.trim(), rs=tv.rs||t.res||'any'; if(!nn){$('tRe2').textContent='Informe um nome.';return}
-      const upd={...t,name:nn,res:rs}; delete upd.rpin;
+    $('tourB').querySelectorAll('[data-rk]').forEach(b=>b.onclick=()=>{tv.rn=$('tRn').value; const k=b.dataset.rk; tv[k]=(k==='bo'||k==='bog')?+b.dataset.rv:b.dataset.rv; tourRender()});
+    $('tourB').querySelectorAll('[data-bq]').forEach(sel=>sel.onchange=()=>{tv.rn=$('tRn').value; tv.bop={...(tv.bop||{})}; if(sel.value)tv.bop[sel.dataset.bq]=+sel.value; else delete tv.bop[sel.dataset.bq]; tourRender()});
+    if($('tRpf'))$('tRpf').onclick=()=>{tv.rn=$('tRn').value; tv.pf=!tv.pf; tourRender()};
+    const sv=()=>tGate(t,async()=>{const nn=$('tRn').value.trim(); if(!nn){$('tRe2').textContent='Informe um nome.';return}
+      const rs=tv.rs||t.res||'any', ed=tv.ed||t.edit||'any', hasR=t.fmt==='rr'||t.fmt==='gr'||t.gf, hasP=t.fmt==='ko'||(t.fmt==='gr'&&!t.gf);
+      const upd={...t,name:nn,res:rs,edit:ed,bo:+tv.bo||t.bo}; delete upd.rpin;
+      if(t.fmt==='gr'||t.gf)upd.bog=+tv.bog||t.bog||t.bo; if(hasR)upd.rule=tv.ru||t.rule||'pts'; if(hasP){const bp={}; Object.entries(tv.bop||{}).forEach(([k,v])=>{if(v)bp[k]=+v}); upd.bop=bp}
       if(rs==='mgr'){const a=(tv.p1||'').trim(), b=(tv.p2||'').trim(); if(a||!t.rpin){if(a.length<4){$('tRe2').textContent='Crie um PIN de gerente com pelo menos 4 dígitos.';return} if(a!==b){$('tRe2').textContent='Os dois PINs não são iguais.';return} upd.rpin=await sha(a)} else upd.rpin=t.rpin}
-      if(nn!==t.name||rs!==(t.res||'any')||upd.rpin!==t.rpin){await put('tournaments',upd)}
-      if(nn!==t.name)await logA(`Campeonato renomeado: “${t.name}” → “${nn}”`);
-      if(rs!==(t.res||'any'))await logA(`Quem lança resultados no campeonato “${nn}”: ${{any:'qualquer um',mgr:'só gerentes',admin:'só o admin'}[rs]}`);
-      else if(upd.rpin!==t.rpin)await logA(`PIN do gerente alterado no campeonato “${nn}”`);
-      tv.ren=false;tv.rn=null;tv.rs=null;tv.note='✅ Campeonato atualizado.';tourRender()});
+      const ch=[]; if(nn!==t.name)ch.push('nome'); if(upd.bo!==t.bo)ch.push(`melhor de ${t.bo} → ${upd.bo}`); if(upd.bog!==undefined&&upd.bog!==t.bog)ch.push(`grupos melhor de ${upd.bog}`); if(JSON.stringify(upd.bop||{})!==JSON.stringify(t.bop||{}))ch.push('sets por fase'); if(hasR&&upd.rule!==(t.rule||'pts'))ch.push('regra de pontuação'); if(ed!==(t.edit||'any'))ch.push('quem edita'); if(rs!==(t.res||'any'))ch.push('quem lança resultados'); else if(upd.rpin!==t.rpin)ch.push('PIN do gerente');
+      if(ch.length){await put('tournaments',upd); await logA(nn!==t.name?`Campeonato renomeado: “${t.name}” → “${nn}”`:`Regras do campeonato “${nn}” alteradas`+': '+ch.join(', '))}
+      clr();tv.note='✅ Campeonato atualizado.';tourRender()});
     $('tRk').onclick=sv; $('tRn').onkeydown=e=>{if(e.key==='Enter')sv()}}
   if($('tAr'))$('tAr').onclick=()=>tGate(t,async()=>{await put('tournaments',{...t,arch:!t.arch}); await logA(`Campeonato ${t.arch?'desarquivado':'arquivado'}: ${t.name}`); tv={v:'list',arc:!!t.arch&&false}; tourRender()});
   if($('tDl'))$('tDl').onclick=()=>tGate(t,()=>{tv.del=true;tourRender()});
@@ -2476,6 +2481,16 @@ async function tSubmit(tid,fid,w,score){
   if(unl.length)setTimeout(()=>achNotify(unl),900);
 }
 let tNxC=true,tGrC=false,tSfC=true,tDetId=null;
+function tRulesHtml(t){
+  const rs=tv.rs||t.res||'any', ed=tv.ed||t.edit||'any', bo=+tv.bo||t.bo, bog=+tv.bog||t.bog||t.bo, ru=tv.ru||t.rule||'pts', isG=t.fmt==='gr'&&!t.gf, isF=!!t.gf, hasR=t.fmt==='rr'||t.fmt==='gr'||isF, hasP=t.fmt==='ko'||isG, bop=tv.bop||{};
+  const sg=(k,cur,opts)=>`<div class="seg" style="grid-template-columns:repeat(${opts.length},1fr)">${opts.map(([v,l])=>`<button data-rk="${k}" data-rv="${v}" class="${String(cur)===String(v)?'on':''}">${l}</button>`).join('')}</div>`, S3=[[3,'3 sets'],[5,'5 sets'],[7,'7 sets']];
+  const F=(l,x)=>`<div class="field"><span>${l}</span>${x}</div>`, PH=[['r16','Oitavas'],['qf','Quartas'],['sf','Semifinais'],['f','Final'],['p3','3º lugar']];
+  const f1=(isG||isF)?F('Melhor de quantos sets · fase de grupos',sg('bog',bog,S3))+F(isF?'Melhor de quantos sets · final e 3º lugar':'Melhor de quantos sets · mata-mata (padrão)',sg('bo',bo,S3)):F('Melhor de quantos sets?',sg('bo',bo,S3));
+  const f2=F('Quem pode editar?',sg('ed',ed,[['any','Qualquer um'],['admin','Só o admin']]))+F('Quem pode lançar resultados?',sg('rs',rs,[['any','Qualquer um'],['mgr','Só gerentes'],['admin','Só admin']]));
+  const pin=rs==='mgr'?`<div class="tg2" style="margin-top:2px"><input id="tRq1" type="password" inputmode="numeric" autocomplete="off" placeholder="${t.rpin?'Novo PIN (vazio = manter o atual)':'Crie o PIN do gerente (mín. 4 dígitos)'}" value="${esc(tv.p1||'')}" style="padding:8px"><input id="tRq2" type="password" inputmode="numeric" autocomplete="off" placeholder="Repita o PIN" value="${esc(tv.p2||'')}" style="padding:8px"></div>`:'';
+  const pp=hasP?`<div class="field"><button class="lnk" id="tRpf" style="font-size:13px">${tv.pf?'▾':'▸'} Mudar o melhor de sets por fase do mata-mata</button>${tv.pf?`<div class="tbp">${PH.map(([k,l])=>`<label>${l}<select data-bq="${k}"><option value="">Padrão (${bo})</option>${[3,5,7].map(v=>`<option value="${v}" ${bop[k]===v?'selected':''}>${v} sets</option>`).join('')}</select></label>`).join('')}</div>`:''}</div>`:'';
+  const rl=hasR?F('Regra de pontuação'+(isG?' dos grupos':''),sg('ru',ru,[['pts','Pontuação'],['sets','Mais sets']])):'';
+  return `<div class="panel nw" style="margin:0 0 8px"><label class="field" style="margin:0"><span>Nome do campeonato</span><input id="tRn" value="${esc(tv.rn!=null?tv.rn:t.name)}" maxlength="60"></label><div class="tg3 tg4" style="margin-top:8px">${f1}${f2}${rl}</div>${pin}${pp}<p class="legend" style="margin:6px 0 0">Mudar o melhor de sets ou a regra vale para os próximos resultados e recalcula a classificação; o formato, os jogadores e os confrontos não mudam.</p><div class="dn" id="tRe2"></div><div class="wrow"><button class="pri" id="tRk">Salvar</button><button class="sec" id="tRc" style="margin-top:8px">Cancelar</button></div></div>`}
 function tourRender(){ {const bid={new:'tBk',prev:'tBk2',det:'tLs',hall:'hBk'}[tv.v]; setBack('tourM',bid?()=>{const e=$(bid); if(e)e.click(); else{tv={v:'list'};tourRender()}}:null)} {const lk=$('tourM').querySelector('.lkb'); if(lk)lk.hidden=!(tv.v==='list'||tv.v==='det')} $('tourB').classList.toggle('nw',tv.v==='new'); $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
 $('tourBtn').onclick=()=>{tv={v:'list'};tourRender();open('tourM');$('tourM').querySelector('.sheet').scrollTop=0};
 $('tourX').onclick=()=>$('tourM').classList.remove('on'); $('tpX').onclick=()=>$('tpM').classList.remove('on'); $('tpM').onclick=e=>{if(e.target===$('tpM'))$('tpM').classList.remove('on')};
