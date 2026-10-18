@@ -1481,7 +1481,7 @@ async function saveBk(b,kind){
 function bkParse(txt){
   bkData=null; const info=$('bkInfo'); if(!info)return; if(!(txt||'').trim()){info.textContent='';info.className='legend';return}
   try{const d=JSON.parse(txt); if(!d||!Array.isArray(d.players)||!Array.isArray(d.matches))throw 0; bkData=d; info.className='legend';
-    info.textContent=d.all?`Backup de TODOS os dados: ${(d.clubs||[]).length} clube(s) cadastrado(s), ${d.players.length} jogadores, ${d.matches.length} partidas.`:`Backup do clube${d.club?' “'+d.club.name+'”':''}: ${d.players.length} jogadores, ${d.matches.length} partidas.`}
+    info.textContent=d.all?`Backup de TODOS os dados: ${(d.clubs||[]).length} clube(s) cadastrado(s), ${d.players.length} jogadores, ${d.matches.length} partidas, ${(d.tourns||[]).length} campeonato(s).`:`Backup do clube${d.club?' “'+d.club.name+'”':''}: ${d.players.length} jogadores, ${d.matches.length} partidas, ${(d.tourns||[]).length} campeonato(s).`}
   catch(e){info.className='legend dn';info.textContent='⚠️ Arquivo de backup inválido.'}
 }
 async function doRestoreClub(d){
@@ -1502,7 +1502,7 @@ async function doRestoreClub(d){
 }
 function restoreAllUi(d){
   $('rstT').textContent='♻️ Restaurar TODOS os dados';
-  $('rstD').textContent=`Substitui TODOS os clubes, jogadores, partidas e configurações pelo conteúdo do backup (${(d.clubs||[]).length} clube(s), ${d.players.length} jogadores, ${d.matches.length} partidas). Tudo o que existe hoje será apagado. Não dá para desfazer.`;
+  $('rstD').textContent=`Substitui TODOS os clubes, jogadores, partidas e configurações pelo conteúdo do backup (${(d.clubs||[]).length} clube(s), ${d.players.length} jogadores, ${d.matches.length} partidas, ${(d.tourns||[]).length} campeonato(s)). Tudo o que existe hoje será apagado. Não dá para desfazer.`;
   $('rstW').textContent='RESTAURAR'; $('rstI').value=''; $('rstE').textContent='';
   $('rstOk').onclick=async()=>{
     if($('rstI').value.trim().toUpperCase()!=='RESTAURAR'){$('rstE').textContent='Digite RESTAURAR para confirmar.';return}
@@ -1548,7 +1548,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.3.13 (Campeonatos)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.3.14 (Campeonatos)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
