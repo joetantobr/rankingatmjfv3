@@ -574,7 +574,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
   <div id="rankL"></div><p class="legend" id="rankNote"></p><div id="rankHi"></div>
   <button class="sec" id="shareB">📤 Compartilhar ranking (WhatsApp)</button>
   <button class="sec" data-exp hidden id="jpgRank">🖼️ Exportar ranking com estatísticas (JPG)</button>
-  <button class="sec" data-exp hidden id="expPlayers">⬇️ Exportar jogadores (CSV)</button><button class="sec" data-close>Fechar</button>
+  <button class="sec" data-close>Fechar</button>
 </div></div>
 
 <div class="modal" id="playM"><div class="sheet wide">
@@ -588,7 +588,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
   <div id="matchL"></div>
   <button class="sec" id="mvB" hidden>🔗 Levar partidas para outro clube</button>
   <button class="sec" data-exp hidden id="jpgMatches">🖼️ Exportar partidas (JPG)</button>
-  <button class="sec" data-exp hidden id="expMatches">⬇️ Exportar partidas (CSV)</button><button class="sec" data-close>Fechar</button>
+  <button class="sec" data-close>Fechar</button>
 </div></div>
 
 
@@ -1039,7 +1039,7 @@ $('viewBtn').onclick=()=>{const h=document.documentElement; let m; if(!fx()){h.c
 $('sndBtn').onclick=()=>{SND=!SND; try{localStorage.setItem('tm_snd',SND?'on':'off')}catch(e){}; render(); if(SND)sfx('hi')};
 let achQ=[], achBusy=false, achId=null;
 const achLine=u=>{const a=ACH.find(x=>x.k===u.k);return `<br>🏅 <b>${u.id?pnl(u.id,u.p):esc(u.p)}</b> ganhou a conquista ${u.id?`<b class="pnk ank" role="link" tabindex="0" data-pid="${u.id}" data-k="${u.k}" style="color:${LV[a.lv].c}">${esc(a.n)}</b>`:`<b style="color:${LV[a.lv].c}">${esc(a.n)}</b>`}`};
-function achNotify(list){if(S.settings.achOff)return; achQ.push(...list); if(!achBusy)achRun()}
+function achNotify(list){if(!S.settings.achOn)return; achQ.push(...list); if(!achBusy)achRun()}
 function achRun(){
   if(!achQ.length){achBusy=false;return} achBusy=true;
   let st=$('achStack'); if(!st){st=document.createElement('div'); st.id='achStack'; document.body.appendChild(st)}
@@ -1251,7 +1251,7 @@ async function win(wi){
     if(pw&&pl){await put('matches',{id:uid()+'x'+(i++),winner:pw.id,loser:pl.id,wn:w.name,ln:l.name,score:sc2,at,link:lk,cr:at,by:myId,dev:deviceInfo()},cid);extra.push(clubName(cid))}}}
   const nw=byId(w.id), nl=byId(l.id), unl=[]; [nw,nl].forEach(q=>Object.keys(q.ach||{}).filter(k=>q.ach[k].m===mid&&ACH.some(a=>a.k===k)).sort((a,b)=>achOrd(a)-achOrd(b)).forEach(k=>unl.push({p:q.name,id:q.id,k,s:sel.indexOf(q.id)})));
   msg(`<b>${pnl(w.id,w.name)}</b> venceu${has?' por '+ws+'x'+ls:''}<br><span class="up">${pnl(w.id,w.name)}: ${r0} → ${nw.rating} (+${nw.rating-r0})</span><br><span class="dn">${pnl(l.id,l.name)}: ${r1} → ${nl.rating} (−${r1-nl.rating})</span>`
-    +(t0!==nw.tier?`<br>${nw.tier<t0?'⬆️':'⬇️'} ${pnl(w.id,w.name)} agora está no Ranking ${nw.tier}.`:'')+(t1!==nl.tier?`<br>${nl.tier<t1?'⬆️':'⬇️'} ${pnl(l.id,l.name)} agora está no Ranking ${nl.tier}.`:'')+(extra.length?`<br>🔗 Também valeu em: ${extra.map(esc).join(', ')}`:'')+(mul>1?`<br>⚡ Bônus de vitória ×${mul}`:'')+(S.settings.achOff?[]:unl).map(achLine).join(''));
+    +(t0!==nw.tier?`<br>${nw.tier<t0?'⬆️':'⬇️'} ${pnl(w.id,w.name)} agora está no Ranking ${nw.tier}.`:'')+(t1!==nl.tier?`<br>${nl.tier<t1?'⬆️':'⬇️'} ${pnl(l.id,l.name)} agora está no Ranking ${nl.tier}.`:'')+(extra.length?`<br>🔗 Também valeu em: ${extra.map(esc).join(', ')}`:'')+(mul>1?`<br>⚡ Bônus de vitória ×${mul}`:'')+unl.map(achLine).join(''));
   sel=[null,null]; sc=[null,null]; multi.clear(); multiOpen=false; busy=false; render(); undoUi(mid,w.name,l.name); confetti(); sfx('win');
   try{fx()&&!cl()&&navigator.vibrate&&navigator.vibrate([30,40,30])}catch(e){}
   if(nw.tier<t0)setTimeout(()=>{splash('⬆ Rank up',w.name,'agora no Ranking '+nw.tier,TCOL[nw.tier]);sfx('rank')},800);
@@ -1459,7 +1459,7 @@ function renderAdm(){
   }
   const T=admTab; let body='';
   if(T==='geral')body=`<div class="agroup"><h4>Clube</h4>${arow('Nome do clube','',`<span style="display:flex;gap:6px"><input id="cnI" class="cin w" maxlength="40" value="${esc(clubName(cur))}"><button class="cb" id="cnB">Salvar</button></span>`)}</div>
-    <div class="agroup"><h4>Notificações</h4>${arow('Avisos de conquistas',st.achOff?'Desligados · conquistas continuam sendo registradas, sem aviso na tela':'Ligados · aparece um aviso quando alguém conquista',`<button class="cb ${st.achOff?'bad':''}" id="achNT">${st.achOff?'🔕 Desligados':'🔔 Ligados'}</button>`)}</div>
+    <div class="agroup"><h4>Notificações</h4>${arow('Pop-ups de conquistas',S.settings.achOn?'Ligados · aparece o pop-up no topo da tela quando alguém conquista (todos os dispositivos)':'Desativados · sem pop-up no topo; as conquistas continuam aparecendo após registrar a partida',`<button class="cb ${S.settings.achOn?'':'bad'}" id="achNT">${S.settings.achOn?'🔔 Ligados':'🔕 Desativados'}</button>`)}</div>
     <div class="agroup"><h4>Acesso</h4>${arow('Lançamentos',st.locked?'Trancados · ninguém cadastra partidas avulsas na tela principal (campeonatos continuam lançando)':'Liberados · qualquer pessoa pode cadastrar partidas',`<button class="cb ${st.locked?'bad':''}" id="lkT">${st.locked?'🔒 Trancados':'🔓 Liberados'}</button>`)}${arow('PIN do administrador','Alterar o PIN deste clube','<button class="cb" id="pinChg">🔑 Alterar</button>')}
       <div id="pinForm" hidden style="padding:6px 0 8px"><div style="display:grid;gap:6px"><input id="pinCur" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN atual" style="width:100%"><input id="pinNew" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Novo PIN (mínimo 4 dígitos)" style="width:100%"><input id="pinNew2" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Repetir o novo PIN" style="width:100%"></div><div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="cb pri2" id="pinSv">Salvar PIN</button><span id="pinMsg" class="legend" style="margin:0"></span></div></div></div>
     <div class="agroup"><h4>Regras do ranking</h4>${arow('Margem de faixa','Folga para cair de faixa. Ex.: 50 = só cai do A abaixo de 1750',`<input id="mg" class="cin" type="number" min="0" inputmode="numeric" value="${+st.margin||0}">`)}${arow('Inatividade (dias)','Sai do ranking após esse tempo sem jogar · 0 = nunca',`<input id="ia" class="cin" type="number" min="0" inputmode="numeric" value="${+st.inactiveDays||0}">`)}</div>`;
@@ -1482,7 +1482,7 @@ function renderAdm(){
   B.innerHTML=admHead('⚙️ '+esc(clubName(cur)))+`<div class="atabs">${ADM_TABS.map(([k,t])=>`<button data-t="${k}" class="${k===T?'on':''}">${t}</button>`).join('')}</div>`+body;
   $('admX').onclick=()=>$('admM').classList.remove('on'); 
   B.querySelectorAll('.atabs button').forEach(b=>b.onclick=()=>{admTab=b.dataset.t;renderAdm()});
-  bind('achNT',async()=>{const v=!S.settings.achOff; await put('settings',{...S.settings,achOff:v}); await logA(v?'Avisos de conquistas desligados':'Avisos de conquistas ligados'); renderAdm()});
+  bind('achNT',async()=>{const v=!S.settings.achOn; await put('settings',{...S.settings,achOn:v}); await logA(v?'Avisos de conquistas ligados':'Avisos de conquistas desativados'); renderAdm()});
   bind('lkT',async()=>{const v=!S.settings.locked; await put('settings',{...S.settings,locked:v}); await logA(v?'Lançamentos trancados':'Lançamentos destrancados'); renderAdm()});
   bind('pinChg',()=>{const f=$('pinForm'); if(f){f.hidden=!f.hidden; if(!f.hidden)$('pinCur').focus()}});
   bind('pinSv',async e=>{const c=$('pinCur').value.trim(), n=$('pinNew').value.trim(), n2=$('pinNew2').value.trim(), m=$('pinMsg'), bad=t=>{m.textContent=t;m.style.color='var(--bad)'};
@@ -1607,7 +1607,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.5 (Campeonatos)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.13 (Campeonatos)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -2341,7 +2341,7 @@ function tDetR(){
   if(tv.ren&&tv.sw){const cur=new Set(t.players.map(p=>p.id)), out=t.players.filter(p=>!(R&&0)).slice().sort((a,b)=>nameOf(a.id,a.name).localeCompare(nameOf(b.id,b.name))), inn=vis().filter(p=>!cur.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name));
     h+=`<div class="panel" style="margin:8px 0"><b>🔁 Substituir jogador</b><p class="legend" style="margin:6px 0">O substituto assume o lugar do jogador que sai: herda os resultados dele no campeonato e joga as partidas que faltam. As partidas já lançadas continuam valendo no ranking para quem as jogou.</p><label class="legend" style="display:block;text-align:left">Quem sai</label><select id="tSo" style="width:100%"><option value="">Escolha…</option>${out.map(p=>`<option value="${p.id}"${tv.sw.o===p.id?' selected':''}>${esc(nameOf(p.id,p.name))}</option>`).join('')}</select><label class="legend" style="display:block;text-align:left;margin-top:6px">Quem entra</label><select id="tSn" style="width:100%"><option value="">Escolha…</option>${inn.map(p=>`<option value="${p.id}"${tv.sw.n===p.id?' selected':''}>${esc(p.name)}</option>`).join('')}</select><div class="err" id="tSe" style="color:var(--bad);min-height:1em"></div><div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="sec" id="tSc" style="margin-top:0">Cancelar</button><button class="sec" id="tSk" style="margin-top:0">Substituir</button></div></div>`}
 
-  h+=`<div class="phead" style="--t:var(--ac)"><div class="tcs">${tMini(t)}${t.edit==='admin'?' · 🔒 só o admin edita':''}${t.res==='mgr'?' · 🔑 resultados: só gerentes':t.res==='admin'?' · 🔑 resultados: só o admin':''}</div><div class="tcp">${pod?'🏁 Encerrado':`${pr.dn}/${pr.tot} partidas jogadas`}${(t.wt&&(t.wt.all>1||Object.values(t.wt.ph||{}).some(v=>v>1)))?' · ⚖️ peso no ranking':''}</div></div>`;
+  h+=`<div class="phead" style="--t:var(--ac)"><div class="tcs">${tMini(t)}${t.edit==='admin'?' · 🔒 só o admin edita':''}${t.res==='mgr'?' · 🔑 resultados: só gerentes':t.res==='admin'?' · 🔑 resultados: só o admin':''}</div><div class="tcp">${pod?'🏁 Encerrado':`${pr.dn}/${pr.tot} partidas jogadas`}${(t.wt&&(t.wt.all>1||Object.values(t.wt.ph||{}).some(v=>v>1)))?' · ⚖️ peso no ranking':''}</div>${t.at?`<div class="tcp">📅 Criado em ${new Date(t.at).toLocaleDateString('pt-BR')} às ${new Date(t.at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>`:''}</div>`;
   if(tv.note)h+=`<div class="msg" style="margin:8px 0">${tv.note}</div>`;
   if(!(pod&&pr.dn>=pr.tot)){const nx=tNext(t,R); if(nx.length)h+=`<div class="tsh tnxh${tNxC?' c':''}" id="tNxH" style="margin-top:8px">▶️ Próximos jogos</div>`+(tNxC?'':`<div class="tnxg">`+nx.slice(0,8).map(f=>{const r=R[f.id]; return `<button class="tnx" data-f="${f.id}"><span><b>${esc(nameOf(r.a,PN[r.a]))}</b> x <b>${esc(nameOf(r.b,PN[r.b]))}</b></span><small>${esc(tLab(t,f))}</small></button>`}).join('')+`</div>`+(nx.length>8?`<p class="legend" style="margin:0 0 6px">+ ${nx.length-8} ${nx.length-8===1?'jogo pronto':'jogos prontos'} nas abas abaixo.</p>`:''))}
   if(pod&&(t.fmt!=='gr'||t.gf)){const med=['🥇','🥈','🥉']; h+=`<div class="tpod">${pod.map(x=>`<div><span>${med[x.pos-1]}</span><b>${pnl(x.id,nameOf(x.id,PN[x.id]))}</b></div>`).join('')}</div>`}
@@ -2491,7 +2491,7 @@ async function tSubmit(tid,fid,w,score){
   let note=`✅ <b>${esc(nameOf(w,PN[w]))}</b> venceu${score?' por '+score:''}<br><span class="up">+${d[0]}</span> / <span class="dn">−${d[1]}</span> pontos no ranking`+(d[3]>1?` (peso ×${String(d[3]).replace('.',',')})`:'');
   if(nw&&t0&&nw.tier!==t0)note+=`<br>${nw.tier<t0?'⬆️':'⬇️'} ${pnl(w,nw.name)} agora está no Ranking ${nw.tier}.`;
   if(nl&&t1&&nl.tier!==t1)note+=`<br>${nl.tier<t1?'⬆️':'⬇️'} ${pnl(l,nl.name)} agora está no Ranking ${nl.tier}.`;
-  if(!S.settings.achOff)note+=unl.map(achLine).join('');
+  note+=unl.map(achLine).join('');
   if(t.fmt==='gr'&&f.ph==='g'){const t3=S.tourns.find(x=>x.id===tid)||t, R1=tState(t3), cl=R=>t3.fx.filter(q=>q.gid===f.gid).every(q=>R[q.id]&&R[q.id].fin); if(!cl(R0)&&cl(R1)){const T=tTable(t3,R1,f.gid); note+=`<br>🏁 <b>Grupo ${tGN(f.gid)} encerrado</b>: `+T.map((x,i)=>`${i+1}º ${esc(nameOf(x.id,PN[x.id]))}${t3.dest[i]?' → '+(t3.gf?(t3.dest[i]==='A'?'Final':'3º lugar'):tRtL(t3.dest[i])):' (eliminado)'}`).join(' · ')}}
   tv.note=note; tRes=null; tourRender(); sfx('win'); confetti();
   const t2=S.tourns.find(x=>x.id===tid)||t, pod=tPodium(t2,tState(t2)); if(!was&&pod&&pod[0])setTimeout(()=>{splash('🏆 Campeão',nameOf(pod[0].id,PN[pod[0].id]),t.name,'#ffc400');sfx('rank')},700);
@@ -2723,14 +2723,6 @@ async function doReset(kind){
 
 /* ---- exportar CSV ---- */
 const today=()=>localDay();
-async function exportCsv(btn,name,rows){
-  if(!dl)return; const data='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(';')).join('\r\n'), o=btn.textContent; let t='✅ Arquivo salvo';
-  try{await dl.save({filename:name,data})}catch(e){t=(e&&e.code==='declined')?o:'⚠️ Não foi possível exportar'} btn.textContent=t; setTimeout(()=>btn.textContent=o,2500);
-}
-$('expPlayers').onclick=e=>{ if(rkMode==='ach'){const L=ACH.length; return exportCsv(e.currentTarget,'ranking-conquistas-'+today()+'.csv',[['Posição','Jogador','Conquistas','Total','Fácil','Médio','Difícil','Impossível']].concat(achRankData().map((x,i)=>[i+1,x.p.name,x.n,L,x.c[0],x.c[1],x.c[2],x.c[3]])))}
-  const r=ranked().map(p=>p.id);
-  exportCsv(e.currentTarget,'ranking-jogadores-'+today()+'.csv',[['Posição','Jogador','Faixa','Pontos','Vitórias','Derrotas','Partidas','No ranking','Mão dominante','Empunhadura','Borracha','Conquistas']].concat(vis().sort((a,b)=>b.rating-a.rating).map(p=>{const i=r.indexOf(p.id);return [i>=0?i+1:'',p.name,tier(p),p.rating,p.wins,p.losses,games(p),i>=0?'Sim':'Não',p.hand||'',p.grip||'',p.rubber||'',Object.keys(p.ach||{}).length]})))};
-$('expMatches').onclick=async e=>{const b=e.currentTarget; await loadNames(matchView().map(m=>m.by)); exportCsv(b,'partidas-'+today()+'.csv',[['Temporada','Data','Hora','Vencedor','Placar (vencedor x perdedor)','Perdedor','Pontos do vencedor','Pontos do perdedor','Lançada por','Aparelho','Lançada em','Bônus (×)','Campeonato','Fase']].concat(matchView().map(m=>{const d=D[m.id]||[0,0],t=new Date(m.at);return [seasonOf(m),t.toLocaleDateString('pt-BR'),t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),nameOf(m.winner,m.wn),m.score||'',nameOf(m.loser,m.ln),'+'+d[0],'-'+d[1],whoTxt(m.by),devTxt(m.dev),m.cr?fmt(m.cr):'',d[2]>1?d[2]:'',m.tid?tName(m):'',m.tid?tPhN(m.ph||''):'']})));};
 </script>
 </body>
 </html>
