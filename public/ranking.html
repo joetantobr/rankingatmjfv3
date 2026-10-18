@@ -495,7 +495,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
 .brr{flex:1;display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 6px;font-size:12px;min-height:0}.brr+.brr{border-top:1px solid var(--bd)}.brr.w{font-weight:800;background:rgba(46,158,91,.14)}
 .brn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.brn small{color:var(--mut);font-weight:400}.brr b{font-size:13px}.brr i{color:var(--mut);font-weight:400}
 .brt{position:absolute;right:4px;top:-1px;font-size:9px;font-weight:800;color:var(--mut)}
-.ttabs{display:flex;gap:6px;overflow-x:auto;margin:10px 0 2px;padding-bottom:2px}.ttabs button{flex:none;padding:7px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--tx);font:inherit;font-size:13px;font-weight:700;cursor:pointer;margin:0}.ttabs button.rtl{font-weight:800}.ttabs button.cl:not(.on){border-color:#2e9e5b;color:#1f7a45;background:rgba(46,158,91,.12)}.ttabs button.cl.on{box-shadow:inset 0 0 0 2px #2e9e5b}.tgdone{background:rgba(46,158,91,.14);border:1px solid #2e9e5b;color:#1f7a45;border-radius:8px;padding:5px 8px;font-size:12px;font-weight:700;margin:0 0 6px}table.tt.cld{border-left:4px solid #2e9e5b}.ttabs button.on{background:var(--ac);border-color:var(--ac);color:var(--acx)}
+.ttabs.wr{flex-wrap:wrap;overflow-x:visible}.ttabs{display:flex;gap:6px;overflow-x:auto;margin:10px 0 2px;padding-bottom:2px}.ttabs button{flex:none;padding:7px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--tx);font:inherit;font-size:13px;font-weight:700;cursor:pointer;margin:0}.ttabs button.rtl{font-weight:800}.ttabs button.cl:not(.on){border-color:#2e9e5b;color:#1f7a45;background:rgba(46,158,91,.12)}.ttabs button.cl.on{box-shadow:inset 0 0 0 2px #2e9e5b}.tgdone{background:rgba(46,158,91,.14);border:1px solid #2e9e5b;color:#1f7a45;border-radius:8px;padding:5px 8px;font-size:12px;font-weight:700;margin:0 0 6px}table.tt.cld{border-left:4px solid #2e9e5b}.ttabs button.on{background:var(--ac);border-color:var(--ac);color:var(--acx)}
 .tsr{font-size:11px;font-weight:700;color:var(--mut);margin:8px 0 4px}
 .tgg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}.tgc{border:1px solid var(--bd);border-radius:10px;padding:6px;background:var(--card);min-width:0}
 .tgh{display:flex;justify-content:space-between;align-items:center;gap:4px;font-weight:800;font-size:13px;margin-bottom:4px}.tgh small{color:var(--mut);font-weight:400}
@@ -1548,7 +1548,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.4.1 (Campeonatos)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.4.3 (Campeonatos)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -2108,7 +2108,7 @@ function tListR(){
   $('tourT').textContent='🏟️ Campeonatos';
   const L=[...S.tourns].sort((a,b)=>b.at-a.at).map(t=>{const R=tState(t),pr=tProg(t,R),pod=tPodium(t,R);return {t,pr,pod,done:!!pod&&pr.dn>=pr.tot}});
   const card=x=>{const {t,pr,pod}=x, ch=pod&&pod[0]?pod[0].id:null, nm=id=>esc(nameOf(id,(t.players.find(p=>p.id===id)||{}).name));
-    return `<button class="tcard${x.done?' end':''}${x.t.arch?' arc':''}" data-t="${t.id}"><div class="tcn">${t.arch?'📦 ':''}${esc(t.name)}${t.edit==='admin'?' <small>🔒</small>':''}</div><div class="tcs">${tFmtN(t)} · ${t.players.length} jog.</div><div class="tcp">${pod&&(x.done||t.fmt==='gr')?pod.map(q=>`<div>${['🥇','🥈','🥉'][q.pos-1]} ${q.pos===1?'<b>'+nm(q.id)+'</b>':nm(q.id)}</div>`).join('')+(x.done?'':`<div class="tcs">${pr.dn}/${pr.tot} jogos</div>`):`${pr.dn}/${pr.tot} jogos`}</div></button>`};
+    return `<button class="tcard${x.done?' end':''}${x.t.arch?' arc':''}" data-t="${t.id}"><div class="tcn">${t.arch?'📦 ':''}${esc(t.name)}</div><div class="tcs">${tFmtN(t)} · ${t.players.length} jog.</div><div class="tcp">${pod&&(x.done||t.fmt==='gr')?pod.map(q=>`<div>${['🥇','🥈','🥉'][q.pos-1]} ${q.pos===1?'<b>'+nm(q.id)+'</b>':nm(q.id)}</div>`).join('')+(x.done?'':`<div class="tcs">${pr.dn}/${pr.tot} jogos</div>`):`${pr.dn}/${pr.tot} jogos`}</div></button>`};
   const arc=L.filter(x=>x.t.arch), act=L.filter(x=>!x.done&&!x.t.arch), end=L.filter(x=>x.done&&!x.t.arch);
   $('tourB').innerHTML=`<button class="pri" id="tNewB" style="margin:0 0 12px">➕ Novo campeonato</button>`
     +(act.length?`<div class="tsh">Em andamento</div><div class="tgrid">`+act.map(card).join('')+`</div>`:`<p class="legend">${L.length?'Nenhum campeonato em andamento.':'Nenhum campeonato ainda. Crie o primeiro!'}</p>`)
@@ -2235,6 +2235,7 @@ function tPrevGrBind(){
 function tDetR(){
   const t=S.tourns.find(x=>x.id===tOpenId); if(!t){tv={v:'list'};return tourRender()}
   const R=tState(t), pr=tProg(t,R), pod=tPodium(t,R), SH=tShort(t), PN={}, SD={}; t.players.forEach(p=>{PN[p.id]=p.name;SD[p.id]=p.seed});
+  if(tDetId!==t.id){tDetId=t.id;tNxC=true;tGrC=false;tSfC=true}
   const nm=id=>esc(nameOf(id,PN[id])), can=tCan(t); $('tourT').textContent='🏟️ '+t.name;
   const sdl=id=>SD[id]!=null?`<small>(${SD[id]})</small>`:'';
   const lbl=(s)=>s?`<i>${s.t==='w'?'Venc.':'Perd.'} ${SH[s.f]}</i>`:'<i>—</i>';
@@ -2255,8 +2256,8 @@ function tDetR(){
   const ph2=(fs,byRd)=>{const grp={}; fs.forEach(f=>{const k=f.ph+'|'+f.rd; (grp[k]=grp[k]||{f:[],ph:f.ph,rd:f.rd}).f.push(f)}); return Object.values(grp).sort((a,b)=>a.rd-b.rd||(a.ph==='p3'?-1:b.ph==='p3'?1:0)).map(g=>{const body=g.f.map(card).join(''); return body.trim()?`<div class="tsh">${tPhN(g.ph,t)}</div>`+body:''}).join('')};
   const tab=t.fmt==='gr'?((!t.gf&&tv.tab&&t.rt.includes(tv.tab))?tv.tab:'g'):null;
   if(t.fmt==='gr'){
-    if(!t.gf)h+=`<div class="tlb">Grupos</div><div class="ttabs"><button data-tab="g" data-gs="" class="${tab==='g'&&!tv.gs?'on':''}">Todos</button>${t.groups.map(g=>{const cl=t.fx.filter(f=>f.ph==='g'&&f.gid===g.id).every(f=>R[f.id].fin);return `<button data-tab="g" data-gs="${g.id}" class="${tab==='g'&&tv.gs===g.id?'on':''}${cl?' cl':''}">${cl?'✓ ':''}Grupo ${tGN(g.id)}</button>`}).join('')}</div><div class="tlb">Segunda fase</div>${t.rt.map(L=>{const rf=t.fx.filter(f=>f.rt===L), cl=rf.every(f=>R[f.id].fin), phs=[]; [...rf].sort((x,y)=>x.rd-y.rd||(x.ph==='p3'?-1:y.ph==='p3'?1:0)).forEach(f=>{if(!phs.includes(f.ph))phs.push(f.ph)});
-      return `<div class="ttabs"><button data-tab="${L}" data-rp="" class="rtl${tab===L&&tv.view!=='list'?' on':''}${cl?' cl':''}">${cl?'✓ ':''}Rating ${L}</button><button data-tab="${L}" data-rp="*" class="${tab===L&&tv.view==='list'&&!tv.ph?'on':''}">Lista</button>${phs.map(k=>{const c2=rf.filter(f=>f.ph===k).every(f=>R[f.id].fin);return `<button data-tab="${L}" data-rp="${k}" class="${tab===L&&tv.view==='list'&&tv.ph===k?'on':''}${c2?' cl':''}">${c2?'✓ ':''}${tPhN(k,t).replace(' de final','')}</button>`}).join('')}</div>`}).join('')}`;
+    if(!t.gf)h+=`<div class="tlb tnxh${tGrC?' c':''}" id="tGrH">Grupos</div><div class="ttabs wr"${tGrC?' hidden':''}><button data-tab="g" data-gs="" class="${tab==='g'&&!tv.gs?'on':''}">Todos</button>${t.groups.map(g=>{const cl=t.fx.filter(f=>f.ph==='g'&&f.gid===g.id).every(f=>R[f.id].fin);return `<button data-tab="g" data-gs="${g.id}" class="${tab==='g'&&tv.gs===g.id?'on':''}${cl?' cl':''}">${cl?'✓ ':''}Grupo ${tGN(g.id)}</button>`}).join('')}</div><div class="tlb tnxh${tSfC?' c':''}" id="tSfH">Segunda fase</div><div${tSfC?' hidden':''}>${t.rt.map(L=>{const rf=t.fx.filter(f=>f.rt===L), cl=rf.every(f=>R[f.id].fin), phs=[]; [...rf].sort((x,y)=>x.rd-y.rd||(x.ph==='p3'?-1:y.ph==='p3'?1:0)).forEach(f=>{if(!phs.includes(f.ph))phs.push(f.ph)});
+      return `<div class="ttabs"><button data-tab="${L}" data-rp="" class="rtl${tab===L&&tv.view!=='list'?' on':''}${cl?' cl':''}">${cl?'✓ ':''}Rating ${L}</button><button data-tab="${L}" data-rp="*" class="${tab===L&&tv.view==='list'&&!tv.ph?'on':''}">Lista</button>${phs.map(k=>{const c2=rf.filter(f=>f.ph===k).every(f=>R[f.id].fin);return `<button data-tab="${L}" data-rp="${k}" class="${tab===L&&tv.view==='list'&&tv.ph===k?'on':''}${c2?' cl':''}">${c2?'✓ ':''}${tPhN(k,t).replace(' de final','')}</button>`}).join('')}</div>`}).join('')}</div>`;
     if(tab==='g'){
       t.groups.filter(g=>!tv.gs||tv.gs===g.id).forEach(g=>{const T=tTable(t,R,g.id), fs=t.fx.filter(f=>f.ph==='g'&&f.gid===g.id), cl=fs.every(f=>R[f.id].fin);
         h+=`<div class="tsh">${t.gf?'Classificação':'Grupo '+tGN(g.id)}${cl?' · ✅ encerrado':''}</div>${cl?`<div class="tgdone">${t.gf?'🏁 Fase de grupos encerrada · finalistas definidos':'🏁 Grupo encerrado · classificados definidos'}</div>`:''}<table class="tt${cl?' cld':''}"><tr><th>#</th><th>Jogador</th><th class="n">J</th><th class="n">V</th><th class="n">D</th><th class="n">Sets</th><th class="n">Pts</th><th class="n" title="Rating de destino">→</th></tr>${T.map((x,i)=>`<tr><td>${i+1}</td><td>${pnl(x.id,nameOf(x.id,PN[x.id]))} <small>(${x.seed})</small>${x.wd?' <small class="dn">W.O.</small>':''}</td><td class="n">${x.j}</td><td class="n">${x.v}</td><td class="n">${x.d}</td><td class="n">${x.sp}-${x.sc}</td><td class="n"><b>${x.pts}</b></td><td class="n">${t.dest[i]?(t.gf?`<span class="rtb s r${t.dest[i]==='A'?0:1}">${t.dest[i]==='A'?'F':'3º'}</span>`:tRtS(t.dest[i])):'<small>elim.</small>'}</td></tr>`).join('')}</table>`;
@@ -2293,7 +2294,7 @@ function tDetR(){
   $('tourB').querySelectorAll('[data-ph]').forEach(b=>b.onclick=()=>{const q=b.dataset.ph; if(q==='br'){tv.view='br';tv.ph=''} else {tv.view='list';tv.ph=q} tv.note='';tourRender()});
   $('tourB').querySelectorAll('[data-rd]').forEach(b=>b.onclick=()=>{tv.rd=b.dataset.rd;tv.note='';tourRender()});
   $('tourB').querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tv.tab=b.dataset.tab;tv.gs=b.dataset.gs||'';{const q=b.dataset.rp; if(q===undefined||q===''){tv.view='br';tv.ph=''} else if(q==='*'){tv.view='list';tv.ph=''} else {tv.view='list';tv.ph=q}}tv.note='';tourRender()});
-  if($('tNxH'))$('tNxH').onclick=()=>{tNxC=!tNxC;tourRender()};
+  if($('tNxH'))$('tNxH').onclick=()=>{tNxC=!tNxC;tourRender()}; if($('tGrH'))$('tGrH').onclick=()=>{tGrC=!tGrC;tourRender()}; if($('tSfH'))$('tSfH').onclick=()=>{tSfC=!tSfC;tourRender()};
   $('tourB').querySelectorAll('.tfx.rdy,.brb.rdy,.tnx').forEach(b=>b.onclick=()=>tResOpen(t.id,b.dataset.f));
   $('tShr').onclick=async()=>{const txt=tShareTxt(t,R,PN); try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){if(e&&e.name==='AbortError')return} window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank')};
   $('tLk').onclick=async e=>{const b=e.currentTarget,u=tLink(t); try{await navigator.clipboard.writeText(u); flash(b,'✅ Copiado')}catch(x){try{if(navigator.share){await navigator.share({title:t.name,url:u})}else{prompt('Copie o link:',u)}}catch(y){}}};
@@ -2380,7 +2381,7 @@ async function tSubmit(tid,fid,w,score){
   const t2=S.tourns.find(x=>x.id===tid)||t, pod=tPodium(t2,tState(t2)); if(!was&&pod&&pod[0])setTimeout(()=>{splash('🏆 Campeão',nameOf(pod[0].id,PN[pod[0].id]),t.name,'#ffc400');sfx('rank')},700);
   if(unl.length)setTimeout(()=>achNotify(unl),900);
 }
-let tNxC=true;
+let tNxC=true,tGrC=false,tSfC=true,tDetId=null;
 function tourRender(){ {const lk=$('tourM').querySelector('.lkb'); if(lk)lk.hidden=tv.v!=='list'} $('tourB').classList.toggle('nw',tv.v==='new'); $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
 $('tourBtn').onclick=()=>{tv={v:'list'};tourRender();open('tourM');$('tourM').querySelector('.sheet').scrollTop=0};
 $('tourX').onclick=()=>$('tourM').classList.remove('on'); $('tpX').onclick=()=>$('tpM').classList.remove('on'); $('tpM').onclick=e=>{if(e.target===$('tpM'))$('tpM').classList.remove('on')};
