@@ -256,14 +256,9 @@ html.fx .bg-fx::before{display:none}}
 .acwp{border:1px solid var(--bd);border-radius:99px;background:var(--bg);color:var(--tx);padding:4px 10px;font:inherit;font-size:13px;cursor:pointer}.acwp small{color:var(--mut);margin-left:6px}
 html.fx .g-help{--gc:#22e6ff;--gcs:rgba(34,230,255,.22);flex-direction:row;gap:10px;min-height:48px}html.fx .g-help .gi{font-size:20px}html.fx .g-help::after{animation-delay:1.9s}
 html.fx .g-rank{--gc:#ffe14d;--gcs:rgba(255,225,77,.30)}
-html.fx .g-ach{--gc:#ff7a1a;--gcs:rgba(255,122,26,.28);flex-direction:row;gap:10px;min-height:58px}
-html.fx .g-ach::after{animation:sheen 2.6s ease-in-out infinite;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent)}
-html.fx .g-ach{min-height:66px;font-weight:900;letter-spacing:.12em;border-width:2px;background:linear-gradient(120deg,rgba(255,122,26,.55),rgba(255,196,0,.25) 50%,rgba(255,122,26,.5));animation:achglow 1.8s ease-in-out infinite}
-html.fx .g-ach .gi{font-size:30px;display:inline-block;animation:achwob 2.4s ease-in-out infinite}
-html.fx .g-ach .gl{text-shadow:0 0 10px rgba(255,160,40,.9)}
+html.fx .g-ach{--gc:#ff7a1a;--gcs:rgba(255,122,26,.28)}
 @keyframes achglow{0%,100%{box-shadow:0 0 12px rgba(255,122,26,.5),0 0 0 rgba(255,196,0,0)}50%{box-shadow:0 0 28px rgba(255,150,30,.95),0 0 46px rgba(255,196,0,.45)}}
 @keyframes achwob{0%,60%,100%{transform:scale(1) rotate(0)}10%{transform:scale(1.25) rotate(-14deg)}20%{transform:scale(1.25) rotate(14deg)}30%{transform:scale(1.2) rotate(-10deg)}40%{transform:scale(1.15) rotate(8deg)}50%{transform:scale(1) rotate(0)}}
-html:not(.fx) .g-ach{border:2px solid #ff7a1a;animation:achglow 1.8s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){html.fx .g-ach,html.fx .g-ach .gi,html:not(.fx) .g-ach{animation:none}}
 .achtop{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:2px 0 4px}.achtop b{font-size:20px;color:var(--cy)}.achtop span{font-size:12px;color:var(--mut)}
 .achbar{margin:0 0 8px}.achtabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:0 0 10px;position:sticky;top:-16px;z-index:3;background:var(--sh1,var(--bg));padding:6px 0 4px}
@@ -373,10 +368,10 @@ html.fx.cl .gbtn{--gc:var(--bd);--gcs:transparent;background:var(--card);border:
 html.fx.cl .gbtn::after{display:none}
 html.fx.cl .gbtn:hover{transform:none;border-color:var(--g2)}
 html.fx.cl .gbtn .gi{filter:grayscale(1) sepia(.35)!important}
-html.fx.cl .g-ach,html.fx.cl .g-help{background:var(--g1);border:1px solid var(--g1);min-height:50px;font-weight:700}
-html.fx.cl .g-ach .gl,html.fx.cl .g-help .gl{color:#f6f1e7}
-html.fx.cl .g-ach .gi,html.fx.cl .g-help .gi{filter:none!important;font-size:22px}
-html.fx.cl .g-ach{border-width:1px;background:var(--g1)}
+html.fx.cl .g-help{background:var(--g1);border:1px solid var(--g1);min-height:50px;font-weight:700}
+html.fx.cl .g-help .gl{color:#f6f1e7}
+html.fx.cl .g-help .gi{filter:none!important;font-size:22px}
+html.fx.cl .g-ach .gi{filter:none!important}
 html.fx.cl button.pri{background:var(--g1);color:#fff;font-family:'Source Sans 3',sans-serif!important;letter-spacing:.06em;box-shadow:none}
 html.fx.cl #w1{background:var(--g1);color:#fff}
 html.fx.cl #w2{background:var(--g2);color:#fff}
@@ -454,9 +449,7 @@ html.fx.cl .p3 .achbig{background:var(--g1);border:1px solid var(--g1);color:#f6
 
 /* campeonatos */
 .g-tour{font-weight:700}
-html.fx .g-tour{--gc:#2e9bff;--gcs:rgba(46,155,255,.28);flex-direction:row;gap:10px;min-height:58px}
-html.fx.cl .g-tour{background:var(--g1);border:1px solid var(--g1);min-height:50px;font-weight:700}
-html.fx.cl .g-tour .gl{color:#f6f1e7}html.fx.cl .g-tour .gi{filter:none!important;font-size:22px}
+html.fx .g-tour{--gc:#2e9bff;--gcs:rgba(46,155,255,.28)}
 .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .tcard{display:block;width:100%;min-width:0;text-align:left;padding:8px 10px;margin:0;border:1px solid var(--bd);border-left:5px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);font:inherit;line-height:1.2;cursor:pointer}
 .tcn{font-weight:700;font-size:15px;overflow-wrap:anywhere}.tcs{font-size:11px;color:var(--mut);margin-top:2px}.tcp{font-size:12px;margin-top:3px}.tcard.end{border-left-color:#d99100}.tcard.arc{opacity:.7}
@@ -538,8 +531,8 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
     <button class="gbtn g-add" id="addBtn"><span class="gi">➕</span><span class="gl">Adicionar jogador</span></button>
     <button class="gbtn g-match" id="matchBtn"><span class="gi gi2"><span>🏓</span><span class="mir">🏓</span></span><span class="gl">Visualizar partidas</span></button>
     <button class="gbtn g-play" id="playBtn"><span class="gi">👥</span><span class="gl">Jogadores</span></button>
-    <button class="gbtn g-ach" id="achBtn" style="grid-column:1/-1"><span class="gi">🏅</span><span class="gl">Conquistas</span></button>
-    <button class="gbtn g-tour" id="tourBtn" style="grid-column:1/-1"><span class="gi">🏟️</span><span class="gl">Campeonatos</span></button>
+    <button class="gbtn g-ach" id="achBtn"><span class="gi">🏅</span><span class="gl">Conquistas</span></button>
+    <button class="gbtn g-tour" id="tourBtn"><span class="gi">🏟️</span><span class="gl">Campeonatos</span></button>
     <button class="gbtn g-help" id="helpBtn" style="display:none!important" tabindex="-1" aria-hidden="true"><span class="gi">❓</span><span class="gl">Ajuda · Como funciona o ranking</span></button>
   </div>
   <div class="hint" id="foot" style="white-space:nowrap"><span id="hint"></span> · <button class="lnk" id="admBtn">🔒 Admin</button> · v<span id="ver"></span> · <button class="lnk" id="viewBtn"></button> · <button class="lnk" id="themeBtn"></button><span class="fxonly sndw"> · <button class="lnk" id="sndBtn"></button></span></div>
@@ -1548,7 +1541,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.3.2 (teste)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.3.4 (teste)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
