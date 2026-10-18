@@ -105,8 +105,8 @@ button.pri:disabled{opacity:.4;cursor:not-allowed}
 .lockn{margin-top:10px;text-align:center;font-size:13px;color:var(--bad);font-weight:700}
 .cadt{text-align:center;font-weight:800;font-size:15px;letter-spacing:.06em;margin:0 0 26px}
 .sheet.adm{max-width:640px}
-.ahead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.ahead h3{margin:0;font-size:17px}
-.sheet{position:relative}.lkb{position:absolute;top:12px;right:14px;z-index:4;background:var(--card)}.x2{background:none;border:1px solid var(--bd);border-radius:8px;color:var(--mut);width:30px;height:30px;font-size:15px;cursor:pointer;padding:0}
+.ahead{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;margin-bottom:8px}.ahead h3{margin:0;font-size:17px;text-align:center}.ahead>:nth-child(2){justify-self:center;text-align:center;justify-content:center;min-width:0}.ahead .al,.ahead .ar{min-width:66px;display:flex;align-items:center;gap:6px}.ahead .ar{justify-content:flex-end}#tourM .ahead:has(.bk:not([hidden])) .al{min-width:102px}@media (max-width:450px){#tourM .ahead .al{min-width:0!important;width:0}}.ahead .al{justify-content:flex-start}.bk{margin:0;width:30px;background:none;border:1px solid var(--bd);border-radius:8px;color:var(--mut);height:30px;padding:0;font:inherit;font-size:16px;cursor:pointer}
+.sheet{position:relative}.lkb{background:var(--card)}.x2{background:none;border:1px solid var(--bd);border-radius:8px;color:var(--mut);width:30px;height:30px;font-size:15px;cursor:pointer;padding:0}
 .hlp{font-size:14px;line-height:1.5}.hlp h4{margin:14px 0 6px;font-size:15px;color:var(--ac)}.hlp h4:first-child{margin-top:2px}.hlp p{margin:6px 0}.hlp .bx{border:1px solid var(--bd);border-radius:12px;background:var(--card);padding:10px 12px;margin:8px 0}.hlp .bx b.t{display:block;margin-bottom:2px}
 .hlp ol.st{list-style:none;counter-reset:s;padding:0;margin:8px 0}.hlp ol.st>li{counter-increment:s;position:relative;border:1px solid var(--bd);border-radius:12px;background:var(--card);padding:10px 12px 10px 46px;margin:8px 0}.hlp ol.st>li::before{content:counter(s);position:absolute;left:10px;top:10px;width:26px;height:26px;border-radius:50%;background:var(--ac);color:var(--acx);font-weight:800;display:grid;place-items:center;font-size:14px}.hlp ol.st>li>b:first-child{display:block}
 .hlp table.ex{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}.hlp table.ex td,.hlp table.ex th{border:1px solid var(--bd);padding:6px 8px;text-align:left}.hlp table.ex th{background:var(--card);color:var(--mut);font-weight:700}.hlp .tag{display:inline-block;border-radius:99px;padding:1px 9px;font-weight:800;font-size:12px;color:#fff}.hlp .up{color:var(--ok);font-weight:700}.hlp .dn{color:var(--bad);font-weight:700}.hlp small{color:var(--mut)}
@@ -453,7 +453,7 @@ html.fx.cl .p3 .achbig{background:var(--g1);border:1px solid var(--g1);color:#f6
 html.fx .g-tour{--gc:#2e9bff;--gcs:rgba(46,155,255,.28)}
 .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .tcard{display:block;width:100%;min-width:0;text-align:left;padding:8px 10px;margin:0;border:1px solid var(--bd);border-left:5px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);font:inherit;line-height:1.2;cursor:pointer}
-.tcn{font-weight:700;font-size:15px;overflow-wrap:anywhere}.tcs{font-size:11px;color:var(--mut);margin-top:2px}.tcp{font-size:12px;margin-top:3px}.tcard.end{border-left-color:#d99100}.tcard.arc{opacity:.7}
+.tcn{font-weight:700;font-size:15px;overflow-wrap:anywhere}.tcs{font-size:11px;color:var(--mut);margin-top:2px;text-align:center}.tcp{font-size:12px;margin-top:3px;text-align:center}.tcard.end{border-left-color:#d99100}.tcard.arc{opacity:.7}
 .x2.ped{display:grid;place-items:center;padding:0;flex:none}
 .hrow{display:flex;gap:8px;margin:0 0 10px}.hrow select{flex:1;min-width:0;font-size:14px;padding-left:8px;padding-right:4px}
 .hcnt{font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -507,7 +507,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
 .tstep{display:flex;align-items:center;justify-content:center;gap:14px}.tstep .sec{width:44px;margin:0;padding:6px 0;font-size:18px}.tstep b{min-width:90px;text-align:center}
 .tbp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}.tbp label{font-size:12px;color:var(--mut);display:flex;flex-direction:column;gap:2px}
 .tpod{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}.tpod div{text-align:center;padding:8px 14px;border:1px solid var(--bd);border-radius:12px;background:var(--card)}.tpod span{display:block;font-size:26px}
-.tt td,.tt th{padding:6px 3px}.tbt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}.tbt .sec{margin-top:0;padding:10px 4px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media (max-width:380px){.tbt .sec{font-size:12px;padding:10px 2px}}
+.tt td,.tt th{padding:6px 3px}.tbt .sec{white-space:normal!important;text-overflow:clip!important;line-height:1.15;overflow-wrap:anywhere}.tbt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}.tbt .sec{margin-top:0;padding:10px 4px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media (max-width:380px){.tbt .sec{font-size:12px;padding:10px 2px}}
 .tsc{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px}.tsc h5{margin:0 0 6px;font-size:13px;text-align:center;overflow-wrap:anywhere}
 .tsc>div button{display:block;width:100%;margin:0 0 6px;padding:12px 6px;border:2px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);font:inherit;font-weight:700;cursor:pointer}
 .tsc>div button.on{background:var(--ac);border-color:var(--ac);color:var(--acx)}
@@ -515,6 +515,8 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
 #admM{z-index:11}
 .pfch,.pfsg{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}.pfc,.pfs{margin:0;padding:5px 10px;border-radius:99px;font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx)}.pfc{background:var(--g1,var(--ac));border-color:var(--g1,var(--ac));color:#fff;font-weight:700}
 .chi{margin:0 0 6px;padding:7px 10px;border:1px solid var(--bd);border-left:4px solid var(--ok);border-radius:8px;background:var(--card);font-size:13px;line-height:1.5}.chi.l{border-left-color:var(--bad)}.chi small{font-size:12px;color:var(--mut)}.chi .tbd{margin:0}
+#playM.pdet .sheet>.ahead{display:block;height:0;margin:0}#playM.pdet .sheet>.ahead .ar{position:absolute;top:12px;right:14px;z-index:4}#playM.pdet .sheet>.ahead .al,#playM.pdet .sheet>.ahead h3{display:none}#playM .pbig{font-weight:800!important}
+#rkLeg,.ctr,#achP>.legend{text-align:center}.achtop{justify-content:center;text-align:center}.atabs{justify-content:safe center}
 .pfd{border:1px solid var(--bd);border-radius:8px;padding:8px 10px;margin:0 0 8px;background:var(--card)}.pfd summary{cursor:pointer;font-weight:700;font-size:14px}.pfd summary small{color:var(--ac);font-weight:700}
 </style>
 </head>
@@ -1385,7 +1387,7 @@ function chShow(k){ const e=$('chI'),m=chM[k]; if(!e)return; if(!m){e.innerHTML=
 function chBind(){ document.querySelectorAll('#playD .cdot').forEach(c=>c.onclick=()=>{const k=+c.dataset.i; const id=chM[k]&&chM[k].id; chSel=chSel===id?null:id; renderPlayers()}); if(chSel){const k=chM.findIndex(m=>m&&m.id===chSel); if(k>0)chShow(k); else chSel=null} }
 function renderPlayers(){
   const p=histId?byId(histId):null; if(!p)histId=null;
-  $('playL').hidden=!!p; $('playD').hidden=!p; $('playBack').hidden=!p;
+  $('playM').classList.toggle('pdet',!!p); $('playL').hidden=!!p; $('playD').hidden=!p; $('playBack').hidden=!p;
   if(!p){
     const l=[...P].sort(admin?byNameArch:(a,b)=>a.name.localeCompare(b.name)); $('playT').hidden=false; $('playT').textContent='Jogadores ('+(admin?vis():P).length+')';
     $('playL').innerHTML=l.length?l.map(q=>`<div class="plw t${tier(q)}"><button class="pl t${tier(q)} ${admin&&q.hidden?'arq':''}${justAdded&&justAdded.id===q.id&&Date.now()-justAdded.at<8000?' newp':''}" data-id="${q.id}"><span>${esc(q.name)}${fire(q)}${admin&&q.hidden?' (arquivado)':''}</span><b style="color:var(--t)">${q.rating}</b></button>${admin?`<button class="pdel" data-id="${q.id}" title="Excluir jogador" aria-label="Excluir jogador">🗑</button>`:''}</div>`).join(''):'<p style="color:var(--mut);grid-column:1/-1">Nenhum jogador cadastrado ainda.</p>';
@@ -1440,7 +1442,7 @@ $('admBtn').onclick=()=>{pend=null;renderAdm();open('admM'); if(!admin){focusPin
 let admTab='geral', bkText='', bkData=null;
 const ADM_TABS=[['geral','Geral'],['pts','Pontuação'],['jog','Jogadores'],['temp','Temporada'],['bkp','Backup'],['adv','Avançado']];
 const arow=(l,sm,c)=>`<div class="arow"><div class="al">${l}${sm?`<small>${sm}</small>`:''}</div>${c}</div>`;
-const admHead=(t,extra)=>`<div class="ahead"><h3>${t}</h3><div style="display:flex;gap:6px;align-items:center"><button class="x2" id="admLk" title="Copiar link desta tela" aria-label="Copiar link desta tela">🔗</button>${extra||''}<button class="x2" id="admX" title="Fechar" aria-label="Fechar">✕</button></div></div>`;
+const admHead=(t,extra)=>`<div class="ahead"><div class="al"></div><h3>${t}</h3><div class="ar"><button class="x2" id="admLk" title="Copiar link desta tela" aria-label="Copiar link desta tela">🔗</button>${extra||''}<button class="x2" id="admX" title="Fechar" aria-label="Fechar">✕</button></div></div>`;
 const bind=(id,fn)=>{const el=$(id); if(el)el.onclick=fn}, bindCh=(id,fn)=>{const el=$(id); if(el)el.onchange=fn};
 function renderAdm(){
   const B=$('admB'), st=S.settings;
@@ -1602,7 +1604,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.7.3 (Campeonatos)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.8.8 (Campeonatos)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -1876,8 +1878,17 @@ function viewLink(mid){
   else{h={rankM:'ranking',matchM:'partidas',playM:'jogadores',achAllM:'conquistas',admM:'admin',helpM:'ajuda',tourM:'campeonatos'}[mid]; if(mid==='achAllM'){h+='&n='+achTab; if(achSel)h+='&k='+achSel} if(cur!=='main')h+='&c='+cur}
   return APP_URL+'#'+h;
 }
-['rankM','matchM','playM','achAllM','helpM','tourM'].forEach(mid=>{const sh=$(mid).querySelector('.sheet'), b=document.createElement('button'); b.className='x2 lkb'; b.title='Copiar link desta tela'; b.setAttribute('aria-label','Copiar link desta tela'); b.textContent='🔗'; if(mid==='achAllM'||mid==='helpM'||mid==='tourM')b.style.right='54px';
-  b.onclick=()=>copyViewLink(mid,b); sh.appendChild(b)});
+function normHead(mid){ const sh=$(mid).querySelector('.sheet'); if(!sh)return; let hd=sh.querySelector(':scope>.ahead');
+  if(!hd){ const h3=sh.querySelector(':scope>h3'); if(!h3)return; hd=document.createElement('div'); hd.className='ahead'; sh.insertBefore(hd,h3); hd.appendChild(h3);
+    const x=document.createElement('button'); x.className='x2'; x.id=mid+'X'; x.title='Fechar'; x.setAttribute('aria-label','Fechar'); x.textContent='✕'; x.onclick=()=>$(mid).classList.remove('on'); hd.appendChild(x)}
+  if(hd.querySelector(':scope>.al'))return; const kids=[...hd.children], al=document.createElement('div'), ar=document.createElement('div');
+  al.className='al'; ar.className='ar'; if(mid==='tourM'){const bk=document.createElement('button'); bk.className='bk'; bk.hidden=true; bk.textContent='←'; bk.title='Voltar'; bk.setAttribute('aria-label','Voltar'); ar.appendChild(bk)}
+  kids.slice(1).forEach(k=>ar.appendChild(k)); hd.prepend(al); hd.appendChild(ar) }
+function setBack(mid,fn){ const b=$(mid).querySelector('.ahead .bk'); if(!b)return; b.hidden=!fn; b.onclick=fn||null }
+['rankM','matchM','playM','achAllM','helpM','tourM','pxM','achM','tpM'].forEach(normHead);
+['rankM','matchM','playM','achAllM','helpM','tourM'].forEach(mid=>{const sh=$(mid).querySelector('.sheet'), b=document.createElement('button'); b.className='x2 lkb'; b.title='Copiar link desta tela'; b.setAttribute('aria-label','Copiar link desta tela'); b.textContent='🔗';
+  b.onclick=()=>copyViewLink(mid,b); const ar=sh.querySelector('.ahead>.ar'), bk=ar.querySelector('.bk'); ar.insertBefore(b,bk?bk.nextSibling:ar.firstChild); if(mid==='tourM')b.onclick=()=>tCopyLink(b)});
+async function tCopyLink(b){ const t=tv.v==='det'&&(S.tourns||[]).find(x=>x.id===tOpenId); if(!t)return copyViewLink('tourM',b); const u=tLink(t); try{await navigator.clipboard.writeText(u); flash(b,'✅')}catch(e){try{if(navigator.share){await navigator.share({title:t.name,url:u})}else{prompt('Copie o link:',u)}}catch(x){}} }
 async function copyViewLink(mid,b){const u=viewLink(mid); try{await navigator.clipboard.writeText(u); flash(b,'✅')}catch(e){try{if(navigator.share){await navigator.share({title:'Ranking '+clubName(cur),url:u})}else{prompt('Copie o link:',u)}}catch(x){}}}
 $('admM').addEventListener('click',e=>{const b=e.target.closest('#admLk'); if(b)copyViewLink('admM',b)});
 
@@ -2176,7 +2187,7 @@ function tListR(){
     return `<button class="tcard${x.done?' end':''}${x.t.arch?' arc':''}" data-t="${t.id}"><div class="tcn">${t.arch?'📦 ':''}${esc(t.name)}</div><div class="tcs">${tFmtN(t)} · ${t.players.length} jog.</div><div class="tcp">${pod&&(x.done||t.fmt==='gr')?pod.map(q=>`<div>${['🥇','🥈','🥉'][q.pos-1]} ${q.pos===1?'<b>'+nm(q.id)+'</b>':nm(q.id)}</div>`).join('')+(x.done?'':`<div class="tcs">${pr.dn}/${pr.tot} jogos</div>`):`${pr.dn}/${pr.tot} jogos`}</div></button>`};
   const arc=L.filter(x=>x.t.arch), act=L.filter(x=>!x.done&&!x.t.arch), end=L.filter(x=>x.done&&!x.t.arch);
   $('tourB').innerHTML=`<button class="pri" id="tNewB" style="margin:0 0 12px">➕ Novo campeonato</button>`
-    +(act.length?`<div class="tsh">Em andamento</div><div class="tgrid">`+act.map(card).join('')+`</div>`:`<p class="legend">${L.length?'Nenhum campeonato em andamento.':'Nenhum campeonato ainda. Crie o primeiro!'}</p>`)
+    +(act.length?`<div class="tsh">Em andamento</div><div class="tgrid">`+act.map(card).join('')+`</div>`:`<p class="legend ctr">${L.length?'Nenhum campeonato em andamento.':'Nenhum campeonato ainda. Crie o primeiro!'}</p>`)
     +(end.length?`<div class="tsh">Encerrados</div><div class="tgrid">`+end.map(card).join('')+`</div>`:'')
     +(arc.length?`<button class="sec" id="tArc">📦 ${tv.arc?'Ocultar':'Ver'} arquivados (${arc.length})</button>`+(tv.arc?`<div class="tsh">Arquivados</div><div class="tgrid">${arc.map(card).join('')}</div>`:''):'')
     +(L.some(x=>x.done)?`<button class="sec" id="tHallB">🏆 Quadro de campeões</button>`:'')+`<button class="sec" data-close>Fechar</button>`;
@@ -2358,9 +2369,9 @@ function tDetR(){
   Object.values(grp).sort((a,b)=>a.rd-b.rd||(a.ph==='p3'?-1:b.ph==='p3'?1:0)).forEach(g=>{const hd=t.fmt==='rr'?'Rodada '+g.rd:tPhN(g.ph), body=g.f.map(card).join(''); if(body.trim())h+=`<div class="tsh">${hd}</div>`+body});
   }
   const wds=Object.entries(t.wd||{}); if(wds.length)h+=`<div class="tsh">Desistências (W.O.)</div>`+wds.map(([pid,rd])=>{const fx=t.fx.find(g=>g.rd===+rd), lab=t.fmt==='rr'?'do campeonato (W.O. na rodada '+rd+')':(t.fmt==='gr'&&+rd<=t.gmax)?'da fase de grupos e do mata-mata':'na fase '+tPhN(fx?fx.ph:'',t); return `<div class="tpl"><span>${pnl(pid,nameOf(pid,PN[pid]))} <small>saiu ${lab}</small></span>${can?`<button class="tun" data-wd="${pid}" title="Reverter W.O." aria-label="Reverter W.O.">↩</button>`:''}</div>`}).join('')+`<p class="legend">Quem leva W.O. perde os jogos por W.O. e os adversários vencem pelo placar máximo. As partidas já lançadas continuam no ranking.</p>`;
-  h+=`<div class="wrow" style="margin-top:12px"><button class="sec" id="tShr" style="margin-top:0">📤 Compartilhar</button><button class="sec" id="tLk" style="margin-top:0">🔗 Copiar link</button></div>`;
-  if(dl){const I=tJpgInfo(t,R); h+=`<div class="wrow" style="margin-top:8px"><button class="sec" id="tJpg" style="margin-top:0">${I.lab}</button>${I.kind==='tb'?`<button class="sec" id="tJpgM" style="margin-top:0">🖼️ Salvar partidas (JPG)</button>`:''}</div>`}
-  h+=`<div class="tbt" style="${can?'':'grid-template-columns:1fr'}"><button class="sec" id="tWt" title="Peso no ranking">⚖️ Peso</button>${can?`<button class="sec" id="tAr" title="${t.arch?'Desarquivar':'Arquivar'} campeonato">📦 ${t.arch?'Restaurar':'Arquivar'}</button><button class="sec" id="tDl" title="Apagar campeonato">🗑️ Apagar</button>`:''}</div>`;
+  {const I=dl?tJpgInfo(t,R):null, bs=[]; if(I){bs.push(`<button class="sec" id="tJpg" style="margin-top:0">${I.lab}</button>`); if(I.kind==='tb')bs.push(`<button class="sec" id="tJpgM" style="margin-top:0">🖼️ Salvar partidas (JPG)</button>`)} bs.push(`<button class="sec" id="tWt" title="Peso no ranking" style="margin-top:0">⚖️ Peso</button>`);
+    h+=`<div class="tbt" style="grid-template-columns:repeat(${bs.length},minmax(0,1fr))">${bs.join('')}</div>`;
+    if(can)h+=`<div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:6px"><button class="sec" id="tAr" title="${t.arch?'Desarquivar':'Arquivar'} campeonato" style="margin-top:0">📦 ${t.arch?'Restaurar':'Arquivar'}</button><button class="sec" id="tDl" title="Apagar campeonato" style="margin-top:0">🗑️ Apagar</button></div>`}
   if(tv.wt)h+=tWtHtml(t);
   if(tv.del)h+=`<div class="panel" style="margin:8px 0"><b>Apagar “${esc(t.name)}”?</b><p class="legend" style="margin:6px 0">Escolha o que fazer com as partidas já lançadas:</p><button class="sec" id="tDa" style="color:var(--bad)">Apagar campeonato e as partidas dele (saem do ranking)</button><button class="sec" id="tDb">Apagar só o campeonato (as partidas continuam valendo no ranking)</button><button class="sec" id="tDc">Cancelar</button></div>`;
   h+=`<button class="sec" id="tLs">← Campeonatos</button>`;
@@ -2371,8 +2382,6 @@ function tDetR(){
   $('tourB').querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tv.tab=b.dataset.tab;tv.gs=b.dataset.gs||'';{const q=b.dataset.rp; if(q===undefined||q===''){tv.view='br';tv.ph=''} else if(q==='*'){tv.view='list';tv.ph=''} else {tv.view='list';tv.ph=q}}tv.note='';tourRender()});
   if($('tNxH'))$('tNxH').onclick=()=>{tNxC=!tNxC;tourRender()}; if($('tGrH'))$('tGrH').onclick=()=>{tGrC=!tGrC;tourRender()}; if($('tSfH'))$('tSfH').onclick=()=>{tSfC=!tSfC;tourRender()};
   $('tourB').querySelectorAll('.tfx.rdy,.brb.rdy,.tnx').forEach(b=>b.onclick=()=>tResOpen(t.id,b.dataset.f));
-  $('tShr').onclick=async()=>{const txt=tShareTxt(t,R,PN); try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){if(e&&e.name==='AbortError')return} window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank')};
-  $('tLk').onclick=async e=>{const b=e.currentTarget,u=tLink(t); try{await navigator.clipboard.writeText(u); flash(b,'✅ Copiado')}catch(x){try{if(navigator.share){await navigator.share({title:t.name,url:u})}else{prompt('Copie o link:',u)}}catch(y){}}};
   $('tourB').querySelectorAll('.tun[data-f]').forEach(b=>b.onclick=()=>sure(b,()=>tUndo(t,b.dataset.f)));
   $('tourB').querySelectorAll('.tun[data-wd]').forEach(b=>b.onclick=()=>sure(b,()=>tGate(t,async()=>{const wd={...(t.wd||{})}; delete wd[b.dataset.wd]; await put('tournaments',{...t,wd}); await logA(`W.O. revertido no campeonato “${t.name}”`); tv.note='↩ W.O. revertido.'; tourRender()})));
   if($('tJpg'))$('tJpg').onclick=e=>tJpgGo(e.currentTarget,'main',t); if($('tJpgM'))$('tJpgM').onclick=e=>tJpgGo(e.currentTarget,'mt',t); if($('tJpgP'))$('tJpgP').onclick=e=>tJpgGo(e.currentTarget,'pod',t);
@@ -2467,7 +2476,7 @@ async function tSubmit(tid,fid,w,score){
   if(unl.length)setTimeout(()=>achNotify(unl),900);
 }
 let tNxC=true,tGrC=false,tSfC=true,tDetId=null;
-function tourRender(){ {const lk=$('tourM').querySelector('.lkb'); if(lk)lk.hidden=tv.v!=='list'} $('tourB').classList.toggle('nw',tv.v==='new'); $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
+function tourRender(){ {const bid={new:'tBk',prev:'tBk2',det:'tLs',hall:'hBk'}[tv.v]; setBack('tourM',bid?()=>{const e=$(bid); if(e)e.click(); else{tv={v:'list'};tourRender()}}:null)} {const lk=$('tourM').querySelector('.lkb'); if(lk)lk.hidden=!(tv.v==='list'||tv.v==='det')} $('tourB').classList.toggle('nw',tv.v==='new'); $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
 $('tourBtn').onclick=()=>{tv={v:'list'};tourRender();open('tourM');$('tourM').querySelector('.sheet').scrollTop=0};
 $('tourX').onclick=()=>$('tourM').classList.remove('on'); $('tpX').onclick=()=>$('tpM').classList.remove('on'); $('tpM').onclick=e=>{if(e.target===$('tpM'))$('tpM').classList.remove('on')};
 
@@ -2515,7 +2524,7 @@ async function tHallJpg(btn){
         x.fillStyle=P.mut; x.font=f?`500 15px ${P.FB}`:'14px system-ui,sans-serif'; x.fillText(new Date(h.end).toLocaleDateString('pt-BR')+' · '+tFmtN(h.t),44,cy+13);
         x.textAlign='right'; x.fillStyle=P.tier.A; x.font=f?`800 22px ${P.FB}`:'bold 20px system-ui,sans-serif'; x.fillText('🏆 '+fitTxt(x,nameOf(ch&&ch.id,p&&p.name),300),W-44,cy); y+=HR})}
     x.textAlign='left'; imgFooter(x,W,H,P)})}
-function tPlayerHtml(pid){ const A=tAll().filter(x=>x.t.players.some(p=>p.id===pid)); if(!A.length)return {n:0,h:'<p style="color:var(--mut)">Nenhum campeonato disputado.</p>'}; A.sort((a,b)=>b.end-a.end);
+function tPlayerHtml(pid){ const A=tAll().filter(x=>x.t.players.some(p=>p.id===pid)); if(!A.length)return {n:0,h:'<p style="color:var(--mut);text-align:center">Nenhum campeonato disputado.</p>'}; A.sort((a,b)=>b.end-a.end);
   let c=0,v=0,t3=0,j=0; const rows=A.map(x=>{const q=x.done&&x.pod.find(z=>z.id===pid); if(x.done){j++; if(q){if(q.pos===1)c++;else if(q.pos===2)v++;else if(q.pos===3)t3++}}
     const res=!x.done?'<span style="color:var(--mut)">em andamento</span>':q?['🏆 Campeão','🥈 Vice','🥉 3º lugar'][q.pos-1]:'Participou';
     return `<button class="hm" data-tg="${x.t.id}"><span class="hmn">${esc(x.t.name)}<small>${new Date(x.end).toLocaleDateString('pt-BR')}</small></span><span class="hmr">${res}</span></button>`}).join('');
