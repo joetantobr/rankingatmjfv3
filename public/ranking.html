@@ -342,7 +342,7 @@ html.fx.cl:root{--bg:#f6f1e7;--card:#fffdf8;--tx:#1f2a24;--mut:#6b7168;--bd:#d9c
 @media (prefers-color-scheme:dark){html.fx.cl:root:not([data-theme="light"]){--bg:#141a17;--card:#1b2420;--tx:#ece6d6;--mut:#a3a798;--bd:#34413a;--ac:#4f9a79;--acx:#0f1512;--ok:#6fcf97;--bad:#e8857a;--cy:#6fb596;--mg:#c9a95b;--p1:#1b2420;--p2:#1b2420;--sh1:#1b2420;--sh2:#141a17;--pa:#1b2420;--pb:#1b2420;--g1:#4f9a79;--g2:#c9a95b;color-scheme:dark}}
 html.fx.cl[data-theme="dark"]:root{--bg:#141a17;--card:#1b2420;--tx:#ece6d6;--mut:#a3a798;--bd:#34413a;--ac:#4f9a79;--acx:#0f1512;--ok:#6fcf97;--bad:#e8857a;--cy:#6fb596;--mg:#c9a95b;--p1:#1b2420;--p2:#1b2420;--sh1:#1b2420;--sh2:#141a17;--pa:#1b2420;--pb:#1b2420;--g1:#4f9a79;--g2:#c9a95b;color-scheme:dark}
 html.fx.cl[data-theme="light"]:root{--bg:#f6f1e7;--card:#fffdf8;--tx:#1f2a24;--mut:#6b7168;--bd:#d9cfba;--ac:#1f5c46;--acx:#fff;--ok:#2b7a4b;--bad:#a63a2f;--cy:#1f5c46;--mg:#8a6d2f;--p1:#fffdf8;--p2:#fffdf8;--sh1:#fffdf8;--sh2:#f6f1e7;--pa:#fffdf8;--pb:#fffdf8;--g1:#1f5c46;--g2:#8a6d2f;color-scheme:light}
-html.cl .bg-fx,html.cl .cf,html.cl .ar,html.cl .sndw{display:none!important}
+html.cl .bg-fx,html.cl .cf,html.cl .sndw{display:none!important}
 html.fx.cl *,html.fx.cl *::before,html.fx.cl *::after{animation:none!important;text-shadow:none!important;box-shadow:none!important}
 html.fx.cl body{font-family:'Source Sans 3',system-ui,sans-serif;font-weight:400;font-size:16px;background:var(--bg)}
 html.fx.cl :is(button,input,select,textarea,.gbtn,.gl,.cb,.pri,.sec){font-family:'Source Sans 3',system-ui,sans-serif!important}
@@ -358,7 +358,7 @@ html.fx.cl h1.ttl .tt,html.fx.cl h1.ttl .clubb{background:none;-webkit-text-fill
 html.fx.cl h1.ttl .clubb{border-bottom:1px solid var(--g2)}
 html.fx.cl h1.ttl .e{filter:grayscale(.7) opacity(.8)}
 html.fx.cl .season{background:transparent;border:0;border-top:1px solid var(--g2);border-bottom:1px solid var(--g2);border-radius:0;color:var(--g2);letter-spacing:.3em;padding:3px 16px;font-family:'Source Sans 3',sans-serif;font-weight:600;text-transform:uppercase}
-html.fx.cl .cadt{color:var(--tx);letter-spacing:.2em;font-size:clamp(15px,4.6vw,19px);margin-bottom:20px}
+html.fx.cl .cadt{color:var(--tx);letter-spacing:.14em;font-size:clamp(15px,4.6vw,19px);margin-bottom:20px;font-weight:700;-webkit-text-stroke:.7px currentColor;white-space:nowrap}
 html.fx.cl #s1.sq,html.fx.cl #s2.sq{border:1.5px solid var(--g1);background:var(--card);border-radius:6px;box-shadow:0 1px 0 var(--bd)!important}
 html.fx.cl #s2.sq{border-color:var(--g2)}
 html.fx.cl .sq,html.fx.cl .sq *{color:var(--mut)}
@@ -482,6 +482,12 @@ html.fx .g-tour{--gc:#2e9bff;--gcs:rgba(46,155,255,.28)}
 .rtb.r0{background:#7c3aed}.rtb.r1{background:#0e9aa7}.rtb.r2{background:#d6336c}.rtb.r3{background:#6c757d}
 .tpS{max-width:300px!important;width:100%;border-radius:14px!important;padding:10px 12px 12px!important;max-height:none!important}.tpS .pri,.tpS .sec{padding:8px;font-size:14px;margin-top:6px}.tpS .panel{padding:8px 10px}.tbd{background:none;border:0;padding:0 2px;margin:0;font-size:13px;cursor:pointer;vertical-align:middle;line-height:1}.mtp .mut{color:var(--mut)}.tlb{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:10px 0 0}.brw{overflow-x:auto;padding:4px 0 8px;margin:6px -2px 0}.brc{position:relative}.brc svg{position:absolute;left:0;top:0;pointer-events:none}.brc svg path{fill:none;stroke:var(--bd);stroke-width:2}
 .tnx{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:7px 10px;margin:0 0 5px;border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);font:inherit;font-size:14px;line-height:1.2;cursor:pointer}.tnx small{flex:none;color:var(--mut);font-size:11px;text-align:right;max-width:42%}.tnx b{font-weight:700}
+.nw{container-type:inline-size}.tg3,.tg2{display:grid;grid-template-columns:1fr;gap:0}.tg2 .field{margin:10px 0}.tg2 .seg button{padding:7px 4px}.tg2 .tstep{justify-content:flex-start}.tg2 .tstep .sec{width:38px;padding:4px 0}.tg3 .field{margin:10px 0}
+@container (min-width:560px){.tg3{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.tg3 .field{margin:10px 0 4px}.tg2{grid-template-columns:1fr 1fr;gap:14px}.tg2 .field{margin:10px 0 4px}}
+@container (max-width:559px){.seg.f4{grid-template-columns:repeat(2,1fr)!important}}
+.nw .field>span{font-size:15px;font-weight:700;color:var(--tx)}
+.tph{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}#tourB .tph span{font-size:19px;font-weight:800;color:var(--tx);margin:0}button.tadd{width:42px;height:42px;padding:0;margin:0;border-radius:50%;font-size:26px;font-weight:700;line-height:1;flex:none}
+#addM{z-index:11}
 .brs{position:absolute;font-size:12px;font-weight:800;color:var(--tx);letter-spacing:.03em;border-bottom:2px solid var(--ac);padding-right:10px}
 .brh{position:absolute;top:0;text-align:center;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
 .brb{position:absolute;box-sizing:border-box;display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font:inherit;padding:0;margin:0;overflow:hidden;text-align:left}
@@ -513,7 +519,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
   <h1 class="ttl"><span class="e">🏓</span><span class="tt">Ranking</span><button id="clubBtn" class="clubb"></button><span class="e e2">🏓</span></h1>
   <div class="season" id="seasonLbl"></div>
   <div class="rbar" id="rulesBar" hidden></div>
-  <div class="cadt"><span class="ar">⬇️</span> CADASTRAR PARTIDA <span class="ar">⬇️</span></div>
+  <div class="cadt"><span class="ar">⬇️</span> CADASTRAR UMA PARTIDA <span class="ar">⬇️</span></div>
   <div class="row"><button class="sq" id="s1"></button><div class="vs">VS</div><button class="sq" id="s2"></button></div>
   <div style="text-align:center;margin-top:6px"><button class="lnk" id="clrBtn" hidden>✕ limpar seleção</button></div>
   <div class="panel" id="match" hidden>
@@ -938,12 +944,13 @@ function renderPick(){
 /* ---- novo jogador ---- */
 function setGrp(g){newGrp=g;document.querySelectorAll('#aGrp button').forEach(b=>b.classList.toggle('on',b.dataset.g===g))}
 document.querySelectorAll('#aGrp button').forEach(b=>b.onclick=()=>setGrp(b.dataset.g));
-$('addBtn').onclick=()=>{$('aName').value='';setGrp('C');$('aGrpF').hidden=!admin;$('aErr').textContent='';open('addM');setTimeout(()=>$('aName').focus(),50)};
+const tAdm=()=>admin||(tNewWait&&op('tourM')&&tv.v==='new'); /* no + dos participantes do campeonato, escolher o ranking inicial vale como admin */
+$('addBtn').onclick=()=>{$('aName').value='';setGrp('C');$('aGrpF').hidden=!tAdm();$('aErr').textContent='';open('addM');setTimeout(()=>$('aName').focus(),50)};
 $('aSave').onclick=async()=>{
   unlockAudio();
   const name=$('aName').value.trim(); if(!name){$('aErr').textContent='Digite o nome.';return}
   if(S.raw.some(p=>p.name.toLowerCase()===name.toLowerCase())){$('aErr').textContent='Já existe um jogador com esse nome.';return}
-  const g=admin?newGrp:'C', nid=uid(); await put('players',{id:nid,name,group:g,}); justAdded={id:nid,at:Date.now()}; sfx('add'); addAnim(name,g); msg(`✅ ${esc(name)} adicionado ao Ranking ${g} com ${START[g]} pontos.`);
+  const g=tAdm()?newGrp:'C', nid=uid(); await put('players',{id:nid,name,group:g,}); if(tNewWait&&tNew&&op('tourM')&&tv.v==='new'){tNew.sel.add(nid); setTimeout(()=>{if(op('tourM')&&tv.v==='new')tNewR()},200)} tNewWait=false; justAdded={id:nid,at:Date.now()}; sfx('add'); addAnim(name,g); msg(`✅ ${esc(name)} adicionado ao Ranking ${g} com ${START[g]} pontos.`);
 };
 
 /* ---- animações: boas-vindas e confete ---- */
@@ -1541,7 +1548,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.3.4 (teste)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.3.13 (teste)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -1848,7 +1855,7 @@ function tPhN(k,t){if(k==='g'&&t&&t.fmt==='gr')return 'Fase de grupos'; if(TPH[k
   if(m=/^w(.+)$/.exec(k)){if(TPH[m[1]])return m[1]==='f'?'Final dos vencedores':'Vencedores · '+TPH[m[1]].replace(' de final','')}
   if(/^l\d+$/.test(k)){const f0=t&&t.fx&&t.fx.find(f=>f.ph===k&&f.lf); return f0?'Final dos perdedores':'Perdedores · Rodada '+k.slice(1)}
   if(k==='gf1')return 'Grande final'; if(k==='gf2')return 'Grande final · desempate'; return 'Fase '+k}
-var tv={v:'list'}, tNew=null, tOpenId=null, tRes=null;
+var tNewWait=false, tv={v:'list'}, tNew=null, tOpenId=null, tRes=null;
 const tCan=t=>admin||(t&&t.edit!=='admin');
 const tGate=(t,fn)=>tCan(t)?fn():needAdmin(fn);
 const tShuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -1882,7 +1889,7 @@ const tBoOf=(t,f)=>(t.bop||{})[f.ph]||(f.ph==='g'&&t.bog?t.bog:t.bo);
 const tK=(t,f)=>Math.ceil(tBoOf(t,f)/2);
 const tRtL=L=>`<span class="rtb r${(L.charCodeAt(0)-65)%4}">RATING ${L}</span>`;
 const tRtS=L=>`<span class="rtb s r${(L.charCodeAt(0)-65)%4}">${L}</span>`;
-const tFmtN=t=>t.fmt==='de'?'Eliminação dupla':t.fmt==='rr'?'Todos contra todos':t.fmt==='gr'?'Grupos + ratings':'Mata-mata';
+const tFmtN=t=>t.fmt==='de'?'Eliminação Dupla':t.fmt==='rr'?'Todos contra todos':t.fmt==='gr'?'Grupos + Ratings':'Mata-mata';
 function tSizes(n,G){const b=Math.floor(n/G),r=n%G;return Array.from({length:G},(_,i)=>b+(i<r?1:0))}
 const tAutoG=n=>Math.max(2,Math.min(Math.floor(n/2),Math.round(n/4)));
 /* formação dos grupos: seed = potes pelo ranking; rnd = sorteio puro; man = distribuição em cobra (ajuste na prévia) */
@@ -2022,7 +2029,7 @@ function tPodium(t,R){
 }
 const tShort=t=>{const tot={},c={},m={}; const key=f=>(f.rt||'')+f.ph; t.fx.forEach(f=>tot[key(f)]=(tot[key(f)]||0)+1); [...t.fx].sort((a,b)=>a.rd-b.rd).forEach(f=>{c[key(f)]=(c[key(f)]||0)+1;
   m[f.id]=t.fmt==='gr'&&f.ph==='g'?'Grupo '+tGN(f.gid):(f.rt?f.rt+'·':'')+tPs(f.ph)+(t.fmt==='rr'||tot[key(f)]===1?'':(/^l\d+$/.test(f.ph)?'.':'')+c[key(f)])});return m};
-const tMini=t=>t.fmt==='de'?`Eliminação dupla · ${t.players.length} jogadores · melhor de ${t.bo}`:t.fmt==='gr'?`Grupos + ratings · ${t.groups.length} grupos · ${t.rt.length} rating${t.rt.length>1?'s':''} · ${t.players.length} jogadores · grupos melhor de ${t.bog||t.bo} · mata-mata melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''}`
+const tMini=t=>t.fmt==='de'?`Eliminação Dupla · ${t.players.length} jogadores · melhor de ${t.bo}`:t.fmt==='gr'?`Grupos + Ratings · ${t.groups.length} grupos · ${t.rt.length} rating${t.rt.length>1?'s':''} · ${t.players.length} jogadores · grupos melhor de ${t.bog||t.bo} · mata-mata melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''}`
   :`${t.fmt==='rr'?'Todos contra todos'+(t.dbl?' (ida e volta)':'')+' · '+(t.rule==='sets'?'mais sets':'pontuação'):'Mata-mata'} · ${t.players.length} jogadores · melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''}`;
 
 /* chave visual (árvore) */
@@ -2121,21 +2128,22 @@ function tNewStart(){
 }
 function tNewR(){
   const n=tNew; $('tourT').textContent='➕ Novo campeonato';
-  const seg=(k,opts,cols)=>`<div class="seg" style="grid-template-columns:repeat(${cols||opts.length},1fr)">${opts.map(([v,l])=>`<button data-k="${k}" data-v="${v}" class="${String(n[k])===String(v)?'on':''}">${l}</button>`).join('')}</div>`;
+  const seg=(k,opts,cols,cls)=>`<div class="seg${cls?' '+cls:''}" style="grid-template-columns:repeat(${cols||opts.length},1fr)">${opts.map(([v,l])=>`<button data-k="${k}" data-v="${v}" class="${String(n[k])===String(v)?'on':''}">${l}</button>`).join('')}</div>`;
   const pl=vis().sort((a,b)=>b.rating-a.rating), cnt=n.sel.size, isG=n.fmt==='gr', Ga=n.G||tAutoG(cnt);
   const PH=[['r16','Oitavas'],['qf','Quartas'],['sf','Semifinais'],['f','Final'],['p3','3º lugar']];
   const bos=isG?`<div class="field"><span>Melhor de quantos sets · fase de grupos</span>${seg('bog',[[3,'3 sets'],[5,'5 sets'],[7,'7 sets']])}</div><div class="field"><span>Melhor de quantos sets · mata-mata (padrão)</span>${seg('bo',[[3,'3 sets'],[5,'5 sets'],[7,'7 sets']])}</div>`:`<div class="field"><span>Melhor de quantos sets?</span>${seg('bo',[[3,'3 sets'],[5,'5 sets'],[7,'7 sets']])}</div>`;
   const perPh=n.fmt==='rr'||n.fmt==='de'?'':`<div class="field"><button class="lnk" id="tPf" style="font-size:13px">${n.pf?'▾':'▸'} Mudar o melhor de sets por fase do mata-mata</button>${n.pf?`<div class="tbp">${PH.map(([k,l])=>`<label>${l}<select data-bp="${k}"><option value="">Padrão (${n.bo})</option>${[3,5,7].map(v=>`<option value="${v}" ${n.bop[k]===v?'selected':''}>${v} sets</option>`).join('')}</select></label>`).join('')}</div><button class="sec" id="tQ5">Atalho: melhor de 3 até as oitavas e melhor de 5 a partir das quartas</button>`:''}</div>`;
-  const gRule=`<div class="field"><span>Regra de pontuação${isG?' dos grupos':''}</span>${seg('rule',[['pts','Pontuação'],['sets','Mais sets']])}<p class="legend" style="margin:6px 0 0">${n.rule==='sets'?'Mais sets: a vitória vale a diferença de sets do jogo (3x0 = 3 pontos, 3x1 = 2 pontos). Derrota = 0. Desempate: confronto direto. O placar é obrigatório.':'Pontuação: vitória = 1 ponto, derrota = 0. Desempate: confronto direto.'}</p></div>`;
+  const gRule=`<div class="field"><span>Regra de pontuação${isG?' dos grupos':''}</span>${seg('rule',[['pts','Pontuação'],['sets','Mais sets']])}</div>`, gRuleL=`<p class="legend" style="margin:0 0 4px">${n.rule==='sets'?'Mais sets: a vitória vale a diferença de sets (3x0 = 3 pontos, 3x1 = 2). Derrota = 0. Placar obrigatório. Desempate: confronto direto.':'Pontuação: vitória = 1 ponto, derrota = 0. Desempate: confronto direto.'}</p>`;
   $('tourB').innerHTML=`<label class="field"><span>Nome do campeonato</span><input id="tNm" value="${esc(n.name)}" maxlength="60"></label>
-  <div class="field"><span>Formato</span>${seg('fmt',[['ko','Mata-mata'],['de','Eliminação dupla'],['rr','Todos contra todos'],['gr','Grupos + ratings']],2)}${n.fmt==='de'?`<p class="legend" style="margin:6px 0 0">Quem perde uma vez cai para a chave dos perdedores e só sai do campeonato na segunda derrota. O campeão dos vencedores enfrenta o dos perdedores na grande final (se o dos perdedores vencer, há um jogo de desempate). Pódio: campeão, vice e 3º (quem perde a final dos perdedores).</p>`:''}${isG?`<p class="legend" style="margin:6px 0 0">Fase de grupos e depois um mata-mata para cada Rating (1º colocados no Rating A, 2º no B, e assim por diante). Você define o destino de cada colocação na prévia.</p>`:''}</div>
-  ${isG?`<div class="field"><span>Grupos</span><div class="tstep"><button class="sec" data-gs="-1" aria-label="Menos um grupo">−</button><b>${Ga} grupos</b><button class="sec" data-gs="1" aria-label="Mais um grupo">+</button></div><p class="legend" style="margin:6px 0 0">Tamanhos: ${cnt>=4?tSizes(cnt,Math.max(2,Math.min(Ga,Math.floor(cnt/2)))).join(' / '):'—'} jogadores${n.G?'':' · sugestão automática'}</p></div>
-  <div class="field"><span>Formação dos grupos</span>${seg('gm',[['seed','Por seeds'],['rnd','Aleatório'],['man','Manual']])}<p class="legend" style="margin:6px 0 0">${n.gm==='seed'?'Potes pelo ranking: um jogador de cada pote por grupo, sem dois da mesma faixa juntos quando possível.':n.gm==='rnd'?'Sorteio puro, sem regra.':'Distribui na ordem do ranking e você ajusta na prévia.'} Em qualquer opção dá para trocar jogadores de lugar na prévia.</p></div>`:''}
-  ${bos}${perPh}
-  ${n.fmt==='rr'||isG?`<div class="field"><span>${isG?'Ida e volta nos grupos':'Turnos'}</span>${seg('dbl',[[false,'Só ida'],[true,'Ida e volta']])}</div>${gRule}`:''}
-  ${n.fmt==='rr'||n.fmt==='de'?'':`<div class="field"><span>Disputa de 3º lugar${isG?' (em cada Rating)':''}</span>${seg('third',[[false,'Desligada'],[true,'Ligada']])}</div>`}
-  <div class="field"><span>Quem pode editar o campeonato (apagar, desfazer, W.O.)?</span>${seg('edit',[['any','Qualquer um'],['admin','Só o admin']])}<p class="legend" style="margin:6px 0 0">Qualquer pessoa pode lançar o resultado das partidas.</p></div>
-  <div class="field"><span>Participantes <b id="tCnt">${n.sel.size}</b> de ${pl.length}</span>
+  <div class="field"><span>Formato</span>${seg('fmt',[['rr','Todos contra todos'],['gr','Grupos + Ratings'],['ko','Mata-mata'],['de','Eliminação Dupla']],4,'f4')}${n.fmt==='de'?`<p class="legend" style="margin:6px 0 0">Quem perde uma vez cai para a chave dos perdedores e só sai do campeonato na segunda derrota. O campeão dos vencedores enfrenta o dos perdedores na grande final (se o dos perdedores vencer, há um jogo de desempate). Pódio: campeão, vice e 3º (quem perde a final dos perdedores).</p>`:''}${isG?`<p class="legend" style="margin:6px 0 0">Fase de grupos e depois um mata-mata por Rating (1º no Rating A, 2º no B…). O destino de cada colocação é definido na prévia.</p>`:''}</div>
+  ${isG?`<div class="tg2"><div class="field"><span>Grupos</span><div class="tstep"><button class="sec" data-gs="-1" aria-label="Menos um grupo">−</button><b>${Ga} grupos</b><button class="sec" data-gs="1" aria-label="Mais um grupo">+</button></div><p class="legend" style="margin:4px 0 0">${cnt>=4?tSizes(cnt,Math.max(2,Math.min(Ga,Math.floor(cnt/2)))).join(' / '):'—'} jogadores${n.G?'':' · sugestão'}</p></div>
+  <div class="field"><span>Formação dos grupos</span>${seg('gm',[['seed','Por seeds'],['rnd','Aleatório'],['man','Manual']])}</div></div>
+  <p class="legend" style="margin:0 0 4px">${n.gm==='seed'?'Por seeds: potes pelo ranking, um jogador de cada pote por grupo.':n.gm==='rnd'?'Aleatório: sorteio puro, sem regra.':'Manual: distribui na ordem do ranking e você ajusta.'} Na prévia dá para trocar jogadores de lugar.</p>`:''}
+  <div class="tg3">${bos}${n.fmt==='rr'||n.fmt==='de'?'':`<div class="field"><span>Disputa de 3º lugar${isG?' (em cada Rating)':''}</span>${seg('third',[[false,'Desligada'],[true,'Ligada']])}</div>`}<div class="field"><span>Quem pode editar?</span>${seg('edit',[['any','Qualquer um'],['admin','Só o admin']])}</div></div>
+  <p class="legend" style="margin:0 0 4px">Quem edita pode apagar o campeonato, desfazer resultados e dar W.O. Qualquer pessoa pode lançar o resultado das partidas.</p>
+  ${perPh}
+  ${n.fmt==='rr'||isG?`<div class="tg2"><div class="field"><span>${isG?'Ida e volta nos grupos':'Turnos'}</span>${seg('dbl',[[false,'Só ida'],[true,'Ida e volta']])}</div>${gRule}</div>${gRuleL}`:''}
+  <div class="field"><div class="tph"><span>Participantes <b id="tCnt">${n.sel.size}</b> de ${pl.length}</span><button class="sec tadd" id="tAddP" title="Adicionar um jogador novo" aria-label="Adicionar um jogador novo">+</button></div>
     <div class="tqf"><button class="sec" data-q="all">Todos</button><button class="sec" data-q="none">Nenhum</button>${['A','B','C'].map(q=>{const ids=pl.filter(p=>p.tier===q).map(p=>p.id), all=ids.length>0&&ids.every(id=>n.sel.has(id));return `<button class="sec${all?' on':''}" data-q="${q}" ${ids.length?'':'disabled'} title="Marcar/desmarcar todos da faixa ${q}">Faixa ${q} (${ids.length})</button>`}).join('')}</div>
     <div class="tpk">${pl.map(p=>`<button class="pl t${p.tier}${n.sel.has(p.id)?'':' off'}" data-id="${p.id}"><span><span class="badge">${p.tier}</span>${esc(p.name)}</span><b>${n.sel.has(p.id)?'✓':''}</b></button>`).join('')}</div></div>
   <div class="dn" id="tErr">${esc(n.err||'')}</div>
@@ -2147,11 +2155,12 @@ function tNewR(){
   $('tourB').querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{keep();const q=b.dataset.q; if(q==='all')n.sel=new Set(pl.map(p=>p.id)); else if(q==='none')n.sel=new Set(); else{const ids=pl.filter(p=>p.tier===q).map(p=>p.id), all=ids.every(id=>n.sel.has(id)); ids.forEach(id=>all?n.sel.delete(id):n.sel.add(id))} tNewR()});
   $('tourB').querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>{keep();n.G=Math.max(2,Math.min(Math.max(2,Math.floor(cnt/2)),Ga+(+b.dataset.gs)));tNewR()});
   if($('tPf'))$('tPf').onclick=()=>{keep();n.pf=!n.pf;tNewR()};
+  $('tAddP').onclick=()=>{keep();tNewWait=true;$('addBtn').click()};
   $('tourB').querySelectorAll('select[data-bp]').forEach(s=>s.onchange=()=>{keep();if(s.value)n.bop[s.dataset.bp]=+s.value; else delete n.bop[s.dataset.bp]});
   if($('tQ5'))$('tQ5').onclick=()=>{keep();n.bo=3;n.bop={qf:5,sf:5,f:5,p3:5};tNewR()};
   $('tBk').onclick=()=>{tv={v:'list'};tourRender()};
   $('tGo').onclick=()=>{keep();n.name=n.name.trim(); if(!n.name){n.err='Dê um nome ao campeonato.';return tNewR()} if(n.sel.size<2){n.err='Escolha pelo menos 2 participantes.';return tNewR()} if(n.fmt==='ko'&&n.sel.size>128){n.err='O mata-mata aceita até 128 participantes.';return tNewR()} if(n.fmt==='de'&&(n.sel.size<3||n.sel.size>64)){n.err='A eliminação dupla precisa de 3 a 64 participantes.';return tNewR()}
-    if(isG&&n.sel.size<4){n.err='Grupos + ratings precisa de pelo menos 4 participantes (2 grupos de 2).';return tNewR()}
+    if(isG&&n.sel.size<4){n.err='Grupos + Ratings precisa de pelo menos 4 participantes (2 grupos de 2).';return tNewR()}
     n.err=''; n.players=tSeeds([...n.sel]); n.slots=tIsKo(n)?tDraw(tPow(n.players.length),n.players.length):null; n.sw=null;
     if(isG){const G=Math.max(2,Math.min(Math.floor(cnt/2),n.G||tAutoG(cnt))); n.groups=tGroupsDraw(n.players,G,n.gm); n.pick=null; n.dest=tFixDest(n.groups,tPresets(Math.max(...n.groups.map(g=>g.ids.length))).un)}
     tv={v:'prev'}; tourRender()};
@@ -2257,11 +2266,15 @@ function tDetR(){
   }
   else{
   if(t.fmt==='rr'){const T=tTable(t,R);
-    h+=`<div class="tsh">Classificação</div><table class="tt"><tr><th>#</th><th>Jogador</th><th class="n">J</th><th class="n">V</th><th class="n">D</th><th class="n">Sets</th><th class="n">Pts</th></tr>${T.map((x,i)=>`<tr><td>${i+1}</td><td>${pnl(x.id,nameOf(x.id,PN[x.id]))} <small>(${x.seed})</small>${x.wd?' <small class="dn">W.O.</small>':''}</td><td class="n">${x.j}</td><td class="n">${x.v}</td><td class="n">${x.d}</td><td class="n">${x.sp}-${x.sc}</td><td class="n"><b>${x.pts}</b></td></tr>`).join('')}</table><p class="legend" style="margin-top:6px">${t.rule==='sets'?'Mais sets: vitória vale a diferença de sets (3x0 = 3 pts, 3x1 = 2 pts). Derrota = 0.':'Vitória = 1 ponto · derrota = 0.'} Desempate: confronto direto, depois saldo de sets e seed. Quem leva W.O. perde todos os jogos; os adversários vencem pelo placar máximo.</p>`}
+    h+=`<div class="tsh">Classificação</div><table class="tt"><tr><th>#</th><th>Jogador</th><th class="n">J</th><th class="n">V</th><th class="n">D</th><th class="n">Sets</th><th class="n">Pts</th></tr>${T.map((x,i)=>`<tr><td>${i+1}</td><td>${pnl(x.id,nameOf(x.id,PN[x.id]))} <small>(${x.seed})</small>${x.wd?' <small class="dn">W.O.</small>':''}</td><td class="n">${x.j}</td><td class="n">${x.v}</td><td class="n">${x.d}</td><td class="n">${x.sp}-${x.sc}</td><td class="n"><b>${x.pts}</b></td></tr>`).join('')}</table><p class="legend" style="margin-top:6px">${t.rule==='sets'?'Mais sets: vitória vale a diferença de sets (3x0 = 3 pts, 3x1 = 2 pts). Derrota = 0.':'Vitória = 1 ponto · derrota = 0.'} Desempate: confronto direto, depois saldo de sets e seed. Quem leva W.O. perde todos os jogos; os adversários vencem pelo placar máximo.</p>`;
+    const rds=[...new Set(t.fx.map(f=>f.rd))].sort((a,b)=>a-b); h+=`<div class="tlb">Rodadas</div><div class="ttabs"><button data-rd="" class="${!tv.rd?'on':''}">Todas</button>${rds.map(r=>{const cl=t.fx.filter(f=>f.rd===r).every(f=>R[f.id].fin);return `<button data-rd="${r}" class="${+tv.rd===r?'on':''}${cl?' cl':''}">${cl?'✓ ':''}Rodada ${r}</button>`}).join('')}</div>`}
   if(tIsKo(t)){const phs=[]; [...t.fx].sort((a,b)=>a.rd-b.rd||(a.ph==='p3'?-1:b.ph==='p3'?1:0)).forEach(f=>{if(!phs.includes(f.ph))phs.push(f.ph)}); if(!phs.includes(tv.ph))tv.ph='';
-    const br=tv.view!=='list'; h+=`<div class="tlb">Visão</div><div class="ttabs"><button data-ph="br" class="${br?'on':''}">Chave</button><button data-ph="" class="${!br&&!tv.ph?'on':''}">Lista</button>${phs.map(k=>{const cl=t.fx.filter(f=>f.ph===k).every(f=>R[f.id].fin);return `<button data-ph="${k}" class="${!br&&tv.ph===k?'on':''}${cl?' cl':''}">${cl?'✓ ':''}${tPhN(k,t)}</button>`}).join('')}</div>`}
+    const br=tv.view!=='list', pb=(k,lab)=>{const cl=t.fx.filter(f=>f.ph===k).every(f=>R[f.id].fin); return `<button data-ph="${k}" class="${!br&&tv.ph===k?'on':''}${cl?' cl':''}">${cl?'✓ ':''}${lab}</button>`}, vw=`<div class="tlb">Visão</div><div class="ttabs"><button data-ph="br" class="${br?'on':''}">Chave</button><button data-ph="" class="${!br&&!tv.ph?'on':''}">Lista</button>`;
+    if(t.fmt==='de'){const sh=k=>tPhN(k,t).replace(/^(Vencedores|Perdedores) · /,'').replace('Final dos vencedores','Final').replace('Final dos perdedores','Final').replace('Grande final · desempate','Desempate').replace(/^Grande final$/,'Jogo 1');
+      h+=vw+`</div><div class="tlb">Vencedores</div><div class="ttabs">${phs.filter(k=>/^w/.test(k)).map(k=>pb(k,sh(k))).join('')}</div><div class="tlb">Perdedores</div><div class="ttabs">${phs.filter(k=>/^l\d/.test(k)).map(k=>pb(k,sh(k))).join('')}</div><div class="tlb">Grande final</div><div class="ttabs">${phs.filter(k=>/^gf/.test(k)).map(k=>pb(k,sh(k))).join('')}</div>`}
+    else h+=vw+`${phs.map(k=>pb(k,tPhN(k,t))).join('')}</div>`}
   if(tIsKo(t)&&tv.view!=='list')h+=t.fmt==='de'?tBrDe(t,R,PN,SD):tBr(t,R,t.fx,PN,SD);
-  const grp={}; t.fx.filter(f=>!tIsKo(t)||(tv.view==='list'&&(!tv.ph||f.ph===tv.ph))).forEach(f=>{const k=t.fmt==='rr'?'r'+f.rd:f.ph+'|'+f.rd; (grp[k]=grp[k]||{f:[],ph:f.ph,rd:f.rd}).f.push(f)});
+  const grp={}; t.fx.filter(f=>t.fmt==='rr'?(!tv.rd||f.rd===+tv.rd):(!tIsKo(t)||(tv.view==='list'&&(!tv.ph||f.ph===tv.ph)))).forEach(f=>{const k=t.fmt==='rr'?'r'+f.rd:f.ph+'|'+f.rd; (grp[k]=grp[k]||{f:[],ph:f.ph,rd:f.rd}).f.push(f)});
   Object.values(grp).sort((a,b)=>a.rd-b.rd||(a.ph==='p3'?-1:b.ph==='p3'?1:0)).forEach(g=>{const hd=t.fmt==='rr'?'Rodada '+g.rd:tPhN(g.ph), body=g.f.map(card).join(''); if(body.trim())h+=`<div class="tsh">${hd}</div>`+body});
   }
   const wds=Object.entries(t.wd||{}); if(wds.length)h+=`<div class="tsh">Desistências (W.O.)</div>`+wds.map(([pid,rd])=>{const fx=t.fx.find(g=>g.rd===+rd), lab=t.fmt==='rr'?'do campeonato (W.O. na rodada '+rd+')':(t.fmt==='gr'&&+rd<=t.gmax)?'da fase de grupos e do mata-mata':'na fase '+tPhN(fx?fx.ph:'',t); return `<div class="tpl"><span>${pnl(pid,nameOf(pid,PN[pid]))} <small>saiu ${lab}</small></span>${can?`<button class="tun" data-wd="${pid}" title="Reverter W.O." aria-label="Reverter W.O.">↩</button>`:''}</div>`}).join('')+`<p class="legend">Quem leva W.O. perde os jogos por W.O. e os adversários vencem pelo placar máximo. As partidas já lançadas continuam no ranking.</p>`;
@@ -2274,6 +2287,7 @@ function tDetR(){
   $('tourB').innerHTML=h;
   $('tLs').onclick=()=>{tv={v:'list'};tourRender()};
   $('tourB').querySelectorAll('[data-ph]').forEach(b=>b.onclick=()=>{const q=b.dataset.ph; if(q==='br'){tv.view='br';tv.ph=''} else {tv.view='list';tv.ph=q} tv.note='';tourRender()});
+  $('tourB').querySelectorAll('[data-rd]').forEach(b=>b.onclick=()=>{tv.rd=b.dataset.rd;tv.note='';tourRender()});
   $('tourB').querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tv.tab=b.dataset.tab;tv.gs=b.dataset.gs||'';{const q=b.dataset.rp; if(q===undefined||q===''){tv.view='br';tv.ph=''} else if(q==='*'){tv.view='list';tv.ph=''} else {tv.view='list';tv.ph=q}}tv.note='';tourRender()});
   $('tourB').querySelectorAll('.tfx.rdy,.brb.rdy,.tnx').forEach(b=>b.onclick=()=>tResOpen(t.id,b.dataset.f));
   $('tShr').onclick=async()=>{const txt=tShareTxt(t,R,PN); try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){if(e&&e.name==='AbortError')return} window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank')};
@@ -2361,7 +2375,7 @@ async function tSubmit(tid,fid,w,score){
   const t2=S.tourns.find(x=>x.id===tid)||t, pod=tPodium(t2,tState(t2)); if(!was&&pod&&pod[0])setTimeout(()=>{splash('🏆 Campeão',nameOf(pod[0].id,PN[pod[0].id]),t.name,'#ffc400');sfx('rank')},700);
   if(unl.length)setTimeout(()=>achNotify(unl),900);
 }
-function tourRender(){ $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
+function tourRender(){ $('tourB').classList.toggle('nw',tv.v==='new'); $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
 $('tourBtn').onclick=()=>{tv={v:'list'};tourRender();open('tourM');$('tourM').querySelector('.sheet').scrollTop=0};
 $('tourX').onclick=()=>$('tourM').classList.remove('on'); $('tpX').onclick=()=>$('tpM').classList.remove('on'); $('tpM').onclick=e=>{if(e.target===$('tpM'))$('tpM').classList.remove('on')};
 
