@@ -648,7 +648,7 @@ const APP_URL='https://rankingatmjfv3.lovable.app';
 var AX={};
 const pnl=(id,n)=>(id&&S.raw.some(x=>x.id===id))?`<span class="pnk" role="link" tabindex="0" data-pid="${id}">${esc(n)}</span>`:esc(n); /* nome de jogador clicável → perfil */
 let G={raw:[],matches:[],sets:[],clubs:[],tourns:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, justAdded=null, lastPair='', SND=(()=>{try{return localStorage.getItem('tm_snd')!=='off'}catch(e){return true}})(), pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
-let pendingV=(()=>{try{const h=location.hash+location.search, m=h.match(/[?#&](ranking|partidas|jogadores|conquistas|admin|ajuda|campeonato)(?![A-Za-z])/); if(!m)return null; const g=k=>{const x=h.match(new RegExp('[?#&]'+k+'=([A-Za-z0-9_-]+)'));return x?x[1]:''}; return {v:m[1],c:g('c'),n:g('n'),k:g('k'),t:g('campeonato')}}catch(e){return null}})();
+let pendingV=(()=>{try{const h=location.hash+location.search, m=h.match(/[?#&](ranking|partidas|jogadores|conquistas|admin|ajuda|campeonatos|campeonato)(?![A-Za-z])/); if(!m)return null; const g=k=>{const x=h.match(new RegExp('[?#&]'+k+'=([A-Za-z0-9_-]+)'));return x?x[1]:''}; return {v:m[1],c:g('c'),n:g('n'),k:g('k'),t:g('campeonato')}}catch(e){return null}})();
 const $=id=>document.getElementById(id), op=id=>$(id).classList.contains('on');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -1548,7 +1548,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.4.0 (Campeonatos)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.4.1 (Campeonatos)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -1814,15 +1814,15 @@ function runView(){
   if(v.v==='conquistas'){ if(['all','0','1','2','3'].includes(v.n))achTab=v.n; if(v.k&&ACH.some(a=>a.k===v.k)){achSel=v.k; if(achTab!=='all'&&ACH.find(a=>a.k===v.k).lv!==+achTab)achTab=String(ACH.find(a=>a.k===v.k).lv)} }
   if(v.v==='campeonato'&&v.t){ if(!(S.tourns||[]).some(x=>x.id===v.t)&&(v.tries=(v.tries||0)+1)<6){pendingV=v; setTimeout(()=>{if(pendingV)runView()},900); return}
     if((S.tourns||[]).some(x=>x.id===v.t)){tOpenId=v.t; tv={v:'det'}; tourRender(); open('tourM'); return} }
-  const b={ranking:'rankBtn',partidas:'matchBtn',jogadores:'playBtn',conquistas:'achBtn',admin:'admBtn',ajuda:'helpBtn',campeonato:'tourBtn'}[v.v]; if(b&&$(b))$(b).click();
+  const b={ranking:'rankBtn',partidas:'matchBtn',jogadores:'playBtn',conquistas:'achBtn',admin:'admBtn',ajuda:'helpBtn',campeonato:'tourBtn',campeonatos:'tourBtn'}[v.v]; if(b&&$(b))$(b).click();
 }
 setTimeout(()=>{if(pendingV)runView()},2500);
 function viewLink(mid){
   let h; if(mid==='playM'&&histId)h='j='+histId;
-  else{h={rankM:'ranking',matchM:'partidas',playM:'jogadores',achAllM:'conquistas',admM:'admin',helpM:'ajuda'}[mid]; if(mid==='achAllM'){h+='&n='+achTab; if(achSel)h+='&k='+achSel} if(cur!=='main')h+='&c='+cur}
+  else{h={rankM:'ranking',matchM:'partidas',playM:'jogadores',achAllM:'conquistas',admM:'admin',helpM:'ajuda',tourM:'campeonatos'}[mid]; if(mid==='achAllM'){h+='&n='+achTab; if(achSel)h+='&k='+achSel} if(cur!=='main')h+='&c='+cur}
   return APP_URL+'#'+h;
 }
-['rankM','matchM','playM','achAllM','helpM'].forEach(mid=>{const sh=$(mid).querySelector('.sheet'), b=document.createElement('button'); b.className='x2 lkb'; b.title='Copiar link desta tela'; b.setAttribute('aria-label','Copiar link desta tela'); b.textContent='🔗'; if(mid==='achAllM'||mid==='helpM')b.style.right='54px';
+['rankM','matchM','playM','achAllM','helpM','tourM'].forEach(mid=>{const sh=$(mid).querySelector('.sheet'), b=document.createElement('button'); b.className='x2 lkb'; b.title='Copiar link desta tela'; b.setAttribute('aria-label','Copiar link desta tela'); b.textContent='🔗'; if(mid==='achAllM'||mid==='helpM'||mid==='tourM')b.style.right='54px';
   b.onclick=()=>copyViewLink(mid,b); sh.appendChild(b)});
 async function copyViewLink(mid,b){const u=viewLink(mid); try{await navigator.clipboard.writeText(u); flash(b,'✅')}catch(e){try{if(navigator.share){await navigator.share({title:'Ranking '+clubName(cur),url:u})}else{prompt('Copie o link:',u)}}catch(x){}}}
 $('admM').addEventListener('click',e=>{const b=e.target.closest('#admLk'); if(b)copyViewLink('admM',b)});
@@ -2381,7 +2381,7 @@ async function tSubmit(tid,fid,w,score){
   if(unl.length)setTimeout(()=>achNotify(unl),900);
 }
 let tNxC=true;
-function tourRender(){ $('tourB').classList.toggle('nw',tv.v==='new'); $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
+function tourRender(){ {const lk=$('tourM').querySelector('.lkb'); if(lk)lk.hidden=tv.v!=='list'} $('tourB').classList.toggle('nw',tv.v==='new'); $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
 $('tourBtn').onclick=()=>{tv={v:'list'};tourRender();open('tourM');$('tourM').querySelector('.sheet').scrollTop=0};
 $('tourX').onclick=()=>$('tourM').classList.remove('on'); $('tpX').onclick=()=>$('tpM').classList.remove('on'); $('tpM').onclick=e=>{if(e.target===$('tpM'))$('tpM').classList.remove('on')};
 
