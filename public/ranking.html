@@ -830,7 +830,7 @@ function scope(){
   const d=G.sets.find(x=>x.id===sid()); S.settings={...DEF,...(d||{}),id:sid()};
 }
 function saveLocal(){try{['raw','matches','sets','clubs','tourns'].forEach(k=>localStorage.setItem('tm_'+k,JSON.stringify(G[k]||[])))}catch(e){}}
-function refresh(){scope();compute();render(); if(op('tourM')&&(tv.v==='list'||tv.v==='det'))tourRender(); if(pendingJ&&G.raw.some(x=>x.id===pendingJ)){const j=pendingJ; setTimeout(()=>{if(pendingJ===j)openPlayerById(j)},0)} else if(pendingV&&G.raw.length)setTimeout(runView,0)}
+function refresh(){scope();compute();render(); if(op('tourM')&&(tv.v==='list'||tv.v==='det')&&!(tv.ren&&$('tRn')))tourRender(); if(pendingJ&&G.raw.some(x=>x.id===pendingJ)){const j=pendingJ; setTimeout(()=>{if(pendingJ===j)openPlayerById(j)},0)} else if(pendingV&&G.raw.length)setTimeout(runView,0)}
 async function put(col,o,club){
   if(col==='players'||col==='matches'||col==='tournaments')o={...o,club:club||cur};
   const a=G[GK[col]], i=a.findIndex(x=>x.id===o.id); i>=0?a[i]=o:a.push(o);
@@ -1548,7 +1548,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.3.14 (Campeonatos)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.3.15 (Campeonatos)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -2601,5 +2601,6 @@ $('expMatches').onclick=async e=>{const b=e.currentTarget; await loadNames(match
 </script>
 </body>
 </html>
+
 
 </body></html>
