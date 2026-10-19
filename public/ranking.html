@@ -1607,7 +1607,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.styl
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.13 (Campeonatos)'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.14 (Campeonatos)'; $('ver').textContent=APP_VERSION;
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
   const x=c.getContext('2d'); if(cl())Object.defineProperty(x,'shadowBlur',{get(){return 0},set(v){}}); x.scale(k,k); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.textBaseline='middle'; paint(x);
@@ -2338,6 +2338,8 @@ function tDetR(){
     if(r.a&&r.b)return `<button class="tfx rdy" data-f="${f.id}">${tag}<div class="l">${A}</div><div class="sc">x</div><div class="rr">${B}</div><div class="tgo">Toque para lançar o resultado</div></button>${r.bad?`<div class="dn tw">⚠️ Há uma partida lançada que não bate com os jogadores deste jogo (a fase anterior mudou). ${can?'Apague-a em Partidas.':'Peça a quem edita.'}</div>`:''}`;
     return `<div class="tfx fut">${tag}<div class="l">${A}</div><div class="sc">x</div><div class="rr">${B}</div>${r.bad?`<div class="dn tw">⚠️ Partida lançada fora de ordem. Apague-a em Partidas.</div>`:''}</div>`};
   let h=tv.ren?tRulesHtml(t):'';
+  if(tv.ren&&tv.ad){const cur=new Set(t.players.map(p=>p.id)), inn=vis().filter(p=>!cur.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name)), isG=t.fmt==='gr'&&!t.gf, ex={rr:'Entra e joga contra todos os outros (as partidas novas vão para o fim da lista).',gr:'Entra no grupo escolhido e joga contra os integrantes dele. Só vale enquanto a fase final não começou, e ela é refeita.',ko:'Ocupa uma vaga livre da primeira fase (enfrenta quem estava de folga), se esse jogo e os seguintes ainda não foram disputados.',de:'Não disponível na eliminação dupla.'}[t.fmt==='gr'?'gr':t.fmt]||'';
+    h+=`<div class="panel" style="margin:8px 0"><b>➕ Adicionar jogador</b><p class="legend" style="margin:6px 0">${ex}</p><label class="legend" style="display:block;text-align:left">Quem entra</label><select id="tAn" style="width:100%"><option value="">Escolha…</option>${inn.map(p=>`<option value="${p.id}"${tv.ad.n===p.id?' selected':''}>${esc(p.name)}</option>`).join('')}</select>${isG?`<label class="legend" style="display:block;text-align:left;margin-top:6px">Em qual grupo</label><select id="tAg" style="width:100%"><option value="">Escolha…</option>${t.groups.map(g=>`<option value="${g.id}"${tv.ad.g===g.id?' selected':''}>Grupo ${g.id} (${g.ids.length})</option>`).join('')}</select>`:''}<div class="err" id="tAe" style="color:var(--bad);min-height:1em"></div><div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="sec" id="tAc" style="margin-top:0">Cancelar</button><button class="sec" id="tAk" style="margin-top:0">Adicionar</button></div></div>`}
   if(tv.ren&&tv.sw){const cur=new Set(t.players.map(p=>p.id)), out=t.players.filter(p=>!(R&&0)).slice().sort((a,b)=>nameOf(a.id,a.name).localeCompare(nameOf(b.id,b.name))), inn=vis().filter(p=>!cur.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name));
     h+=`<div class="panel" style="margin:8px 0"><b>🔁 Substituir jogador</b><p class="legend" style="margin:6px 0">O substituto assume o lugar do jogador que sai: herda os resultados dele no campeonato e joga as partidas que faltam. As partidas já lançadas continuam valendo no ranking para quem as jogou.</p><label class="legend" style="display:block;text-align:left">Quem sai</label><select id="tSo" style="width:100%"><option value="">Escolha…</option>${out.map(p=>`<option value="${p.id}"${tv.sw.o===p.id?' selected':''}>${esc(nameOf(p.id,p.name))}</option>`).join('')}</select><label class="legend" style="display:block;text-align:left;margin-top:6px">Quem entra</label><select id="tSn" style="width:100%"><option value="">Escolha…</option>${inn.map(p=>`<option value="${p.id}"${tv.sw.n===p.id?' selected':''}>${esc(p.name)}</option>`).join('')}</select><div class="err" id="tSe" style="color:var(--bad);min-height:1em"></div><div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="sec" id="tSc" style="margin-top:0">Cancelar</button><button class="sec" id="tSk" style="margin-top:0">Substituir</button></div></div>`}
 
@@ -2396,9 +2398,13 @@ function tDetR(){
   const openRen=()=>{Object.assign(tv,{ren:true,rn:t.name,rs:t.res||'any',ed:t.edit||'any',bo:t.bo,bog:t.bog||t.bo,bop:{...(t.bop||{})},ru:t.rule||'pts',pf:Object.keys(t.bop||{}).length>0,p1:'',p2:''});tourRender();$('tourM').querySelector('.sheet').scrollTop=0;const i=$('tRn');if(i){i.focus();i.select()}};
   $('tRnB').hidden=!!tv.ren; $('tRnB').onclick=()=>admin||tMgrOk[t.id]?openRen():t.rpin?tAskPin(t,openRen,{title:'⚙️ PIN para editar as regras',msg:'Para editar as regras, digite o PIN do gerente deste campeonato (ou o PIN do administrador).'}):needAdmin(openRen);
   if(tv.ren){const clr=()=>{tv.ren=false;['rn','rs','ed','bo','bog','bop','ru','pf'].forEach(k=>tv[k]=null)};
-    $('tRc').onclick=()=>{clr();tv.sw=null;tourRender()};
+    $('tRc').onclick=()=>{clr();tv.sw=null;tv.ad=null;tourRender()};
   {const go=()=>{tv.rn=$('tRn').value;tv.sw={o:'',n:''};tourRender();const e=$('tSo');if(e)e.scrollIntoView({block:'center'})};
-   if($('tSb'))$('tSb').onclick=go;
+   if($('tSb'))$('tSb').onclick=()=>{tv.ad=null;go()};
+   if($('tAb'))$('tAb').onclick=()=>{tv.rn=$('tRn').value;tv.sw=null;tv.ad={n:'',g:''};tourRender();const e=$('tAn');if(e)e.scrollIntoView({block:'center'})};
+   if(tv.ad){$('tAn').onchange=e=>tv.ad.n=e.target.value; if($('tAg'))$('tAg').onchange=e=>tv.ad.g=e.target.value; $('tAc').onclick=()=>{tv.ad=null;tourRender()};
+    $('tAk').onclick=async()=>{const r=tAddCalc(t,tv.ad.n,tv.ad.g); if(r.err){$('tAe').textContent=r.err;return}
+      await put('tournaments',r.u); await logA(`Campeonato “${t.name}”: ${nameOf(tv.ad.n)} adicionado`); clr(); tv.ad=null; tv.note='✅ '+r.msg; tourRender()}}
    if(tv.sw){$('tSo').onchange=e=>tv.sw.o=e.target.value; $('tSn').onchange=e=>tv.sw.n=e.target.value; $('tSc').onclick=()=>{tv.sw=null;tourRender()};
     $('tSk').onclick=async()=>{const o=tv.sw.o,n=tv.sw.n; if(!o||!n){$('tSe').textContent='Escolha quem sai e quem entra.';return}
       const po=t.players.find(p=>p.id===o), pn=P.find(p=>p.id===n); if(!po||!pn||t.players.some(p=>p.id===n))return;
@@ -2406,7 +2412,7 @@ function tDetR(){
       u.fx.forEach(f=>{if(f.a===o)f.a=n; if(f.b===o)f.b=n}); (u.groups||[]).forEach(g=>{g.ids=g.ids.map(i=>i===o?n:i)});
       if(u.wd&&u.wd[o]!=null){u.wd[n]=u.wd[o]; delete u.wd[o]}
       u.rep={...(u.rep||{}),[o]:n};
-      await put('tournaments',u); await logA(`Campeonato “${t.name}”: ${nameOf(o,po.name)} substituído por ${pn.name}`); clr(); tv.sw=null; tv.note='✅ '+pn.name+' entrou no lugar de '+nameOf(o,po.name)+'.'; tourRender()}}}
+      await put('tournaments',u); await logA(`Campeonato “${t.name}”: ${nameOf(o,po.name)} substituído por ${pn.name}`); clr(); tv.sw=null; tv.ad=null; tv.note='✅ '+pn.name+' entrou no lugar de '+nameOf(o,po.name)+'.'; tourRender()}}}
 
     $('tRn').oninput=e=>tv.rn=e.target.value; if($('tRq1')){$('tRq1').oninput=e=>tv.p1=e.target.value; $('tRq2').oninput=e=>tv.p2=e.target.value}
     $('tourB').querySelectorAll('[data-rk]').forEach(b=>b.onclick=()=>{tv.rn=$('tRn').value; const k=b.dataset.rk; tv[k]=(k==='bo'||k==='bog')?+b.dataset.rv:b.dataset.rv; tourRender()});
@@ -2498,6 +2504,29 @@ async function tSubmit(tid,fid,w,score){
   if(unl.length)setTimeout(()=>achNotify(unl),900);
 }
 let tNxC=true,tGrC=false,tSfC=true,tDetId=null;
+
+/* adicionar jogador a campeonato em andamento */
+function tAddCalc(t,pid,gid){
+  const pn=P.find(p=>p.id===pid); if(!pn)return {err:'Escolha o jogador que vai entrar.'}; if(t.players.some(p=>p.id===pid))return {err:'Esse jogador já está no campeonato.'};
+  const R=tState(t), u=JSON.parse(JSON.stringify(t)), seed=Math.max(0,...t.players.map(p=>p.seed||0))+1; u.players.push({id:pid,name:pn.name,seed});
+  const legs=t.dbl?[false,true]:[false];
+  if(t.fmt==='de')return {err:'Na eliminação dupla não é possível adicionar jogadores depois de criada a chave.'};
+  if(t.fmt==='rr'){let k=0; const rd0=Math.max(0,...t.fx.map(f=>f.rd||0)); t.players.forEach(p=>legs.forEach(rev=>{k++; u.fx.push({id:'gn'+pid+'-'+k,ph:'g',rd:rd0+k,a:rev?p.id:pid,b:rev?pid:p.id})})); return {u,msg:`${pn.name} entrou e ganhou ${k} partida${k>1?'s':''} nova${k>1?'s':''}.`}}
+  if(t.fmt==='gr'){
+    if(t.fx.some(f=>f.ph!=='g'&&R[f.id]&&R[f.id].ms.length))return {err:'A fase final já começou; não dá mais para adicionar jogadores.'};
+    const g=u.groups.find(x=>x.id===(t.gf?u.groups[0].id:gid)); if(!g)return {err:'Escolha o grupo.'};
+    const mates=[...g.ids]; g.ids.push(pid); const gF=u.fx.filter(f=>f.ph==='g'), gm=Math.max(0,...gF.map(f=>f.rd)); let k=0;
+    mates.forEach(m=>legs.forEach(rev=>{k++; gF.push({id:'g'+g.id+'n'+pid+'-'+k,ph:'g',gid:g.id,rd:gm+k,a:rev?m:pid,b:rev?pid:m})}));
+    const gmax=Math.max(0,...gF.map(f=>f.rd)); while(u.dest.length<Math.max(...u.groups.map(x=>x.ids.length)))u.dest.push(null);
+    const o=tBuildGr({groups:u.groups,dbl:!!t.dbl,dest:u.dest,third:!!t.third}), sh=gmax-o.gmax;
+    u.fx=[...gF,...o.fx.filter(f=>f.ph!=='g').map(f=>({...f,rd:f.rd+sh}))]; u.gmax=gmax; u.rt=o.rt;
+    return {u,msg:`${pn.name} entrou no Grupo ${g.id} (${k} partida${k>1?'s':''} nova${k>1?'s':''}). A fase final foi refeita.`}}
+  const dep=id=>{const out=new Set(), q=[id]; while(q.length){const x=q.pop(); t.fx.forEach(g=>{if(!out.has(g.id)&&((g.sa&&g.sa.f===x)||(g.sb&&g.sb.f===x)||g.cond===x)){out.add(g.id);q.push(g.id)}})} return out};
+  const cand=u.fx.filter(f=>f.rd===1&&!f.sa&&!f.sb&&!f.cond&&!f.sl&&(!f.a||!f.b)).sort((x,y)=>((y.a||y.b)?1:0)-((x.a||x.b)?1:0));
+  for(const f of cand){ const r=R[f.id]; if(!r||r.ms.length||r.wo)continue; if([...dep(f.id)].some(i=>R[i]&&(R[i].ms.length||R[i].wo)))continue;
+    const op=f.a||f.b; if(!f.a)f.a=pid; else f.b=pid; return {u,msg:op?`${pn.name} entrou na primeira fase contra ${nameOf(op,(t.players.find(p=>p.id===op)||{}).name)}.`:`${pn.name} entrou na primeira fase.`}}
+  return {err:'Não há vaga livre na chave (ou os jogos dessa vaga já foram disputados). Em mata-mata só dá para entrar em vagas de folga ainda não jogadas.'};
+}
 function tRulesHtml(t){
   const rs=tv.rs||t.res||'any', ed=tv.ed||t.edit||'any', bo=+tv.bo||t.bo, bog=+tv.bog||t.bog||t.bo, ru=tv.ru||t.rule||'pts', isG=t.fmt==='gr'&&!t.gf, isF=!!t.gf, hasR=t.fmt==='rr'||t.fmt==='gr'||isF, hasP=t.fmt==='ko'||isG, bop=tv.bop||{};
   const sg=(k,cur,opts)=>`<div class="seg" style="grid-template-columns:repeat(${opts.length},1fr)">${opts.map(([v,l])=>`<button data-rk="${k}" data-rv="${v}" class="${String(cur)===String(v)?'on':''}">${l}</button>`).join('')}</div>`, S3=[[3,'3 sets'],[5,'5 sets'],[7,'7 sets']];
@@ -2507,7 +2536,7 @@ function tRulesHtml(t){
   const pin=rs==='mgr'?`<div class="tg2" style="margin-top:2px"><input id="tRq1" type="password" inputmode="numeric" autocomplete="off" placeholder="${t.rpin?'Novo PIN (vazio = manter o atual)':'Crie o PIN do gerente (mín. 4 dígitos)'}" value="${esc(tv.p1||'')}" style="padding:8px"><input id="tRq2" type="password" inputmode="numeric" autocomplete="off" placeholder="Repita o PIN" value="${esc(tv.p2||'')}" style="padding:8px"></div>`:'';
   const pp=hasP?`<div class="field"><button class="lnk" id="tRpf" style="font-size:13px">${tv.pf?'▾':'▸'} Mudar o melhor de sets por fase do mata-mata</button>${tv.pf?`<div class="tbp">${PH.map(([k,l])=>`<label>${l}<select data-bq="${k}"><option value="">Padrão (${bo})</option>${[3,5,7].map(v=>`<option value="${v}" ${bop[k]===v?'selected':''}>${v} sets</option>`).join('')}</select></label>`).join('')}</div>`:''}</div>`:'';
   const rl=hasR?F('Regra de pontuação'+(isG?' dos grupos':''),sg('ru',ru,[['pts','Pontuação'],['sets','Mais sets']])):'';
-  return `<div class="panel nw" style="margin:0 0 8px"><label class="field" style="margin:0"><span>Nome do campeonato</span><input id="tRn" value="${esc(tv.rn!=null?tv.rn:t.name)}" maxlength="60"></label><div class="tg3 tg4" style="margin-top:8px">${f1}${f2}${rl}</div>${pin}${pp}<button class="sec" id="tSb" style="margin-top:8px">🔁 Substituir jogador</button><p class="legend" style="margin:6px 0 0">Mudar o melhor de sets ou a regra vale para os próximos resultados e recalcula a classificação; o formato, os jogadores e os confrontos não mudam.</p><div class="dn" id="tRe2"></div><div class="wrow"><button class="pri" id="tRk">Salvar</button><button class="sec" id="tRc" style="margin-top:8px">Cancelar</button></div></div>`}
+  return `<div class="panel nw" style="margin:0 0 8px"><label class="field" style="margin:0"><span>Nome do campeonato</span><input id="tRn" value="${esc(tv.rn!=null?tv.rn:t.name)}" maxlength="60"></label><div class="tg3 tg4" style="margin-top:8px">${f1}${f2}${rl}</div>${pin}${pp}<div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px"><button class="sec" id="tAb" style="margin-top:0">➕ Adicionar jogador</button><button class="sec" id="tSb" style="margin-top:0">🔁 Substituir jogador</button></div><p class="legend" style="margin:6px 0 0">Mudar o melhor de sets ou a regra vale para os próximos resultados e recalcula a classificação; o formato e os confrontos já existentes não mudam. Para mexer nos jogadores, use Adicionar ou Substituir.</p><div class="dn" id="tRe2"></div><div class="wrow"><button class="pri" id="tRk">Salvar</button><button class="sec" id="tRc" style="margin-top:8px">Cancelar</button></div></div>`}
 function tourRender(){ {const bid={new:'tBk',prev:'tBk2',det:'tLs',hall:'hBk'}[tv.v]; setBack('tourM',bid?()=>{const e=$(bid); if(e)e.click(); else{tv={v:'list'};tourRender()}}:null)} {const lk=$('tourM').querySelector('.lkb'); if(lk)lk.hidden=!(tv.v==='list'||tv.v==='det')} $('tourB').classList.toggle('nw',tv.v==='new'); $('tRnB').hidden=true; if(tv.v==='new')return tNewR(); if(tv.v==='prev')return tPrevR(); if(tv.v==='det')return tDetR(); if(tv.v==='hall')return tHallR(); tListR() }
 $('tourBtn').onclick=()=>{tv={v:'list'};tourRender();open('tourM');$('tourM').querySelector('.sheet').scrollTop=0};
 $('tourX').onclick=()=>$('tourM').classList.remove('on'); $('tpX').onclick=()=>$('tpM').classList.remove('on'); $('tpM').onclick=e=>{if(e.target===$('tpM'))$('tpM').classList.remove('on')};
