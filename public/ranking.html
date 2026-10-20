@@ -1119,7 +1119,8 @@ function achRun(){
   },i*450));
 }
 let achPSel=null;
-function openAch(id){if(achId!==id)achPSel=null; achId=id; renderAch(); open('achM')}
+let achRk=false;
+function openAch(id,fromRank){if(achId!==id)achPSel=null; achId=id; achRk=!!fromRank; setBack('achM',achRk?()=>goPlayer(id):null); renderAch(); open('achM')}
 function renderAch(){
   const p=byId(achId); if(!p){$('achM').classList.remove('on');return}
   const got=p.ach||{}, n=ACH.filter(a=>got[a.k]).length, f=S.settings.achFrom;
@@ -1260,7 +1261,7 @@ function renderHelp(){
   $('helpB').innerHTML=HELP[helpTab]();
 }
 $('helpBtn').onclick=()=>{renderHelp();open('helpM')}; $('helpX').onclick=()=>$('helpM').classList.remove('on');
-$('achX').onclick=()=>$('achM').classList.remove('on'); $('pxX').onclick=()=>$('pxM').classList.remove('on');
+$('achX').onclick=()=>{if(achRk){achRk=false;document.querySelectorAll('.modal.on').forEach(m=>m.classList.remove('on'))}else $('achM').classList.remove('on')}; $('pxX').onclick=()=>$('pxM').classList.remove('on');
 const TCOL={A:'#ffb020',B:'#2e9bff',C:'#1fe38f'};
 function splash(head,name,sub,color){
   if(!fx())return;
@@ -1381,7 +1382,7 @@ function renderRankAch(){
   $('shareB').textContent='📤 Compartilhar ranking de conquistas (WhatsApp)'; $('jpgRank').textContent='🖼️ Exportar ranking de conquistas (JPG)';
   $('rkLeg').hidden=true; $('rankNote').innerHTML=''; $('rankHi').innerHTML='';
   rkSet(pl.length?`<table><tr><th>#</th><th>Jogador</th><th class="n">Conquistas</th></tr>`+pl.map((x,i)=>`<tr class="t${tier(x.p)}"><td>${['🥇','🥈','🥉'][i]||i+1}</td><td><span class="badge">${tier(x.p)}</span><button class="pname" data-id="${x.p.id}" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px">${esc(x.p.name)}</button><div class="adm" style="margin-top:2px">${x.c.map((v,j)=>v?`<span style="color:${LV[j].c}">●</span> ${v}`:'').filter(Boolean).join(' &nbsp; ')}</div></td><td class="n"><b style="color:var(--t)">${x.n}</b><small style="color:var(--mut)">/${ACH.length}</small></td></tr>`).join('')+'</table><p class="legend">Desempate: conquistas mais difíceis valem mais (Fácil 1 · Médio 2 · Difícil 3 · Impossível 5).</p>':'<p style="color:var(--mut)">Ninguém conquistou ainda.</p>');
-  $('rankL').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id));
+  $('rankL').querySelectorAll('.pname').forEach(b=>b.onclick=()=>openAch(b.dataset.id,true));
 }
 $('shareB').onclick=async()=>{
   const l=ranked(); let t=`🏓 Ranking ${clubName(cur)} 🏓\n${sN(curS())}\n`;
@@ -1736,7 +1737,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.96'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.97'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2032,7 +2033,7 @@ function normHead(mid){ const sh=$(mid).querySelector('.sheet'); if(!sh)return; 
   if(!hd){ const h3=sh.querySelector(':scope>h3'); if(!h3)return; hd=document.createElement('div'); hd.className='ahead'; sh.insertBefore(hd,h3); hd.appendChild(h3);
     const x=document.createElement('button'); x.className='x2'; x.id=mid+'X'; x.title='Fechar'; x.setAttribute('aria-label','Fechar'); x.textContent='✕'; x.onclick=()=>$(mid).classList.remove('on'); hd.appendChild(x)}
   if(hd.querySelector(':scope>.al'))return; const kids=[...hd.children], al=document.createElement('div'), ar=document.createElement('div');
-  al.className='al'; ar.className='ar'; if(mid==='tourM'||mid==='playM'){const bk=document.createElement('button'); bk.className='bk'; bk.hidden=true; bk.textContent='←'; bk.title='Voltar'; bk.setAttribute('aria-label','Voltar'); ar.appendChild(bk)}
+  al.className='al'; ar.className='ar'; if(mid==='tourM'||mid==='playM'||mid==='achM'){const bk=document.createElement('button'); bk.className='bk'; bk.hidden=true; bk.textContent='←'; bk.title='Voltar'; bk.setAttribute('aria-label','Voltar'); ar.appendChild(bk)}
   kids.slice(1).forEach(k=>ar.appendChild(k)); hd.prepend(al); hd.appendChild(ar) }
 function setBack(mid,fn){ const b=$(mid).querySelector('.ahead .bk'); if(!b)return; b.hidden=!fn; b.onclick=fn||null }
 ['rankM','matchM','playM','achAllM','helpM','tourM','pxM','achM','tpM'].forEach(normHead);
