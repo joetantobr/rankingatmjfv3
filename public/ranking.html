@@ -536,6 +536,10 @@ body.champ .nrm{display:none!important}
 .tnxh:after{float:none;margin-left:6px}
 .pnx{margin:0 0 10px}
 .tfl{outline:3px solid #ffb300!important;outline-offset:2px;background-color:rgba(255,179,0,.28)!important;border-radius:8px;position:relative;z-index:1}
+.tsh.gcl{color:#fff;padding:7px 12px;border-radius:10px;letter-spacing:.06em}.tsh.gcl small{color:#fff;opacity:.9}.tsh.gc0{background:#2563eb}.tsh.gc1{background:#16a34a}.tsh.gc2{background:#ea580c}.tsh.gc3{background:#9333ea}
+.tt{table-layout:fixed;width:100%}.tt td,.tt th{overflow-wrap:anywhere}.tt th:nth-child(1),.tt td:nth-child(1){width:26px}.tt th:nth-child(3),.tt td:nth-child(3),.tt th:nth-child(4),.tt td:nth-child(4),.tt th:nth-child(5),.tt td:nth-child(5){width:34px}.tt th:nth-child(6),.tt td:nth-child(6){width:56px}.tt th:nth-child(7),.tt td:nth-child(7){width:44px}.tt th:nth-child(8),.tt td:nth-child(8){width:34px}
+.ttabs button.gcb{border-width:2px}.ttabs button.gcb.gc0,.tfx.gcc.gc0{border-color:#2563eb}.ttabs button.gcb.gc1,.tfx.gcc.gc1{border-color:#16a34a}.ttabs button.gcb.gc2,.tfx.gcc.gc2{border-color:#ea580c}.ttabs button.gcb.gc3,.tfx.gcc.gc3{border-color:#9333ea}.tfx.gcc{border-width:2px}
+html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl .tsh.gcl small{color:var(--mut);opacity:1}html.cl .tsh.gc0{border-color:#2563eb}html.cl .tsh.gc1{border-color:#16a34a}html.cl .tsh.gc2{border-color:#ea580c}html.cl .tsh.gc3{border-color:#9333ea}
 </style>
 </head>
 <body>
@@ -1737,7 +1741,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.97'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.109'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -1935,13 +1939,10 @@ async function tJpgGo(btn,what,t){
       imgBg(x,W0,H,P); let y=imgHeader(x,W0,P,tTit(x,P,t.name,W0),club+(I.ph?' · Rating '+I.ph:'')+' · pódio'); y+=10;
       tPodStrip(x,W0,P,y,pod,nm,I.ph);
       imgFooter(x,W0,H,P)})}
-  if(what==='mt'){
-    const secs=t.fmt==='rr'?[{title:'Partidas',fx:t.fx,gid:''}]:t.gf?[{title:'Fase de grupos',fx:t.fx.filter(q=>q.ph==='g'),gid:t.groups[0].id},{title:'Fase final',fx:t.fx.filter(q=>q.ph!=='g'&&R[q.id].a&&R[q.id].b)}].filter(sc=>sc.fx.length):t.groups.filter(g=>!tv.gs||tv.gs===g.id).map(g=>({title:'Grupo '+tGN(g.id),fx:t.fx.filter(q=>q.ph==='g'&&q.gid===g.id),gid:g.id}));
-    const RH=f?44:38, W=W0, MX=520, H=(f?150:92)+secs.reduce((a,b)=>a+50+b.fx.length*RH+24,0)+70;
-    return saveJpg(btn,`partidas-${slugT}-${today()}.jpg`,W,H,x=>{
-      imgBg(x,W,H,P); let y=imgHeader(x,W,P,tTit(x,P,t.name,W),club+' · partidas'+(t.fmt==='gr'&&!t.gf?' dos grupos':''));
+  const mkSecs=()=>t.fmt==='rr'?[{title:'Partidas',fx:t.fx,gid:''}]:t.gf?[{title:'Fase de grupos',fx:t.fx.filter(q=>q.ph==='g'),gid:t.groups[0].id},{title:'Fase final',fx:t.fx.filter(q=>q.ph!=='g'&&R[q.id].a&&R[q.id].b)}].filter(sc=>sc.fx.length):t.groups.filter(g=>!tv.gs||tv.gs==='*'||tv.gs===g.id).map(g=>({title:'Grupo '+tGN(g.id),fx:t.fx.filter(q=>q.ph==='g'&&q.gid===g.id),gid:g.id})), mkTabs=()=>(t.fmt==='rr'||t.gf)?[{title:'Classificação',gid:t.gf?t.groups[0].id:'',rows:tTable(t,R,t.gf?t.groups[0].id:undefined),dest:t.gf?t.dest.map(L=>L==='A'?'F':L==='B'?'3º':null):null}]:t.groups.filter(g=>!tv.gs||tv.gs==='*'||tv.gs===g.id).map(g=>({title:'Grupo '+tGN(g.id)+(t.fx.filter(q=>q.ph==='g'&&q.gid===g.id).every(q=>R[q.id].fin)?'  ✓':''),gid:g.id,rows:tTable(t,R,g.id),dest:t.dest}));
+  const drawMT=(x,W,y,secs,RH,MX,noT)=>{
       secs.forEach(sc=>{
-        x.textAlign='left'; x.fillStyle=f?P.cy:P.tx; x.font=f?`800 24px ${P.FH}`:'bold 22px system-ui,sans-serif'; x.fillText(sc.title,36,y+22); gT(x,W,y,sc.gid,sc.title); y+=50;
+        if(!noT){x.textAlign='left'; x.fillStyle=f?P.cy:P.tx; x.font=f?`800 24px ${P.FH}`:'bold 22px system-ui,sans-serif'; x.fillText(sc.title,36,y+22); gT(x,W,y,sc.gid,sc.title); y+=50;}
         (SC?[...sc.fx].sort((a,b)=>(SC.g[a.id]?SC.g[a.id].at:1e18)-(SC.g[b.id]?SC.g[b.id].at:1e18)||a.rd-b.rd):[...sc.fx].sort((a,b)=>a.rd-b.rd)).forEach((q,i)=>{const r=R[q.id], cy=y+RH/2, ch=SC&&SC.g[q.id]; if(f){rr(x,28,y+2,W-56,RH-4,10); x.fillStyle=P.card; x.fill(); x.strokeStyle=P.line; x.lineWidth=1; x.stroke()} else if(i%2===0){x.fillStyle=P.zebra;x.fillRect(0,y,W,RH)}
           x.textAlign='left'; x.fillStyle=P.mut; x.font=f?`700 15px ${P.FH}`:'bold 15px system-ui,sans-serif'; x.fillText(q.ph==='g'?'R'+q.rd:(q.rt==='B'?'3º':'F'),44,cy); if(ch){x.fillStyle=P.mut; x.font='bold 14px system-ui,sans-serif'; x.fillText(tFmtT(ch.at)+' · Mesa '+ch.tb,84,cy); x.font=f?`700 15px ${P.FH}`:'bold 15px system-ui,sans-serif'}
           let sa='',sb='',wa=r.done&&r.w===r.a, wb=r.done&&r.w===r.b;
@@ -1952,12 +1953,8 @@ async function tJpgGo(btn,what,t){
           x.textAlign='left'; x.fillStyle=wb?P.up:P.tx; x.font=wb?(f?`800 21px ${P.FB}`:'bold 19px system-ui,sans-serif'):(f?`500 21px ${P.FB}`:'19px system-ui,sans-serif'); x.fillText(fitTxt(x,nm(q.b),W-44-(MX+62)),MX+62,cy);
           y+=RH});
         y+=24});
-      imgFooter(x,W,H,P)})}
-  if(I.kind==='tb'){
-    const tabs=(t.fmt==='rr'||t.gf)?[{title:'Classificação',gid:t.gf?t.groups[0].id:'',rows:tTable(t,R,t.gf?t.groups[0].id:undefined),dest:t.gf?t.dest.map(L=>L==='A'?'F':L==='B'?'3º':null):null}]:t.groups.filter(g=>!tv.gs||tv.gs===g.id).map(g=>({title:'Grupo '+tGN(g.id)+(t.fx.filter(q=>q.ph==='g'&&q.gid===g.id).every(q=>R[q.id].fin)?'  ✓':''),gid:g.id,rows:tTable(t,R,g.id),dest:t.dest}));
-    const RH=f?44:38, W=W0, pdS=(t.fmt==='rr'||t.gf)&&I.pod, H=(f?150:92)+tabs.reduce((a,b)=>a+60+b.rows.length*RH+24,0)+70+(pdS?tPodPH+10:0);
-    return saveJpg(btn,`${t.fmt==='rr'||t.gf?'classificacao':'grupos'}-${slugT}-${today()}.jpg`,W,H,x=>{
-      imgBg(x,W,H,P); let y=imgHeader(x,W,P,tTit(x,P,t.name,W),club+' · '+(t.fmt==='rr'||t.gf?'classificação':'fase de grupos'));
+      return y};
+  const drawTB=(x,W,y,tabs,RH)=>{
       tabs.forEach(tb=>{
         x.textAlign='left'; x.fillStyle=f?P.cy:P.tx; x.font=f?`800 24px ${P.FH}`:'bold 22px system-ui,sans-serif'; x.fillText(tb.title,36,y+22); gT(x,W,y,tb.gid,tb.title); y+=44;
         x.fillStyle=P.mut; x.font=f?`700 13px ${P.FH}`:'bold 13px system-ui,sans-serif'; x.fillText('#',44,y+8); x.fillText('JOGADOR',84,y+8); x.textAlign='right'; [['J',520],['V',580],['D',640],['SETS',730],['PTS',800]].forEach(([a,px])=>x.fillText(a,px,y+8)); if(tb.dest)x.fillText('VAI P/',W-40,y+8); x.textAlign='left'; y+=22;
@@ -1968,6 +1965,28 @@ async function tJpgGo(btn,what,t){
           if(tb.dest){const L=tb.dest[i]; if(L){const c=tRC[((L.charCodeAt(0)-65)%4+4)%4]; x.fillStyle=c; rr(x,W-76,cy-14,36,28,7); x.fill(); x.fillStyle='#fff'; x.textAlign='center'; x.font='bold 17px system-ui,sans-serif'; x.fillText(L,W-58,cy+1)} else {x.fillStyle=P.mut; x.font='14px system-ui,sans-serif'; x.fillText('elim.',W-40,cy)}}
           x.textAlign='left'; y+=RH});
         y+=24});
+      return y};
+  if(what==='mt'){
+    const secs=mkSecs();
+    const RH=f?44:38, W=W0, MX=520, H=(f?150:92)+secs.reduce((a,b)=>a+50+b.fx.length*RH+24,0)+70;
+    return saveJpg(btn,`partidas-${slugT}-${today()}.jpg`,W,H,x=>{
+      imgBg(x,W,H,P); let y=imgHeader(x,W,P,tTit(x,P,t.name,W),club+' · partidas'+(t.fmt==='gr'&&!t.gf?' dos grupos':''));
+      y=drawMT(x,W,y,secs,RH,MX);
+      imgFooter(x,W,H,P)})}
+  if(what==='gm'){
+    const single=t.fmt==='rr'||t.gf, RH=f?44:38, W=W0, MX=520, tabs=mkTabs(), secs=mkSecs(), pdS=single&&I.pod;
+    const H=(f?150:92)+(single?tabs.reduce((a,b)=>a+60+b.rows.length*RH+24,0)+secs.reduce((a,b)=>a+50+b.fx.length*RH+24,0):tabs.reduce((a,b,k)=>a+60+b.rows.length*RH+24+secs[k].fx.length*RH+24,0))+70+(pdS?tPodPH+10:0);
+    return saveJpg(btn,`${single?'classificacao':'grupos'}-partidas-${slugT}-${today()}.jpg`,W,H,x=>{
+      imgBg(x,W,H,P); let y=imgHeader(x,W,P,tTit(x,P,t.name,W),club+' · '+(single?'classificação e partidas':'grupos e partidas'));
+      if(single){y=drawTB(x,W,y,tabs,RH); y=drawMT(x,W,y,secs,RH,MX)} else tabs.forEach((tb,k)=>{y=drawTB(x,W,y,[tb],RH); y=drawMT(x,W,y,[secs[k]],RH,MX,true)});
+      if(pdS)tPodStrip(x,W,P,y+4,I.pod,nm,null);
+      imgFooter(x,W,H,P)})}
+  if(I.kind==='tb'){
+    const tabs=mkTabs();
+    const RH=f?44:38, W=W0, pdS=(t.fmt==='rr'||t.gf)&&I.pod, H=(f?150:92)+tabs.reduce((a,b)=>a+60+b.rows.length*RH+24,0)+70+(pdS?tPodPH+10:0);
+    return saveJpg(btn,`${t.fmt==='rr'||t.gf?'classificacao':'grupos'}-${slugT}-${today()}.jpg`,W,H,x=>{
+      imgBg(x,W,H,P); let y=imgHeader(x,W,P,tTit(x,P,t.name,W),club+' · '+(t.fmt==='rr'||t.gf?'classificação':'fase de grupos'));
+      y=drawTB(x,W,y,tabs,RH);
       if(pdS)tPodStrip(x,W,P,y+4,I.pod,nm,null);
       imgFooter(x,W,H,P)})}
   if(t.fmt==='de'){
@@ -2629,7 +2648,7 @@ function tPrevGr(){
   <div class="legend" style="margin-top:8px">${ks.length?ks.map(k=>`${tRtL(k)} ${rs[k]} jogadores · chave de ${tPow(rs[k])}`).join('<br>'):'Nenhum Rating formado.'}</div>
   ${(()=>{const sz=n.groups.map(g=>g.ids.length); return Math.max(...sz)!==Math.min(...sz)&&ks.some(k=>tPow(rs[k])!==rs[k])?`<p class="legend" style="margin:6px 0 0">ℹ️ Grupos com tamanhos diferentes: se algum Rating precisar de BYE (jogo livre na 1ª rodada), ele vai para o 1º colocado dos grupos maiores, que jogam mais partidas.</p>`:''})()}
   <div class="field"><span>Seeds de cada mata-mata</span><div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><button data-sm="fixed" style="padding:8px 4px;font-size:13px" class="${n.sm==='fixed'?'on':''}">Cruzamento fixo</button><button data-sm="perf" style="padding:8px 4px;font-size:13px" class="${n.sm==='perf'?'on':''}">Por desempenho</button><button data-sm="ab" style="padding:8px 4px;font-size:13px" class="${n.sm==='ab'?'on':''}">Cruzamento A × B</button></div>
-  <p class="legend" style="margin:6px 0 0">${n.sm==='fixed'?'Cruzamento fixo (ex.: 1º do Grupo A x 1º do Grupo H): cada jogo do mata-mata abre assim que os dois grupos envolvidos terminam.':n.sm==='ab'?'Cruzamento A × B: o Grupo A enfrenta o B, o C enfrenta o D etc. Quem é do mesmo grupo só se reencontra na final, e os seeds 1 e 2 só se encontram na final. A chave é montada quando TODOS os grupos terminarem.':'Por desempenho: os seeds saem do aproveitamento nos grupos. Cada Rating só abre quando TODOS os grupos terminarem.'}</p></div>`;
+  <p class="legend" style="margin:6px 0 0">${n.sm==='fixed'?'Cruzamento fixo: a chave segue a ordem dos grupos, com os melhores colocados enfrentando os piores (ex.: com 8 grupos e 2 classificados por grupo, 1º do Grupo A x 2º do Grupo H, 1º do B x 2º do G…). Quem é do mesmo grupo só se reencontra o mais tarde possível. Cada jogo abre assim que os dois grupos envolvidos terminam.':n.sm==='ab'?'Cruzamento A × B: o Grupo A enfrenta o B, o C enfrenta o D etc. Quem é do mesmo grupo só se reencontra na final, e os seeds 1 e 2 só se encontram na final. A chave é montada quando TODOS os grupos terminarem.':'Por desempenho: os seeds saem do aproveitamento nos grupos. Cada Rating só abre quando TODOS os grupos terminarem.'}</p></div>`;
   return h;
 }
 function tPrevGrBind(){
@@ -2680,13 +2699,14 @@ function tDetR(){
   const ph2=(fs,byRd)=>{const grp={}; fs.forEach(f=>{const k=f.ph+'|'+f.rd; (grp[k]=grp[k]||{f:[],ph:f.ph,rd:f.rd}).f.push(f)}); return Object.values(grp).sort((a,b)=>a.rd-b.rd||(a.ph==='p3'?-1:b.ph==='p3'?1:0)).map(g=>{const body=g.f.map(card).join(''); return body.trim()?`<div class="tsh">${tPhN(g.ph,t)}</div>`+body:''}).join('')};
   const tab=t.fmt==='gr'?((!t.gf&&tv.tab&&t.rt.includes(tv.tab))?tv.tab:'g'):null;
   if(t.fmt==='gr'){
-    if(!t.gf)h+=`<div class="tlb tnxh${tGrC?' c':''}" id="tGrH">Grupos${t.fx.filter(f=>f.ph==='g').every(f=>R[f.id]&&R[f.id].fin)?' (encerrado)':''}</div><div class="ttabs wr"${tGrC?' hidden':''}><button data-tab="g" data-gs="" class="${tab==='g'&&!tv.gs?'on':''}">Todos</button>${t.groups.map(g=>{const cl=t.fx.filter(f=>f.ph==='g'&&f.gid===g.id).every(f=>R[f.id].fin);return `<button data-tab="g" data-gs="${g.id}" class="${tab==='g'&&tv.gs===g.id?'on':''}${cl?' cl':''}">${cl?'✓ ':''}Grupo ${tGN(g.id)}</button>`}).join('')}</div><div class="tlb tnxh${tSfC?' c':''}" id="tSfH">Segunda fase</div><div${tSfC?' hidden':''}>${t.rt.map(L=>{const rf=t.fx.filter(f=>f.rt===L), cl=rf.every(f=>R[f.id].fin), phs=[]; [...rf].sort((x,y)=>x.rd-y.rd||(x.ph==='p3'?-1:y.ph==='p3'?1:0)).forEach(f=>{if(!phs.includes(f.ph))phs.push(f.ph)});
+    if(!t.gf)h+=`<div class="tlb tnxh${tGrC?' c':''}" id="tGrH">Grupos${t.fx.filter(f=>f.ph==='g').every(f=>R[f.id]&&R[f.id].fin)?' (encerrado)':''}</div><div class="ttabs wr"${tGrC?' hidden':''}><button data-tab="g" data-gs="" class="${tab==='g'&&!tv.gs?'on':''}">Grupos</button><button data-tab="g" data-gs="*" class="${tab==='g'&&tv.gs==='*'?'on':''}">Jogos</button>${t.groups.map((g,gi)=>{const cl=t.fx.filter(f=>f.ph==='g'&&f.gid===g.id).every(f=>R[f.id].fin);return `<button data-tab="g" data-gs="${g.id}" class="${tab==='g'&&tv.gs===g.id?'on':''}${cl?' cl':''} gcb gc${gi%4}">${cl?'✓ ':''}Grupo ${tGN(g.id)}</button>`}).join('')}</div><div class="tlb tnxh${tSfC?' c':''}" id="tSfH">Segunda fase</div><div${tSfC?' hidden':''}>${t.rt.map(L=>{const rf=t.fx.filter(f=>f.rt===L), cl=rf.every(f=>R[f.id].fin), phs=[]; [...rf].sort((x,y)=>x.rd-y.rd||(x.ph==='p3'?-1:y.ph==='p3'?1:0)).forEach(f=>{if(!phs.includes(f.ph))phs.push(f.ph)});
       return `<div class="ttabs"><button data-tab="${L}" data-rp="" class="rtl${tab===L&&tv.view!=='list'?' on':''}${cl?' cl':''}">${cl?'✓ ':''}Rating ${L}</button><button data-tab="${L}" data-rp="*" class="${tab===L&&tv.view==='list'&&!tv.ph?'on':''}">Lista</button>${phs.map(k=>{const c2=rf.filter(f=>f.ph===k).every(f=>R[f.id].fin);return `<button data-tab="${L}" data-rp="${k}" class="${tab===L&&tv.view==='list'&&tv.ph===k?'on':''}${c2?' cl':''}">${c2?'✓ ':''}${tPhN(k,t).replace(' de final','')}</button>`}).join('')}</div>`}).join('')}</div>`;
     if(tab==='g'){
-      t.groups.filter(g=>!tv.gs||tv.gs===g.id).forEach(g=>{const T=tTable(t,R,g.id), fs=t.fx.filter(f=>f.ph==='g'&&f.gid===g.id), cl=fs.every(f=>R[f.id].fin);
-        h+=`<div class="tsh">${t.gf?'Classificação':'Grupo '+tGN(g.id)}${cl?' · ✅ encerrado':''}${SC&&SC.G[g.id]?` <small style="font-weight:600;text-transform:none">· 🕒 Mesa ${SC.G[g.id].tb} · Início ${tFmtT(SC.G[g.id].start)}</small>`:''}</div>${cl?`<div class="tgdone">${t.gf?'🏁 Fase de grupos encerrada · finalistas definidos':'🏁 Grupo encerrado · classificados definidos'}</div>`:''}<table class="tt${cl?' cld':''}"><tr><th>#</th><th>Jogador</th><th class="n">J</th><th class="n">V</th><th class="n">D</th><th class="n">Sets</th><th class="n">Pts</th><th class="n" title="Rating de destino">→</th></tr>${T.map((x,i)=>`<tr><td>${i+1}</td><td>${pnl(x.id,nameOf(x.id,PN[x.id]))} <small>(${x.seed})</small>${x.wd?' <small class="dn">W.O.</small>':''}</td><td class="n">${x.j}</td><td class="n">${x.v}</td><td class="n">${x.d}</td><td class="n">${x.sp}-${x.sc}</td><td class="n"><b>${x.pts}</b></td><td class="n">${t.dest[i]?(t.gf?`<span class="rtb s r${t.dest[i]==='A'?0:1}">${t.dest[i]==='A'?'F':'3º'}</span>`:tRtS(t.dest[i])):'<small>elim.</small>'}</td></tr>`).join('')}</table>`;
+      const gs0=tv.gs||'', showT=t.gf||gs0!=='*', showG=t.gf||!!gs0; /* Grupos = só as tabelas · Jogos = só a lista de jogos · Grupo X = tabela + jogos */
+      t.groups.filter(g=>!gs0||gs0==='*'||gs0===g.id).forEach(g=>{const gci=t.groups.findIndex(x=>x.id===g.id)%4, T=tTable(t,R,g.id), fs=t.fx.filter(f=>f.ph==='g'&&f.gid===g.id), cl=fs.every(f=>R[f.id].fin);
+        h+=`<div class="tsh${t.gf?'':' gcl gc'+gci}">${t.gf?'Classificação':'Grupo '+tGN(g.id)}${cl?' · ✅ encerrado':''}${SC&&SC.G[g.id]?` <small style="font-weight:600;text-transform:none">· 🕒 Mesa ${SC.G[g.id].tb} · Início ${tFmtT(SC.G[g.id].start)}</small>`:''}</div>${cl&&showT?`<div class="tgdone">${t.gf?'🏁 Fase de grupos encerrada · finalistas definidos':'🏁 Grupo encerrado · classificados definidos'}</div>`:''}${showT?`<table class="tt${cl?' cld':''}"><tr><th>#</th><th>Jogador</th><th class="n">J</th><th class="n">V</th><th class="n">D</th><th class="n">Sets</th><th class="n">Pts</th><th class="n" title="Rating de destino">→</th></tr>${T.map((x,i)=>`<tr><td>${i+1}</td><td>${pnl(x.id,nameOf(x.id,PN[x.id]))} <small>(${x.seed})</small>${x.wd?' <small class="dn">W.O.</small>':''}</td><td class="n">${x.j}</td><td class="n">${x.v}</td><td class="n">${x.d}</td><td class="n">${x.sp}-${x.sc}</td><td class="n"><b>${x.pts}</b></td><td class="n">${t.dest[i]?(t.gf?`<span class="rtb s r${t.dest[i]==='A'?0:1}">${t.dest[i]==='A'?'F':'3º'}</span>`:tRtS(t.dest[i])):'<small>elim.</small>'}</td></tr>`).join('')}</table>`:''}`;
         if(t.gf){const ff=t.fx.filter(f=>f.ph!=='g').sort((x,y)=>(x.rt>y.rt)-(x.rt<y.rt)); h+=`<div class="tsh">Fase final</div>`+ff.map(card).join('')}
-        const rds={}; fs.forEach(f=>(rds[f.rd]=rds[f.rd]||[]).push(f)); Object.keys(rds).sort((a,b)=>a-b).forEach(rd=>{h+=`<div class="tsr">Rodada ${rd}</div>`+rds[rd].map(card).join('')})});
+        if(showG){const rds={}; fs.forEach(f=>(rds[f.rd]=rds[f.rd]||[]).push(f)); Object.keys(rds).sort((a,b)=>a-b).forEach(rd=>{h+=`<div class="tsr">Rodada ${rd}</div>`+rds[rd].map(card).join('').replace(/class="tfx /g,'class="tfx gcc gc'+gci+' ')})}});
       h+=`<p class="legend" style="margin-top:6px">${t.rule==='sets'?'Mais sets: vitória vale a diferença de sets (3x0 = 3 pts, 3x1 = 2 pts). Derrota = 0.':'Vitória = 1 ponto · derrota = 0.'} Desempate: confronto direto, depois saldo de sets e seed. ${t.gf?'A coluna → mostra para onde vai cada colocação: F = final (1º x 2º), 3º = disputa de 3º lugar (3º x 4º). As duas abrem quando a fase de grupos termina.':`A coluna → mostra o Rating de destino de cada colocação. ${t.seedMode==='ab'?'Cruzamento A × B: a chave é montada quando todos os grupos terminarem.':t.seedMode==='perf'?'Seeds por desempenho: cada Rating só abre quando todos os grupos terminarem.':'Cruzamento fixo: cada jogo do mata-mata abre assim que os dois grupos envolvidos terminam.'}`}</p>`;
     } else {
       const ents=tEntsOf(t.groups,t.dest,tab).length, pd=tPodK(t,R,tab);
@@ -2707,7 +2727,7 @@ function tDetR(){
   Object.values(grp).sort((a,b)=>a.rd-b.rd||(a.ph==='p3'?-1:b.ph==='p3'?1:0)).forEach(g=>{const hd=t.fmt==='rr'?'Rodada '+g.rd:tPhN(g.ph), body=g.f.map(card).join(''); if(body.trim())h+=`<div class="tsh">${hd}</div>`+body});
   }
   const wds=Object.entries(t.wd||{}); if(wds.length)h+=`<div class="tsh">Desistências (W.O.)</div>`+wds.map(([pid,rd])=>{const fx=t.fx.find(g=>g.rd===+rd), lab=t.fmt==='rr'?'do campeonato (W.O. na rodada '+rd+')':(t.fmt==='gr'&&+rd<=t.gmax)?'da fase de grupos e do mata-mata':'na fase '+tPhN(fx?fx.ph:'',t); return `<div class="tpl"><span>${pnl(pid,nameOf(pid,PN[pid]))} <small>saiu ${lab}</small></span>${can?`<button class="tun" data-wd="${pid}" title="Reverter W.O." aria-label="Reverter W.O.">↩</button>`:''}</div>`}).join('')+`<p class="legend">Quem leva W.O. perde os jogos por W.O. e os adversários vencem pelo placar máximo. As partidas já lançadas continuam no ranking.</p>`;
-  {const I=dl?tJpgInfo(t,R):null, bs=[]; if(I){bs.push(`<button class="sec" id="tJpg" style="margin-top:0">${I.lab}</button>`); if(I.kind==='tb')bs.push(`<button class="sec" id="tJpgM" style="margin-top:0">🖼️ Salvar partidas (JPG)</button>`)}
+  {const I=dl?tJpgInfo(t,R):null, bs=[]; if(I){bs.push(`<button class="sec" id="tJpg" style="margin-top:0">${I.lab}</button>`); if(I.kind==='tb'){bs.push(`<button class="sec" id="tJpgM" style="margin-top:0">🖼️ Salvar partidas (JPG)</button>`); bs.push(`<button class="sec" id="tJpgB" style="margin-top:0">🖼️ Salvar ${t.fmt==='rr'||t.gf?'classificação':'grupos'} + partidas (JPG)</button>`)}}
     if(bs.length)h+=`<div class="tbt" style="grid-template-columns:repeat(${bs.length},minmax(0,1fr))">${bs.join('')}</div>`;
     if(can)h+=`<div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:6px"><button class="sec" id="tAr" title="${t.arch?'Desarquivar':'Arquivar'} campeonato" style="margin-top:0">📦 ${t.arch?'Restaurar':'Arquivar'}</button><button class="sec" id="tDl" title="Apagar campeonato" style="margin-top:0">🗑️ Apagar</button></div>`}
   if(admin&&!t.arch&&!(pod&&pr.tot>0&&pr.dn>=pr.tot)){const on=S.settings.champId===t.id, ot=!on&&champT(); h+=`<button class="sec" id="tMc" style="margin-top:6px">🎯 ${on?'Modo Campeonato ligado · toque para desligar':ot&&ot.t.id!==t.id?'Ligar Modo Campeonato (desliga “'+esc(ot.t.name)+'”)':'Ligar Modo Campeonato'}</button>`}
@@ -2726,7 +2746,7 @@ function tDetR(){
   if($('tUc')){$('tUc').onclick=()=>{tv.un=null;tourRender()}; $('tUk').onclick=()=>{const id=tv.un;tv.un=null;tUndo(t,id)}}
   $('tourB').querySelectorAll('.tun[data-f]').forEach(b=>b.onclick=()=>sure(b,()=>tUndo(t,b.dataset.f)));
   $('tourB').querySelectorAll('.tun[data-wd]').forEach(b=>b.onclick=()=>sure(b,()=>tGate(t,async()=>{const wd={...(t.wd||{})}; delete wd[b.dataset.wd]; await put('tournaments',{...t,wd}); await logA(`W.O. revertido no campeonato “${t.name}”`); tv.note='↩ W.O. revertido.'; tourRender()})));
-  if($('tJpg'))$('tJpg').onclick=e=>tJpgGo(e.currentTarget,'main',t); if($('tJpgM'))$('tJpgM').onclick=e=>tJpgGo(e.currentTarget,'mt',t); if($('tJpgP'))$('tJpgP').onclick=e=>tJpgGo(e.currentTarget,'pod',t);
+  if($('tJpg'))$('tJpg').onclick=e=>tJpgGo(e.currentTarget,'main',t); if($('tJpgM'))$('tJpgM').onclick=e=>tJpgGo(e.currentTarget,'mt',t); if($('tJpgB'))$('tJpgB').onclick=e=>tJpgGo(e.currentTarget,'gm',t); if($('tJpgP'))$('tJpgP').onclick=e=>tJpgGo(e.currentTarget,'pod',t);
   if($('tWt'))$('tWt').onclick=()=>needAdmin(()=>{tv.wt=!tv.wt;tourRender()});
   const openRen=()=>{Object.assign(tv,{ren:true,rn:t.name,rs:t.res||'any',ed:t.edit||'any',bo:t.bo,bog:t.bog||t.bo,bop:{...(t.bop||{})},ru:t.rule||'pts',pf:Object.keys(t.bop||{}).length>0,p1:'',p2:''});tourRender();$('tourM').querySelector('.sheet').scrollTop=0};
   $('tRnB').hidden=!!tv.ren; $('tRnB').onclick=()=>admin||tMgrOk[t.id]?openRen():t.rpin?tAskPin(t,openRen,{title:'⚙️ PIN para editar as regras',msg:'Para editar as regras, digite o PIN do gerente deste campeonato (ou o PIN do administrador).'}):needAdmin(openRen);
