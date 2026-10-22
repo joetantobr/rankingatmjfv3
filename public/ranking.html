@@ -542,6 +542,8 @@ body.champ .nrm{display:none!important}
 html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl .tsh.gcl small{color:var(--mut);opacity:1}html.cl .tsh.gc0{border-color:#2563eb}html.cl .tsh.gc1{border-color:#16a34a}html.cl .tsh.gc2{border-color:#ea580c}html.cl .tsh.gc3{border-color:#9333ea}
 .chstrip{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}.chc{border:1px solid var(--bd);border-radius:999px;background:var(--card);color:inherit;font:inherit;font-size:13px;padding:6px 12px;cursor:pointer}.chc.on{background:var(--ac);color:#fff;border-color:var(--ac)}.chadm{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.chmz{border:1px solid var(--bd);border-radius:12px;padding:7px 10px;margin:0 0 10px;text-align:center;font-size:13px;background:var(--card)}.chmz.w{border-style:dashed;color:var(--mut)}.mrow{margin:0 0 8px}.mrow>b{display:block;margin:0 0 4px}.cdn{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 12px}.cdn .sec{width:46px;margin:0;font-size:20px}
 .tsh.gcl{cursor:pointer}
+/* listas de jogadores no celular: ordem de cima para baixo na coluna da esquerda, depois na da direita */
+@media (max-width:560px),(orientation:landscape) and (max-height:520px){#pickL,#playL,.tpk{display:block;column-count:2;column-gap:6px}#pickL>*,#playL>*,.tpk>*{break-inside:avoid;margin:0 0 6px;width:100%}#pickL>p,#playL>p,.tpk>p{column-span:all}}
 .rkmv{display:inline-block;min-width:26px;font-size:11px;font-weight:800;white-space:nowrap}
 </style>
 </head>
@@ -1433,7 +1435,7 @@ function renderRank(){
   if(rkMode==='var')return renderRankVar();
   $('rkLeg').hidden=false; $('rkPcL').textContent='Variação: '+RK_PC[rkPc]; $('rkPcL').onclick=()=>{rkPc=rkPc==='hoje'?'sem':rkPc==='sem'?'mes':'hoje';renderRank()};
   const l=ranked(), pendL=vis().filter(p=>!l.includes(p)), pend=pendL.length;
-  $('rankNote').innerHTML=pend?`${pend} jogador(es) fora do ranking (menos de 3 partidas${S.settings.inactiveDays?' ou inativo há mais de '+S.settings.inactiveDays+' dias':''}). <button class="sec" id="rankPendB" style="margin:6px 0 0;padding:4px 10px;font-size:13px">${rkPendOpen?'Ocultar':'Mostrar'}</button><div id="rankPend"${rkPendOpen?'':' hidden'} style="margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">${pendL.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="sec pname" data-id="${p.id}" style="margin:0;padding:4px 6px;font-size:13px;width:100%;line-height:1.15;min-height:30px;border-radius:16px">${esc(p.name)}</button>`).join('')}</div>`:'';
+  $('rankNote').innerHTML=pend?`${pend} jogador(es) fora do ranking (menos de 3 partidas${S.settings.inactiveDays?' ou inativo há mais de '+S.settings.inactiveDays+' dias':''}). <button class="sec" id="rankPendB" style="margin:6px 0 0;padding:4px 10px;font-size:13px">${rkPendOpen?'Ocultar':'Mostrar'}</button><div id="rankPend"${rkPendOpen?'':' hidden'} style="margin-top:8px;column-count:3;column-gap:6px">${pendL.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="sec pname" data-id="${p.id}" style="margin:0 0 6px;break-inside:avoid;padding:4px 6px;font-size:13px;width:100%;line-height:1.15;min-height:30px;border-radius:16px">${esc(p.name)}</button>`).join('')}</div>`:'';
   if(pend){$('rankPendB').onclick=()=>{const d=$('rankPend');d.hidden=!d.hidden;rkPendOpen=!d.hidden;$('rankPendB').textContent=d.hidden?'Mostrar':'Ocultar'};
     $('rankNote').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id))}
   const MV=rkMoves(l);
@@ -1805,7 +1807,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.117'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.122'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2255,19 +2257,29 @@ const tWaitAll=t=>t.seedMode==='perf'||t.seedMode==='ab'; /* modos em que o mata
 /* Cruzamento A × B: chave montada com os jogadores reais, depois dos grupos.
    1) grupos pareados (A×B, C×D...) se enfrentam na 1ª rodada; 2) mesmo grupo só se reencontra na final;
    3) seeds 1 e 2 do campeonato só se encontram na final. Busca por trocas minimizando penalidades (a 3ª pesa mais, depois a 2ª, depois a 1ª). */
-function tSlotsAB(ents,P,ng,lock){
+/* Estilo Copa: chave fixa (como a Copa do Mundo de 2022): grupos pareados (A/B, C/D…), 1º x 2º do grupo vizinho.
+   Lado de cima: 1A×2B, 1C×2D, 1E×2F, 1G×2H…  Lado de baixo: 1D×2C, 1B×2A, 1F×2E, 1H×2G… (1º e 2º do mesmo grupo ficam em lados opostos: só se reencontram na final).
+   Caso exato (2 classificados por grupo, nº de grupos = potência de 2): chave fixa. Outros casos: adaptação (mesmas regras do A × B, preferindo 1º x 2º). */
+function tSlotsWC(ents,P,ng,lock){
+  const n=ents.length, gs=[...new Set(ents.map(e=>e.gid))].sort(), k=gs.length/2, ix=(g,p)=>ents.findIndex(e=>e.gid===g&&e.pos===p), p1=Math.min(...ents.map(e=>e.pos)), p2=p1+1;
+  if(n===P&&n===gs.length*2&&gs.length%2===0&&(gs.length&(gs.length-1))===0&&gs.every(g=>ix(g,p1)>=0&&ix(g,p2)>=0)){
+    const m1=[],m2=[]; for(let j=0;j<k;j++){const X=gs[2*j],Y=gs[2*j+1]; m1.push([ix(X,p1),ix(Y,p2)]); m2.push([ix(Y,p1),ix(X,p2)])}
+    const bot=[]; for(let j=0;j<k;j+=2){ if(j+1>=k){bot.push(m2[j]);continue} if((j/2)%2===0)bot.push(m2[j+1],m2[j]); else bot.push(m2[j],m2[j+1])}
+    return [...m1,...bot].flat()}
+  return tSlotsAB(ents,P,ng,lock,true)}
+function tSlotsAB(ents,P,ng,lock,wc){
   const n=ents.length, std=tPos(P).map(x=>x<=n?x-1:-1), L=Math.round(Math.log2(P)); if(L<1||n<3)return std;
   const gi=g=>g.charCodeAt(0)-65, rel=(a,b)=>{const x=gi(a),y=gi(b); if(x===y)return false; if((x>>1)===(y>>1))return true; return !!(ng%2&&Math.max(x,y)===ng-1&&Math.min(x,y)===ng-2)};
   const lvl=(i,j)=>Math.floor(Math.log2(i^j))+1, sd=e=>e.row?e.row.seed:99;
-  const s1=ents.findIndex(e=>sd(e)===1), s2=ents.findIndex(e=>sd(e)===2), sg=[];
-  for(let a=0;a<n;a++)for(let b=a+1;b<n;b++)if(ents[a].gid===ents[b].gid){const lo=Math.min(ents[a].pos,ents[b].pos),hi=Math.max(ents[a].pos,ents[b].pos); sg.push([a,b,(lo===1&&hi===2)?1000:lo===1?40:10])}
+  const pmin=Math.min(...ents.map(e=>e.pos)), s1=ents.findIndex(e=>sd(e)===1), s2=ents.findIndex(e=>sd(e)===2), sg=[];
+  for(let a=0;a<n;a++)for(let b=a+1;b<n;b++)if(ents[a].gid===ents[b].gid){const lo=Math.min(ents[a].pos,ents[b].pos)-pmin+1,hi=Math.max(ents[a].pos,ents[b].pos)-pmin+1; sg.push([a,b,(lo===1&&hi===2)?1000:lo===1?40:10])}
   const frozen=new Set(); std.forEach((e,j)=>{if(e>=0&&std[j^1]<0)frozen.add(j)});
   /* quem tem bye (jogo livre na 1ª rodada) só troca com quem tem a mesma colocação, para o bye continuar com os melhores */
   const ok=(o,i,j)=>!(frozen.has(i)||frozen.has(j))||(!lock&&ents[o[i]].pos===ents[o[j]].pos);
   const cost=o=>{const w=new Array(n); o.forEach((e,i)=>{if(e>=0)w[e]=i}); let c=0;
     sg.forEach(([a,b,k])=>{const l=lvl(w[a],w[b]); if(l<L)c+=k*(L-l)*(L-l)});
     if(s1>=0&&s2>=0){const l=lvl(w[s1],w[s2]); if(l<L)c+=100000*(L-l)}
-    for(let p=0;p<P/2;p++){const a=o[2*p],b=o[2*p+1]; if(a>=0&&b>=0&&!rel(ents[a].gid,ents[b].gid))c+=30}
+    for(let p=0;p<P/2;p++){const a=o[2*p],b=o[2*p+1]; if(a>=0&&b>=0){if(!rel(ents[a].gid,ents[b].gid))c+=30; else if(wc&&ents[a].pos===ents[b].pos)c+=3}}
     for(let i=0;i<P;i++)if(o[i]>=0)c+=.01*Math.abs(o[i]-std[i]);
     return c};
   const climb=o=>{let c=cost(o), imp=true, g=0; while(imp&&g++<60){imp=false;
@@ -2332,7 +2344,7 @@ function tByeOrder(ents,groups,P){ const k=P-ents.length; if(k<=0)return; const 
 function tRatQ(t,L,C){
   const ents=tEntsOf(t.groups,t.dest,L), P=tPow(ents.length);
   const BY=!!t.byeG;
-  if(!tWaitAll(t)){if(BY)tByeOrder(ents,t.groups,P); ents.forEach(e=>{if(C.closed[e.gid])e.pid=C.tab[e.gid][e.pos-1].id}); return {ents,slots:tSlots(ents,P,true,t.sx===2,BY),perf:false}}
+  if(!tWaitAll(t)){if(BY)tByeOrder(ents,t.groups,P); ents.forEach(e=>{if(C.closed[e.gid])e.pid=C.tab[e.gid][e.pos-1].id}); return {ents,slots:t.seedMode==='wc'?tSlotsWC(ents,P,t.groups.length,BY):tSlots(ents,P,true,t.sx===2,BY),perf:false}}
   if(!C.all){if(BY)tByeOrder(ents,t.groups,P); return {ents,slots:tSlots(ents,P,false,t.sx===2,BY),perf:true}}
   ents.forEach(e=>{const row=C.tab[e.gid][e.pos-1]; e.pid=row.id; e.row=row});
   const wp=r=>r.j?r.v/r.j:0;
@@ -2407,7 +2419,7 @@ function tPodium(t,R){
 }
 const tShort=t=>{const tot={},c={},m={}; const key=f=>(f.rt||'')+f.ph; t.fx.forEach(f=>tot[key(f)]=(tot[key(f)]||0)+1); [...t.fx].sort((a,b)=>a.rd-b.rd).forEach(f=>{c[key(f)]=(c[key(f)]||0)+1;
   m[f.id]=t.gf&&f.ph!=='g'?(f.rt==='B'?'3º lugar':'Final'):t.fmt==='gr'&&f.ph==='g'?'Grupo '+tGN(f.gid):(f.rt?f.rt+'·':'')+tPs(f.ph)+(t.fmt==='rr'||tot[key(f)]===1?'':(/^l\d+$/.test(f.ph)?'.':'')+c[key(f)])});return m};
-const tMini=t=>t.gf?`Grupo + Final · ${t.players.length} jogadores · grupo melhor de ${t.bog||t.bo} · final e 3º lugar melhor de ${t.bo}`:t.fmt==='de'?`Eliminação Dupla · ${t.players.length} jogadores · melhor de ${t.bo}`:t.fmt==='gr'?`Grupos + Ratings · ${t.groups.length} grupos · ${t.rt.length} rating${t.rt.length>1?'s':''} · ${t.players.length} jogadores · grupos melhor de ${t.bog||t.bo} · mata-mata melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''}`
+const tMini=t=>t.gf?`Grupo + Final · ${t.players.length} jogadores · grupo melhor de ${t.bog||t.bo} · final e 3º lugar melhor de ${t.bo}`:t.fmt==='de'?`Eliminação Dupla · ${t.players.length} jogadores · melhor de ${t.bo}`:t.fmt==='gr'?`Grupos + Ratings · ${t.groups.length} grupos · ${t.rt.length} rating${t.rt.length>1?'s':''} · ${t.players.length} jogadores · grupos melhor de ${t.bog||t.bo} · mata-mata melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''} · ${({perf:'Seeds por desempenho',ab:'Cruzamento A × B',wc:'Estilo Copa'})[t.seedMode]||'Cruzamento fixo'}`
   :`${t.fmt==='rr'?'Todos contra todos'+(t.dbl?' (ida e volta)':'')+' · '+(t.rule==='sets'?'mais sets':'pontuação'):'Mata-mata'} · ${t.players.length} jogadores · melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''}`;
 
 /* chave visual (árvore) */
@@ -2712,8 +2724,8 @@ function tPrevGr(){
   ${n.dest.map((L,i)=>`<div class="tdr"><span>${i+1}º colocado</span><select data-d="${i}">${opts.map(o=>`<option value="${o}" ${L===o?'selected':''}>Rating ${o}</option>`).join('')}<option value="" ${L?'':'selected'}>Eliminado</option></select></div>`).join('')}
   <div class="legend" style="margin-top:8px">${ks.length?ks.map(k=>`${tRtL(k)} ${rs[k]} jogadores · chave de ${tPow(rs[k])}`).join('<br>'):'Nenhum Rating formado.'}</div>
   ${(()=>{const sz=n.groups.map(g=>g.ids.length); return Math.max(...sz)!==Math.min(...sz)&&ks.some(k=>tPow(rs[k])!==rs[k])?`<p class="legend" style="margin:6px 0 0">ℹ️ Grupos com tamanhos diferentes: se algum Rating precisar de BYE (jogo livre na 1ª rodada), ele vai para o 1º colocado dos grupos maiores, que jogam mais partidas.</p>`:''})()}
-  <div class="field"><span>Seeds de cada mata-mata</span><div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><button data-sm="fixed" style="padding:8px 4px;font-size:13px" class="${n.sm==='fixed'?'on':''}">Cruzamento fixo</button><button data-sm="perf" style="padding:8px 4px;font-size:13px" class="${n.sm==='perf'?'on':''}">Por desempenho</button><button data-sm="ab" style="padding:8px 4px;font-size:13px" class="${n.sm==='ab'?'on':''}">Cruzamento A × B</button></div>
-  <p class="legend" style="margin:6px 0 0">${n.sm==='fixed'?'Cruzamento fixo: a chave segue a ordem dos grupos, com os melhores colocados enfrentando os piores (ex.: com 8 grupos e 2 classificados por grupo, 1º do Grupo A x 2º do Grupo H, 1º do B x 2º do G…). Quem é do mesmo grupo só se reencontra o mais tarde possível. Cada jogo abre assim que os dois grupos envolvidos terminam.':n.sm==='ab'?'Cruzamento A × B: o Grupo A enfrenta o B, o C enfrenta o D etc. Quem é do mesmo grupo só se reencontra na final, e os seeds 1 e 2 só se encontram na final. A chave é montada quando TODOS os grupos terminarem.':'Por desempenho: os seeds saem do aproveitamento nos grupos. Cada Rating só abre quando TODOS os grupos terminarem.'}</p></div>`;
+  <div class="field"><span>Seeds de cada mata-mata</span><div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:6px"><button data-sm="fixed" style="padding:8px 4px;font-size:13px" class="${n.sm==='fixed'?'on':''}">Cruzamento fixo</button><button data-sm="perf" style="padding:8px 4px;font-size:13px" class="${n.sm==='perf'?'on':''}">Por desempenho</button><button data-sm="ab" style="padding:8px 4px;font-size:13px" class="${n.sm==='ab'?'on':''}">Cruzamento A × B</button><button data-sm="wc" style="padding:8px 4px;font-size:13px" class="${n.sm==='wc'?'on':''}">Estilo Copa</button></div>
+  <p class="legend" style="margin:6px 0 0">${n.sm==='wc'?'Estilo Copa (como a Copa do Mundo de 2022): grupos pareados (A com B, C com D…) e cada 1º enfrenta o 2º do grupo vizinho: 1A×2B, 1C×2D, 1E×2F, 1G×2H no lado de cima; 1D×2C, 1B×2A, 1F×2E, 1H×2G no lado de baixo. 1º e 2º do mesmo grupo ficam em lados opostos e só se reencontram na final. Cada jogo abre assim que os dois grupos envolvidos terminam. Com outro número de grupos ou de classificados, a chave é adaptada seguindo a mesma ideia.':n.sm==='fixed'?'Cruzamento fixo: a chave segue a ordem dos grupos, com os melhores colocados enfrentando os piores (ex.: com 8 grupos e 2 classificados por grupo, 1º do Grupo A x 2º do Grupo H, 1º do B x 2º do G…). Quem é do mesmo grupo só se reencontra o mais tarde possível. Cada jogo abre assim que os dois grupos envolvidos terminam.':n.sm==='ab'?'Cruzamento A × B: o Grupo A enfrenta o B, o C enfrenta o D etc. Quem é do mesmo grupo só se reencontra na final, e os seeds 1 e 2 só se encontram na final. A chave é montada quando TODOS os grupos terminarem.':'Por desempenho: os seeds saem do aproveitamento nos grupos. Cada Rating só abre quando TODOS os grupos terminarem.'}</p></div>`;
   return h;
 }
 function tPrevGrBind(){
@@ -2772,7 +2784,7 @@ function tDetR(){
         h+=`<div class="tsh${t.gf?'':' gcl gc'+gci}"${t.gf?'':` data-gh="${g.id}" role="button" tabindex="0" title="Ver só o Grupo ${tGN(g.id)}"`}>${t.gf?'Classificação':'Grupo '+tGN(g.id)}${cl?' · ✅ encerrado':''}${SC&&SC.G[g.id]?` <small style="font-weight:600;text-transform:none">· 🕒 Mesa ${SC.G[g.id].tb} · Início ${tFmtT(SC.G[g.id].start)}</small>`:''}</div>${cl&&showT?`<div class="tgdone">${t.gf?'🏁 Fase de grupos encerrada · finalistas definidos':'🏁 Grupo encerrado · classificados definidos'}</div>`:''}${showT?`<table class="tt${cl?' cld':''}"><tr><th>#</th><th>Jogador</th><th class="n">J</th><th class="n">V</th><th class="n">D</th><th class="n">Sets</th><th class="n">Pts</th><th class="n" title="Rating de destino">→</th></tr>${T.map((x,i)=>`<tr><td>${i+1}</td><td>${pnl(x.id,nameOf(x.id,PN[x.id]))} <small>(${x.seed})</small>${x.wd?' <small class="dn">W.O.</small>':''}</td><td class="n">${x.j}</td><td class="n">${x.v}</td><td class="n">${x.d}</td><td class="n">${x.sp}-${x.sc}</td><td class="n"><b>${x.pts}</b></td><td class="n">${t.dest[i]?(t.gf?`<span class="rtb s r${t.dest[i]==='A'?0:1}">${t.dest[i]==='A'?'F':'3º'}</span>`:tRtS(t.dest[i])):'<small>elim.</small>'}</td></tr>`).join('')}</table>`:''}`;
         if(t.gf){const ff=t.fx.filter(f=>f.ph!=='g').sort((x,y)=>(x.rt>y.rt)-(x.rt<y.rt)); h+=`<div class="tsh">Fase final</div>`+ff.map(card).join('')}
         if(showG){const rds={}; fs.forEach(f=>(rds[f.rd]=rds[f.rd]||[]).push(f)); Object.keys(rds).sort((a,b)=>a-b).forEach(rd=>{h+=`<div class="tsr">Rodada ${rd}</div>`+rds[rd].map(card).join('').replace(/class="tfx /g,'class="tfx gcc gc'+gci+' ')})}});
-      h+=`<p class="legend" style="margin-top:6px">${t.rule==='sets'?'Mais sets: vitória vale a diferença de sets (3x0 = 3 pts, 3x1 = 2 pts). Derrota = 0.':'Vitória = 1 ponto · derrota = 0.'} Desempate: confronto direto, depois saldo de sets e seed. ${t.gf?'A coluna → mostra para onde vai cada colocação: F = final (1º x 2º), 3º = disputa de 3º lugar (3º x 4º). As duas abrem quando a fase de grupos termina.':`A coluna → mostra o Rating de destino de cada colocação. ${t.seedMode==='ab'?'Cruzamento A × B: a chave é montada quando todos os grupos terminarem.':t.seedMode==='perf'?'Seeds por desempenho: cada Rating só abre quando todos os grupos terminarem.':'Cruzamento fixo: cada jogo do mata-mata abre assim que os dois grupos envolvidos terminam.'}`}</p>`;
+      h+=`<p class="legend" style="margin-top:6px">${t.rule==='sets'?'Mais sets: vitória vale a diferença de sets (3x0 = 3 pts, 3x1 = 2 pts). Derrota = 0.':'Vitória = 1 ponto · derrota = 0.'} Desempate: confronto direto, depois saldo de sets e seed. ${t.gf?'A coluna → mostra para onde vai cada colocação: F = final (1º x 2º), 3º = disputa de 3º lugar (3º x 4º). As duas abrem quando a fase de grupos termina.':`A coluna → mostra o Rating de destino de cada colocação. ${t.seedMode==='ab'?'Cruzamento A × B: a chave é montada quando todos os grupos terminarem.':t.seedMode==='wc'?'Estilo Copa: cada jogo do mata-mata abre assim que os dois grupos envolvidos terminam.':t.seedMode==='perf'?'Seeds por desempenho: cada Rating só abre quando todos os grupos terminarem.':'Cruzamento fixo: cada jogo do mata-mata abre assim que os dois grupos envolvidos terminam.'}`}</p>`;
     } else {
       const ents=tEntsOf(t.groups,t.dest,tab).length, pd=tPodK(t,R,tab);
       h+=`<div class="tcs" style="margin:8px 0">${tRtL(tab)} ${ents} jogadores · chave de ${tPow(ents)} · melhor de ${tBoOf(t,{ph:'sf'})}${Object.keys(t.bop||{}).length?' (varia por fase)':''}</div>`+podH(pd)+(tv.view!=='list'?tBr(t,R,t.fx.filter(f=>f.rt===tab),PN,SD):ph2(t.fx.filter(f=>f.rt===tab&&(!tv.ph||f.ph===tv.ph))));
