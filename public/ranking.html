@@ -501,6 +501,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
 .brtm{position:absolute;font-size:9px;line-height:10px;font-weight:800;color:var(--mut);text-align:right;pointer-events:none;white-space:nowrap}
 .brt{position:absolute;right:4px;top:-1px;font-size:9px;font-weight:800;color:var(--mut)}
 .ttabs.wr{flex-wrap:wrap;overflow-x:visible}.ttabs{display:flex;flex-wrap:wrap;gap:6px;overflow-x:visible;margin:10px 0 2px;padding-bottom:2px}.ttabs button{flex:none;padding:7px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--tx);font:inherit;font-size:13px;font-weight:700;cursor:pointer;margin:0}.tfl3 button{border-radius:14px;padding:8px 4px;line-height:1.2;white-space:normal}
+.ttabs.fl1{flex-wrap:nowrap;gap:4px}.ttabs.fl1 button{flex:1 1 auto;min-width:0;padding:7px 6px;white-space:nowrap}@media (max-width:560px){.ttabs.fl1 button{padding:7px 3px;font-size:clamp(9px,2.9vw,14px)}}
 .ttabs button.rtl{font-weight:800}.ttabs button.cl:not(.on){border-color:#2e9e5b;color:#1f7a45;background:rgba(46,158,91,.12)}.ttabs button.cl.on{box-shadow:inset 0 0 0 2px #2e9e5b}.tgdone{background:rgba(46,158,91,.14);border:1px solid #2e9e5b;color:#1f7a45;border-radius:8px;padding:5px 8px;font-size:12px;font-weight:700;margin:0 0 6px}table.tt.cld{border-left:4px solid #2e9e5b}.ttabs button.on{background:var(--ac);border-color:var(--ac);color:var(--acx)}
 .tsr{font-size:11px;font-weight:700;color:var(--mut);margin:8px 0 4px}
 .tgg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}.tgc{border:1px solid var(--bd);border-radius:10px;padding:6px;background:var(--card);min-width:0}
@@ -1807,7 +1808,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.122'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.123'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2540,7 +2541,7 @@ function tListR(){
   const arc=L.filter(x=>x.t.arch), act=L.filter(x=>!x.done&&!x.t.arch), end=L.filter(x=>x.done&&!x.t.arch);
   const SEL=tv.fl||'act', FL={act:SEL==='act',end:SEL==='end',reg:SEL==='reg'}, regL=S.tourns.filter(tRegOpen).sort((a,b)=>b.at-a.at), cnt={act:act.length,end:end.length,reg:regL.length}, chip=(k,lab)=>`<button data-fl="${k}" class="${FL[k]?'on':''}" aria-pressed="${FL[k]}">${FL[k]?'✓ ':''}${lab} (${cnt[k]})</button>`;
   $('tourB').innerHTML=`<button class="pri" id="tNewB" style="margin:0 0 12px">➕ Novo campeonato</button>`
-    +`<div class="ttabs wr" style="margin:0 0 10px">${chip('act','Em andamento')}${chip('end','Encerrados')}${chip('reg','Inscrições abertas')}</div>`
+    +`<div class="ttabs wr fl1" style="margin:0 0 10px">${chip('act','Em andamento')}${chip('end','Encerrados')}${chip('reg','Inscrições abertas')}</div>`
     +(FL.act?(act.length?`<div class="tsh">Em andamento</div><div class="tgrid">`+act.map(card).join('')+`</div>`:`<p class="legend ctr">${L.length?'Nenhum campeonato em andamento.':'Nenhum campeonato ainda. Crie o primeiro!'}</p>`):'')
     +(FL.end?(end.length?`<div class="tsh">Encerrados</div><div class="tgrid">`+end.map(card).join('')+`</div>`:`<p class="legend ctr">Nenhum campeonato encerrado.</p>`):'')
     +(FL.reg?`<div class="tsh">Inscrições abertas</div>`+(regL.length?`<div class="tgrid">${regL.map(t=>`<button class="tcard" data-t="${t.id}"><div class="tcn">📝 ${esc(t.name)}</div><div class="tcs">Inscrições abertas</div><div class="tcp">${t.reg.list.length}${+t.reg.max?'/'+t.reg.max:''} inscrito${t.reg.list.length===1?'':'s'}</div></button>`).join('')}</div>`:`<p class="legend ctr">Nenhum campeonato com inscrições abertas.</p>`):'')
