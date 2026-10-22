@@ -542,6 +542,7 @@ body.champ .nrm{display:none!important}
 html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl .tsh.gcl small{color:var(--mut);opacity:1}html.cl .tsh.gc0{border-color:#2563eb}html.cl .tsh.gc1{border-color:#16a34a}html.cl .tsh.gc2{border-color:#ea580c}html.cl .tsh.gc3{border-color:#9333ea}
 .chstrip{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}.chc{border:1px solid var(--bd);border-radius:999px;background:var(--card);color:inherit;font:inherit;font-size:13px;padding:6px 12px;cursor:pointer}.chc.on{background:var(--ac);color:#fff;border-color:var(--ac)}.chadm{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.chmz{border:1px solid var(--bd);border-radius:12px;padding:7px 10px;margin:0 0 10px;text-align:center;font-size:13px;background:var(--card)}.chmz.w{border-style:dashed;color:var(--mut)}.mrow{margin:0 0 8px}.mrow>b{display:block;margin:0 0 4px}.cdn{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 12px}.cdn .sec{width:46px;margin:0;font-size:20px}
 .tsh.gcl{cursor:pointer}
+.rkmv{display:inline-block;min-width:26px;font-size:11px;font-weight:800;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -594,7 +595,7 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
 <div class="modal" id="rankM"><div class="sheet">
   <h3>Ranking geral</h3>
   <div class="seg" id="rkTab" style="grid-template-columns:repeat(3,1fr)"><button data-m="pts" class="on">🏓 Pontos</button><button data-m="ach">🏅 Conquistas</button><button data-m="var">📈 Variação</button></div>
-  <p class="legend" id="rkLeg"><span class="badge tA">A</span>1800+ <span class="badge tB">B</span>1500+ <span class="badge tC">C</span>1200+</p>
+  <p class="legend" id="rkLeg"><span class="badge tA">A</span>1800+ <span class="badge tB">B</span>1500+ <span class="badge tC">C</span>1200+ &nbsp;·&nbsp; <a href="#" id="rkPcL" onclick="return false" style="color:var(--mut);font-size:12px;text-decoration:underline;text-underline-offset:2px;white-space:nowrap"></a></p>
   <div id="rankL"></div><p class="legend" id="rankNote"></p><div id="rankHi"></div>
   <button class="sec" id="shareB">📤 Compartilhar ranking (WhatsApp)</button>
   <button class="sec" data-exp hidden id="jpgRank">🖼️ Exportar ranking com estatísticas (JPG)</button>
@@ -693,7 +694,7 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const byId=id=>P.find(p=>p.id===id), tier=p=>p.tier, games=p=>p.wins+p.losses;
 const nameOf=(id,fb)=>{const q=byId(id);return q?q.name:(fb||'?')};
 const fmt=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-const typing=()=>{const a=document.activeElement;return a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA')};
+const typing=()=>{const a=document.activeElement;return a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA'||a.tagName==='SELECT')};
 const vis=()=>P.filter(p=>!p.hidden);
 const byNameArch=(a,b)=>(a.hidden?1:0)-(b.hidden?1:0)||a.name.localeCompare(b.name);
 let pfOpen=false, pF={pid:'',a:'',b:'',n:[],t:''}, pxRows=[], mSel='cur', pSel='all', pAllM=false, mP=[], pxD={m:'',c:''}, pxK='m';
@@ -926,11 +927,13 @@ async function del(col,id){
   try{db=await claude.use('db')}catch(e){db=null}
   if(db){
     G={raw:[],matches:[],sets:[],clubs:[],tourns:[]};
-    db.collection('players').onSnapshot(x=>{G.raw=x.docs.map(d=>d.data());refresh()},()=>{});
-    db.collection('matches').onSnapshot(x=>{G.matches=x.docs.map(d=>d.data());refresh()},()=>{});
-    db.collection('tournaments').onSnapshot(x=>{G.tourns=x.docs.map(d=>d.data());refresh()},()=>{});
-    db.collection('settings').onSnapshot(x=>{G.sets=x.docs.map(d=>({...d.data(),id:d.id}));refresh()},()=>{});
-    db.collection('clubs').onSnapshot(x=>{G.clubs=x.docs.map(d=>({...d.data(),id:d.id}));if(!clubList().some(c=>c.id===cur)){cur=(clubList()[0]||{id:'main'}).id;try{localStorage.setItem('tm_club',cur)}catch(e){}}refresh()},()=>{});
+    /* o banco reenvia tudo a cada poucos segundos mesmo sem mudança: só redesenha se o conteúdo mudou (senão apagava seleções, confirmações e telas abertas) */
+    const snapS={}, same=(k,x)=>{const s=JSON.stringify(x.docs.map(d=>[d.id,d.data()]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:0)); if(snapS[k]===s)return true; snapS[k]=s; return false};
+    db.collection('players').onSnapshot(x=>{if(same('p',x))return; G.raw=x.docs.map(d=>d.data());refresh()},()=>{});
+    db.collection('matches').onSnapshot(x=>{if(same('m',x))return; G.matches=x.docs.map(d=>d.data());refresh()},()=>{});
+    db.collection('tournaments').onSnapshot(x=>{if(same('t',x))return; G.tourns=x.docs.map(d=>d.data());refresh()},()=>{});
+    db.collection('settings').onSnapshot(x=>{if(same('s',x))return; G.sets=x.docs.map(d=>({...d.data(),id:d.id}));refresh()},()=>{});
+    db.collection('clubs').onSnapshot(x=>{if(same('c',x))return; G.clubs=x.docs.map(d=>({...d.data(),id:d.id}));if(!clubList().some(c=>c.id===cur)){cur=(clubList()[0]||{id:'main'}).id;try{localStorage.setItem('tm_club',cur)}catch(e){}}refresh()},()=>{});
   }
   try{dl=await claude.use('downloads')}catch(e){dl=null}
   try{userNS=await claude.use('user'); if(userNS){const m=await userNS.me(); myId=(m&&m.id)||''}}catch(e){userNS=null}
@@ -1395,6 +1398,12 @@ function vrData(){const [a,b]=vrRange(), M={}; S.matches.forEach(m=>{if(m.at<a||
   const vs=new Set(vis().map(p=>p.id)); return Object.values(M).filter(x=>vs.has(x.id)).sort((x,y)=>y.pts-x.pts||(y.v+y.d)-(x.v+x.d)||x.n.localeCompare(y.n))}
 const VR_N={hoje:'Hoje',sem:'Últimos 7 dias',esc:'Escolher',temp:'Temporada',ger:'Geral'};
 const vrLbl=()=>vrP==='esc'?`${vrA?new Date(vrA+'T00:00').toLocaleDateString('pt-BR'):'início'} a ${vrB?new Date(vrB+'T00:00').toLocaleDateString('pt-BR'):'hoje'}`:vrP==='temp'?sN(curS()):VR_N[vrP];
+let rkPc='hoje';
+const RK_PC={hoje:'Hoje',sem:'Semanal',mes:'Mensal'};
+function rkMoves(l){const n=new Date(), d0=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(), a=rkPc==='hoje'?d0:rkPc==='sem'?d0-6*864e5:d0-29*864e5, P={};
+  S.matches.forEach(m=>{if(m.at<a)return; const d=D[m.id]; if(!d)return; P[m.winner]=(P[m.winner]||0)+d[0]; P[m.loser]=(P[m.loser]||0)-d[1]});
+  const old=l.map((p,i)=>({id:p.id,r:p.rating-(P[p.id]||0),i})).sort((x,y)=>y.r-x.r||x.i-y.i), M={}; old.forEach((x,j)=>M[x.id]=j-x.i); return M}
+const rkArrow=v=>`<span class="rkmv" style="color:${v>0?'#16a34a':'#dc2626'}">${v>0?'▲'+v:v<0?'▼'+(-v):''}</span>`;
 const sg=n=>n>0?'+'+n:n<0?'−'+(-n):'0';
 function renderRankVar(){
   $('shareB').textContent='📤 Compartilhar variação (WhatsApp)'; $('jpgRank').textContent='🖼️ Exportar variação de pontos (JPG)';
@@ -1414,6 +1423,7 @@ const goAch=t=>{const id=t.dataset.pid; document.querySelectorAll('.modal.on').f
 document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.pnk'); if(t){e.preventDefault();e.stopPropagation(); t.dataset.k?goAch(t):goPlayer(t.dataset.pid)}},true);
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('pnk')){const t=e.target; t.dataset.k?goAch(t):goPlayer(t.dataset.pid)}});
 function goPlayer(id){plOnly=null;chSel=null;histId=id;pSel='all';document.querySelectorAll('.modal.on').forEach(m=>m.classList.remove('on'));renderPlayers();open('playM')}
+var mgSelId='', mgFor='', rkPendOpen=false;
 function rkSet(h){const el=$('rankL'); if(el.dataset.h===h)return; el.dataset.h=h; el.innerHTML=h} /* não refaz (nem reanima) o ranking se nada mudou */
 function renderRank(){
   $('rkTab').querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.m===rkMode);b.onclick=()=>{rkMode=b.dataset.m;renderRank()}});
@@ -1421,12 +1431,13 @@ function renderRank(){
   $('jpgRank').style.display='';
   if(rkMode==='ach')return renderRankAch();
   if(rkMode==='var')return renderRankVar();
-  $('rkLeg').hidden=false;
+  $('rkLeg').hidden=false; $('rkPcL').textContent='Variação: '+RK_PC[rkPc]; $('rkPcL').onclick=()=>{rkPc=rkPc==='hoje'?'sem':rkPc==='sem'?'mes':'hoje';renderRank()};
   const l=ranked(), pendL=vis().filter(p=>!l.includes(p)), pend=pendL.length;
-  $('rankNote').innerHTML=pend?`${pend} jogador(es) fora do ranking (menos de 3 partidas${S.settings.inactiveDays?' ou inativo há mais de '+S.settings.inactiveDays+' dias':''}). <button class="sec" id="rankPendB" style="margin:6px 0 0;padding:4px 10px;font-size:13px">Mostrar</button><div id="rankPend" hidden style="margin-top:8px">${pendL.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="sec pname" data-id="${p.id}" style="margin:0 6px 6px 0;padding:4px 10px;font-size:13px">${esc(p.name)}</button>`).join('')}</div>`:'';
-  if(pend){$('rankPendB').onclick=()=>{const d=$('rankPend');d.hidden=!d.hidden;$('rankPendB').textContent=d.hidden?'Mostrar':'Ocultar'};
+  $('rankNote').innerHTML=pend?`${pend} jogador(es) fora do ranking (menos de 3 partidas${S.settings.inactiveDays?' ou inativo há mais de '+S.settings.inactiveDays+' dias':''}). <button class="sec" id="rankPendB" style="margin:6px 0 0;padding:4px 10px;font-size:13px">${rkPendOpen?'Ocultar':'Mostrar'}</button><div id="rankPend"${rkPendOpen?'':' hidden'} style="margin-top:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">${pendL.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="sec pname" data-id="${p.id}" style="margin:0;padding:4px 6px;font-size:13px;width:100%;line-height:1.15;min-height:30px;border-radius:16px">${esc(p.name)}</button>`).join('')}</div>`:'';
+  if(pend){$('rankPendB').onclick=()=>{const d=$('rankPend');d.hidden=!d.hidden;rkPendOpen=!d.hidden;$('rankPendB').textContent=d.hidden?'Mostrar':'Ocultar'};
     $('rankNote').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id))}
-  rkSet(podium(l)+(l.length?`<table><tr><th>#</th><th>Jogador</th><th class="n">V</th><th class="n">D</th><th class="n">Pontos</th></tr>`+l.map((p,i)=>`<tr class="t${tier(p)}"><td>${['🥇','🥈','🥉'][i]||i+1}</td><td><span class="badge">${tier(p)}</span><button class="pname" data-id="${p.id}" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px">${esc(p.name)}</button>${fire(p)}</td><td class="n">${p.wins}</td><td class="n">${p.losses}</td><td class="n"><b style="color:var(--t)">${p.rating}</b></td></tr>`).join('')+'</table>':'<p style="color:var(--mut)">Ninguém no ranking ainda. É preciso jogar pelo menos 3 partidas.</p>'));
+  const MV=rkMoves(l);
+  rkSet(podium(l)+(l.length?`<table><tr><th>#</th><th>Jogador</th><th class="n">V</th><th class="n">D</th><th class="n">Pontos</th></tr>`+l.map((p,i)=>`<tr class="t${tier(p)}"><td>${['🥇','🥈','🥉'][i]||i+1}</td><td>${rkArrow(MV[p.id])}<span class="badge">${tier(p)}</span><button class="pname" data-id="${p.id}" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px">${esc(p.name)}</button>${fire(p)}</td><td class="n">${p.wins}</td><td class="n">${p.losses}</td><td class="n"><b style="color:var(--t)">${p.rating}</b></td></tr>`).join('')+'</table>':'<p style="color:var(--mut)">Ninguém no ranking ainda. É preciso jogar pelo menos 3 partidas.</p>'));
   $('rankL').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id));
   const act=vis().filter(p=>p.wins+p.losses>0), top=(f)=>act.slice().sort(f)[0], lead=['A','B','C'].map(t=>[t,l.find(p=>p.tier===t)]).filter(x=>x[1]);
   const up=top((a,b)=>(b.rating-b.r0)-(a.rating-a.r0)), many=top((a,b)=>games(b)-games(a)), wins=top((a,b)=>b.wins-a.wins);
@@ -1590,7 +1601,7 @@ function renderPlayers(){
     return `<tr data-i="${i}"><td>${fmt(m.at)}${m.tid?` <button class="tbd" data-tm="${m.id}" title="Partida de campeonato" aria-label="Partida de campeonato">🏆</button>`:''}</td><td>${pnl(won?m.loser:m.winner,r.on)}</td><td class="${won?'up':'dn'}">${won?'Vitória':'Derrota'}</td><td class="n">${esc(r.s||'–')}</td><td class="n ${won?'up':'dn'}">${r.pt.replace('-','−')}</td></tr>`}).join('')+'</table>'+(ms.length>LIM?`<button class="sec" id="allM" style="margin:8px 0 0">${pAllM?'Mostrar só as últimas':'Mostrar todas as partidas ('+ms.length+')'}</button>`:'')+`<button class="sec" id="pfX" style="margin:8px 0 0;width:100%"${dl?'':' hidden'}>🖼️ Exportar (JPG)</button>`:'<p style="color:var(--mut)">Nenhuma partida neste período.</p>';
   pxD.c=pxC.h;
   h+=`<div class="pbot">`;
-  if(admin)h+=`<div class="sub">Admin: ranking inicial</div><div class="seg" id="pg" style="margin-bottom:10px">${['C','B','A'].map(x=>`<button class="t${x}${p.group===x?' on':''}" data-g="${x}">${x} · ${START[x]}</button>`).join('')}</div><div class="sub">Admin: juntar cadastro duplicado</div><div class="wrow" style="margin-bottom:10px"><select id="mgP"><option value="">Escolha o duplicado…</option>${S.raw.filter(x=>x.id!==p.id).sort(byNameArch).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select><button class="sec" id="mgB" style="margin:0">🔗 Juntar</button></div><div class="legend">As partidas do duplicado passam para ${esc(p.name)} e o duplicado é apagado.</div><div class="wrow" style="margin-bottom:10px"><input id="rn" value="${esc(p.name)}" maxlength="40"><button class="sec" id="rnB" style="margin:0">Salvar nome</button></div><button class="sec" id="dpB" style="margin:0 0 10px;border-color:var(--bad);color:var(--bad)">🗑️ Excluir jogador (apaga também as partidas dele)</button>`;
+  if(admin&&(mgFor!==p.id&&(mgFor=p.id,mgSelId=''),true))h+=`<div class="sub">Admin: ranking inicial</div><div class="seg" id="pg" style="margin-bottom:10px">${['C','B','A'].map(x=>`<button class="t${x}${p.group===x?' on':''}" data-g="${x}">${x} · ${START[x]}</button>`).join('')}</div><div class="sub">Admin: juntar cadastro duplicado</div><div class="wrow" style="margin-bottom:10px"><select id="mgP"><option value="">Escolha o duplicado…</option>${S.raw.filter(x=>x.id!==p.id).sort(byNameArch).map(x=>`<option value="${x.id}"${x.id===mgSelId?' selected':''}>${esc(x.name)}</option>`).join('')}</select><button class="sec" id="mgB" style="margin:0">🔗 Juntar</button></div><div class="legend">As partidas do duplicado passam para ${esc(p.name)} e o duplicado é apagado.</div><div class="wrow" style="margin-bottom:10px"><input id="rn" value="${esc(p.name)}" maxlength="40"><button class="sec" id="rnB" style="margin:0">Salvar nome</button></div><button class="sec" id="dpB" style="margin:0 0 10px;border-color:var(--bad);color:var(--bad)">🗑️ Excluir jogador (apaga também as partidas dele)</button>`;
   h+=`<button class="sec" id="arB" style="margin:0 0 10px">${admin&&p.hidden?'♻️ Reativar jogador':'🗄️ Arquivar jogador (sai do Ranking e das Conquistas)'}</button>`;
   h+=`</div>`;
   $('playD').innerHTML=h; $('playD').querySelectorAll('[data-tgn]').forEach(x=>x.onclick=()=>{$('playM').classList.remove('on');tGoMatch(x.dataset.tgn,x.dataset.fid)}); setTimeout(fitPop,0); chBind(); $('mB').onclick=()=>pxOpen('m'); $('cB').onclick=()=>pxOpen('c'); if(op('pxM'))pxFill(); $('pS').onchange=()=>{chSel=null;pSel=$('pS').value;pAllM=false;renderPlayers()};
@@ -1604,9 +1615,10 @@ function renderPlayers(){
   if(admin){
     $('rnB').onclick=async()=>{const n=$('rn').value.trim(); if(!n)return; if(S.raw.some(x=>x.id!==p.id&&x.name.toLowerCase()===n.toLowerCase()))return flash($('rnB'),'Nome já existe'); const o=p.name; await put('players',{...S.raw.find(x=>x.id===p.id),name:n}); await logA(`Nome alterado: ${o} → ${n}`); flash($('rnB'),'✅ Salvo')};
     $('pg').querySelectorAll('button').forEach(b=>b.onclick=()=>sure(b,async()=>{const g=b.dataset.g;if(g===p.group)return;const o=p.group;const q={...S.raw.find(x=>x.id===p.id),group:g}; delete q.start; await put('players',q);await logA(`Ranking inicial de ${p.name}: ${o} → ${g}`)}));
+    $('mgP').onchange=()=>{mgSelId=$('mgP').value};
     $('mgB').onclick=e=>{const did=$('mgP').value; if(!did)return; sure(e.currentTarget,async()=>{const dp=S.raw.find(x=>x.id===did); if(!dp)return;
       for(const m of S.matches.filter(m=>m.winner===did||m.loser===did)){const nm={...m}; if(nm.winner===did){nm.winner=p.id;nm.wn=p.name} if(nm.loser===did){nm.loser=p.id;nm.ln=p.name} if(nm.winner===nm.loser)await del('matches',m.id); else await put('matches',nm)}
-      await del('players',did); await logA(`Cadastro juntado: ${dp.name} → ${p.name}`)})};
+      await del('players',did); mgSelId=''; await logA(`Cadastro juntado: ${dp.name} → ${p.name}`)})};
     $('dpB').onclick=()=>delPlayerUi(p.id);
   }
 }
@@ -1793,7 +1805,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.113'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.117'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
