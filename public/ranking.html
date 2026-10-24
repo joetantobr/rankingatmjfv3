@@ -742,11 +742,13 @@ button.pk.club{border-color:var(--ac)}
 .touse{position:absolute;bottom:6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75);display:none}
 .tmark{position:absolute;top:calc(clamp(34px,9vmin,64px) + 14px);font-size:12px;color:rgba(255,255,255,.85);display:none}
 #hL .tmark{left:12px}#hR .tmark{right:12px}
-.bar{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+.bar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
 .bar button{display:grid;justify-items:center;gap:2px;background:none;border:0;color:var(--fg);font:600 11px var(--ui);padding:6px 2px;border-radius:10px;cursor:pointer}
 .bar button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .bar button:active{background:var(--card)}
 .bar button:disabled{opacity:.35}
+#bMic.on{color:#ff6b5e}#bMic.on svg{animation:micp 1.4s ease-in-out infinite}@keyframes micp{50%{opacity:.35}}
+#vHeard{position:fixed;left:8px;bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:6;font:600 12px var(--ui);color:var(--mut);background:rgba(11,15,20,.78);border:1px solid var(--line);border-radius:999px;padding:3px 10px;max-width:70vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;display:none}#vHeard.on{display:block}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 .ov{position:fixed;inset:0;z-index:20;background:rgba(5,8,12,.82);display:none;align-items:center;justify-content:center;padding:16px}
 .ov.on{display:flex}
@@ -802,6 +804,7 @@ input[type=text]{font:16px var(--ui);padding:11px;border-radius:10px;border:1.5p
     <button id="bUndo"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>Desfazer</button>
     <button id="bSwap"><svg viewBox="0 0 24 24"><path d="M4 8h14l-3-3"/><path d="M20 16H6l3 3"/></svg>Trocar lados</button>
     <button id="bTo"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>Tempo</button>
+    <button id="bMic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Voz</button>
     <button id="bNew"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nova partida</button>
     <button id="bHist"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Placares</button>
     <button id="bSet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
@@ -809,6 +812,7 @@ input[type=text]{font:16px var(--ui);padding:11px;border-radius:10px;border:1.5p
 </div>
 
 <div class="toast" id="toast" role="status"></div>
+<div id="vHeard"></div>
 
 <!-- Nova partida -->
 <div class="ov" id="ovNew"><div class="card">
@@ -879,6 +883,11 @@ input[type=text]{font:16px var(--ui);padding:11px;border-radius:10px;border:1.5p
     <div class="keyrow"><span>Ponto no lado direito</span><span><code id="kR"></code> <button class="sec" data-learn="R">Definir</button></span></div>
     <div class="keyrow"><span>Desfazer ponto</span><span><code id="kU"></code> <button class="sec" data-learn="U">Definir</button></span></div>
   </div>
+  <div>
+    <h2 style="font-size:16px;margin:4px 0">Marcar ponto por voz (experimental)</h2>
+    <p>Toque em “Voz” na barra de baixo para ligar a escuta contínua. Diga “ponto” e a cor do jogador (ex.: “ponto azul”), “ponto esquerda” ou “ponto direita”, ou “desfazer”. Mantenha a tela ligada. Precisa de internet e do Chrome.</p>
+    <p id="vColors" style="margin:0"></p>
+  </div>
   <div class="row"><button class="sec" id="sFs">Tela cheia</button></div>
   <button class="pri" id="sClose">Fechar</button>
 </div></div>
@@ -903,7 +912,7 @@ const APP_URL='https://rankingatmjfv3.lovable.app';
 var AX={};
 const pnl=(id,n)=>(id&&S.raw.some(x=>x.id===id))?`<span class="pnk" role="link" tabindex="0" data-pid="${id}">${esc(n)}</span>`:esc(n); /* nome de jogador clicável → perfil */
 let G={raw:[],matches:[],sets:[],clubs:[],tourns:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, justAdded=null, lastPair='', SND=(()=>{try{return localStorage.getItem('tm_snd')!=='off'}catch(e){return true}})(), pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
-let pendingV=(()=>{try{const h=location.hash+location.search, m=h.match(/[?#&](ranking|partidas|jogadores|conquistas|admin|ajuda|campeonatos|campeonato)(?![A-Za-z])/); if(!m)return null; const g=k=>{const x=h.match(new RegExp('[?#&]'+k+'=([A-Za-z0-9_-]+)'));return x?x[1]:''}; return {v:m[1],c:g('c'),n:g('n'),k:g('k'),t:g('campeonato')}}catch(e){return null}})();
+let pendingV=(()=>{try{const h=location.hash+location.search, m=h.match(/[?#&](ranking|partidas|jogadores|conquistas|admin|ajuda|campeonatos|campeonato|placar)(?![A-Za-z])/); if(!m)return null; const g=k=>{const x=h.match(new RegExp('[?#&]'+k+'=([A-Za-z0-9_-]+)'));return x?x[1]:''}; return {v:m[1],c:g('c'),n:g('n'),k:g('k'),t:g('campeonato')}}catch(e){return null}})();
 const $=id=>document.getElementById(id), op=id=>$(id).classList.contains('on');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -2028,7 +2037,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.147'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.149'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2330,7 +2339,7 @@ function runView(){
   if(v.v==='conquistas'){ if(['all','0','1','2','3'].includes(v.n))achTab=v.n; if(v.k&&ACH.some(a=>a.k===v.k)){achSel=v.k; if(achTab!=='all'&&ACH.find(a=>a.k===v.k).lv!==+achTab)achTab=String(ACH.find(a=>a.k===v.k).lv)} }
   if(v.v==='campeonato'&&v.t){ if(!(S.tourns||[]).some(x=>x.id===v.t)&&(v.tries=(v.tries||0)+1)<6){pendingV=v; setTimeout(()=>{if(pendingV)runView()},900); return}
     if((S.tourns||[]).some(x=>x.id===v.t)){tOpenId=v.t; tv={v:'det'}; tourRender(); open('tourM'); return} }
-  const b={ranking:'rankBtn',partidas:'matchBtn',jogadores:'playBtn',conquistas:'achBtn',admin:'cfgBtn',ajuda:'helpBtn',campeonato:'tourBtn',campeonatos:'tourBtn'}[v.v]; if(b&&$(b))$(b).click();
+  const b={ranking:'rankBtn',partidas:'matchBtn',jogadores:'playBtn',conquistas:'achBtn',admin:'cfgBtn',ajuda:'helpBtn',campeonato:'tourBtn',campeonatos:'tourBtn',placar:'peBtn'}[v.v]; if(b&&$(b))$(b).click();
 }
 setTimeout(()=>{if(pendingV)runView()},2500);
 function viewLink(mid){
@@ -3744,6 +3753,7 @@ function peBoot(root,host){
     swatches('cwL','cl');swatches('cwR','cr');showKeys();
     $('fontRow').innerHTML=Object.keys(FONTS).map(function(f){return '<button class="pill'+(opt.font===f?' on':'')+'" data-f="'+f+'" style="font-family:'+FONTS[f]+',sans-serif;font-size:18px;padding:10px 0">12</button>'}).join('');
     $('fsV').textContent=Math.round((opt.fs||1)*100)+'%';
+    $('vColors').textContent='Cores agora: jogador 1 = '+(colorName(opt.cl)||'?')+', jogador 2 = '+(colorName(opt.cr)||'?')+'.';
     $('ovSet').classList.add('on');
   }
   $('bSet').onclick=openSet;
@@ -3768,6 +3778,86 @@ function peBoot(root,host){
     if(!tapOk())return; point(sideTeam(hit));
   });
 
+
+  /* ---------- voz (escuta contínua) ---------- */
+  var CN={'#0f4c81':'azul','#9b1c2e':'vermelho','#1b7f4b':'verde','#b9770e':'laranja','#6a2c91':'roxo','#2b2f36':'preto','#0e7490':'ciano','#c2410c':'laranja'};
+  var CALIAS={azul:['azul'],vermelho:['vermelho','vermelha'],verde:['verde'],laranja:['laranja'],amarelo:['amarelo','amarela'],roxo:['roxo','roxa','lilas'],preto:['preto','preta','cinza'],ciano:['ciano','turquesa'],rosa:['rosa'],branco:['branco','branca']};
+  function colorName(h){
+    h=String(h||'').toLowerCase(); if(CN[h])return CN[h];
+    var m=/^#?([0-9a-f]{6})$/.exec(h); if(!m)return '';
+    var r=parseInt(m[1].slice(0,2),16)/255,g=parseInt(m[1].slice(2,4),16)/255,b=parseInt(m[1].slice(4,6),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn,hh=0,sa=d===0?0:d/(1-Math.abs(2*l-1));
+    if(l>.9)return 'branco'; if(l<.16)return 'preto'; if(sa<.15)return 'preto';
+    if(d>0){if(mx===r)hh=((g-b)/d+6)%6;else if(mx===g)hh=(b-r)/d+2;else hh=(r-g)/d+4;hh*=60}
+    if(hh<15||hh>=340)return l>.7?'rosa':'vermelho'; if(hh<40)return 'laranja'; if(hh<70)return 'amarelo'; if(hh<165)return 'verde'; if(hh<195)return 'ciano'; if(hh<255)return 'azul'; if(hh<300)return 'roxo'; return 'rosa';
+  }
+  function vTeams(){return {A:colorName(st&&st.flip?opt.cr:opt.cl),B:colorName(st&&st.flip?opt.cl:opt.cr)}}
+  /* cor do lado A/B: A usa opt.cl, B usa opt.cr (a cor segue o jogador, não a tela) */
+  function teamColor(t){return colorName(t==='A'?opt.cl:opt.cr)}
+  function vParse(txt){
+    var t=' '+norm(txt).replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ')+' ';
+    if(/ desfaz(er|a)? | anul(ar|a) (o )?ponto /.test(t))return {k:'U'};
+    var m=/ pontos? ((?:[a-z]+ ){0,3}?)(azul|vermelh[oa]|verde|laranja|amarel[oa]|rox[oa]|lilas|pret[oa]|cinza|ciano|turquesa|rosa|branc[oa]|esquerda|direita) /.exec(t);
+    if(!m)return null;
+    return {k:'P',w:m[2]};
+  }
+  function vTeam(w){
+    if(w==='esquerda')return sideTeam('L'); if(w==='direita')return sideTeam('R');
+    var key=null; Object.keys(CALIAS).forEach(function(k){if(CALIAS[k].indexOf(w)>-1)key=k});
+    if(!key)return null;
+    var a=teamColor('A')===key,b=teamColor('B')===key;
+    if(a&&b)return 'amb'; if(a)return 'A'; if(b)return 'B'; return null;
+  }
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition, rec=null, vWant=false, vDone={}, vLast=0, vFail=0, vStartAt=0;
+  function heard(t){var e=$('vHeard');e.textContent='🎤 '+t;e.classList.add('on')}
+  function vHandle(txt,final){
+    var c=vParse(txt); if(!c||!st)return false;
+    var now=Date.now();
+    if(root.querySelector('.ov.on')||st.over)return false;
+    if(c.k==='U'){if(now-vLast<1500)return true;vLast=now;undo();toast('🎤 Desfeito');return true}
+    var t=vTeam(c.w);
+    if(t==='amb'){toast('🎤 As duas cores são parecidas. Use esquerda/direita.');return true}
+    if(!t)return false;
+    if(now-vLast<1500)return true;
+    vLast=now; point(t); toast('🎤 Ponto: '+nameOf(t)); return true;
+  }
+  function vStart(){
+    if(!SR){toast('Este navegador não tem reconhecimento de voz. Use o Chrome.');return}
+    if(rec)return;
+    rec=new SR(); rec.lang='pt-BR'; rec.continuous=true; rec.interimResults=true; rec.maxAlternatives=1;
+    rec.onstart=function(){vDone={};vStartAt=Date.now()};
+    rec.onresult=function(ev){
+      for(var i=ev.resultIndex;i<ev.results.length;i++){
+        var r=ev.results[i],txt=r[0].transcript; heard(txt.trim().slice(-40));
+        if(vDone[i])continue;
+        if(vHandle(txt,r.isFinal))vDone[i]=true;
+      }
+    };
+    rec.onerror=function(e){
+      if(e.error==='not-allowed'||e.error==='service-not-allowed'){vWant=false;toast('Microfone bloqueado. Permita o microfone no navegador.')}
+      else if(e.error==='audio-capture'){vWant=false;toast('Microfone não encontrado.')}
+    };
+    rec.onend=function(){
+      rec=null;
+      if(!vWant){vUI();return}
+      vFail=(Date.now()-vStartAt<1500)?vFail+1:0;
+      if(vFail>=6){vWant=false;vFail=0;vUI();toast('A voz parou de funcionar. Toque em Voz para tentar de novo.');return}
+      setTimeout(function(){if(vWant&&!rec&&!host.hidden)vStart()},vFail?800:200);
+    };
+    try{rec.start()}catch(e){rec=null}
+    vUI();
+  }
+  function vStop(){vWant=false;var r=rec;rec=null;if(r){try{r.onend=null;r.stop()}catch(e){}}vUI()}
+  function vUI(){
+    $('bMic').classList.toggle('on',vWant);$('vHeard').classList.toggle('on',vWant&&$('vHeard').textContent!=='');if(!vWant){$('vHeard').classList.remove('on');$('vHeard').textContent=''}
+  }
+  $('bMic').onclick=function(){
+    if(vWant){vStop();toast('Voz desligada');return}
+    if(!SR){toast('Este navegador não tem reconhecimento de voz. Use o Chrome.');return}
+    vWant=true;vFail=0;vStart();wake();
+    toast('🎤 Ouvindo. Diga “ponto '+(teamColor('A')||'esquerda')+'” ou “ponto '+(teamColor('B')||'direita')+'”');
+  };
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&vWant&&!rec&&!host.hidden)vStart()});
+
   /* ---------- geral ---------- */
   function closeAll(){[].forEach.call(root.querySelectorAll('.ov.on'),function(o){o.classList.remove('on')});stopTimer()}
   ['ovHist','ovSet'].forEach(function(){});
@@ -3787,7 +3877,7 @@ function peBoot(root,host){
     st=fresh(cfg,{A:['Jogador 1'],B:['Jogador 2']}); render();
   }
   host.addEventListener('contextmenu',function(e){e.preventDefault()});
-  var pexit=function(){host.hidden=true;try{if(wl)wl.release()}catch(e){}wl=null};
+  var pexit=function(){vStop();host.hidden=true;try{if(wl)wl.release()}catch(e){}wl=null};
   $('bExit').onclick=pexit; host.addEventListener('pehide',pexit);
   host.peStart=function(ctx){
     var same=st&&st.ctx&&st.ctx.tid===ctx.tid&&st.ctx.fid===ctx.fid&&!st.launched;
