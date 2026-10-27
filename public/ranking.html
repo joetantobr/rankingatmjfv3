@@ -603,9 +603,9 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
   <div class="msg nrm" id="msg" hidden></div>
   <div class="btns nrm">
     <button class="gbtn g-rank" id="rankBtn"><span class="gi">🏆</span><span class="gl">Ver ranking</span></button>
-    <button class="gbtn g-add" id="addBtn"><span class="gi">➕</span><span class="gl">Adicionar jogador</span></button>
-    <button class="gbtn g-match" id="matchBtn"><span class="gi gi2"><span>🏓</span><span class="mir">🏓</span></span><span class="gl">Visualizar partidas</span></button>
     <button class="gbtn g-play" id="playBtn"><span class="gi">👥</span><span class="gl">Jogadores</span></button>
+    <button class="gbtn g-match" id="matchBtn"><span class="gi gi2"><span>🏓</span><span class="mir">🏓</span></span><span class="gl">Visualizar partidas</span></button>
+    <button class="gbtn g-add" id="addBtn"><span class="gi">➕</span><span class="gl">Adicionar jogador</span></button>
     <button class="gbtn g-ach" id="achBtn"><span class="gi">🏅</span><span class="gl">Conquistas</span></button>
     <button class="gbtn g-tour" id="tourBtn"><span class="gi">🏟️</span><span class="gl">Campeonatos</span></button>
     <div id="peRow" style="display:contents">
@@ -2144,7 +2144,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.188'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.189'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
