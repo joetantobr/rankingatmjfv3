@@ -2046,7 +2046,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.150'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.151'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -3930,7 +3930,7 @@ async function peLaunchT(ctx,wid,ws,ls){
 (function(){
   const row=$('peRow'), ib=$('instBtn'), pb=$('peBtn'); if(!ib)return;
   const standalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true}catch(e){return false}};
-  const web=/^https?:$/.test(location.protocol); let framed=false; try{framed=window.top!==window}catch(e){framed=true}
+  const web=/^https?:$/.test(location.protocol); let W=window, framed=false; try{if(window.parent&&window.parent!==window){void window.parent.document.title; W=window.parent}}catch(e){framed=true}
   const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   let dp=null, done=false;
   function layout(){
@@ -3942,16 +3942,15 @@ async function peLaunchT(ctx,wid,ws,ls){
       const c=document.createElement('canvas'); c.width=c.height=512; const x=c.getContext('2d');
       x.fillStyle='#15171a'; x.fillRect(0,0,512,512); x.font='300px serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText('🏓',256,276);
       const png=c.toDataURL('image/png');
-      const m={name:'Ranking ATMJF',short_name:'Ranking',start_url:location.href.split('#')[0],display:'standalone',background_color:'#15171a',theme_color:'#15171a',icons:[{src:png,sizes:'512x512',type:'image/png',purpose:'any'},{src:png,sizes:'192x192',type:'image/png',purpose:'any'}]};
-      const add=(rel,href)=>{const l=document.createElement('link');l.rel=rel;l.href=href;document.head.appendChild(l)};
+      const m={name:'Ranking ATMJF',short_name:'Ranking',start_url:W.location.href.split('#')[0],display:'standalone',background_color:'#15171a',theme_color:'#15171a',icons:[{src:png,sizes:'512x512',type:'image/png',purpose:'any'},{src:png,sizes:'192x192',type:'image/png',purpose:'any'}]};
+      const D=W.document, add=(rel,href)=>{const l=D.createElement('link');l.rel=rel;l.href=href;D.head.appendChild(l)};
       add('manifest','data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(m)));
       add('apple-touch-icon',png);
-      const mt=(n,v)=>{const e=document.createElement('meta');e.name=n;e.content=v;document.head.appendChild(e)};
+      const mt=(n,v)=>{const e=D.createElement('meta');e.name=n;e.content=v;D.head.appendChild(e)};
       mt('apple-mobile-web-app-capable','yes'); mt('mobile-web-app-capable','yes'); mt('apple-mobile-web-app-title','Ranking'); mt('theme-color','#15171a');
     }
   }catch(e){}
-  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e});
-  window.addEventListener('appinstalled',()=>{done=true;dp=null;layout()});
+  [W,window].forEach(w=>{try{w.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e});w.addEventListener('appinstalled',()=>{done=true;dp=null;layout()})}catch(e){}});
   ib.onclick=async()=>{
     if(dp){const p=dp; dp=null; try{p.prompt(); const r=await p.userChoice; if(r&&r.outcome==='accepted'){done=true;layout()}}catch(e){} return}
     $('instTx').innerHTML=ios
