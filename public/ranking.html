@@ -122,6 +122,7 @@ button.pri:disabled{opacity:.4;cursor:not-allowed}
 .p3l{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0 14px}.p3i{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;min-width:0;margin:0;padding:8px 4px 8px;border-radius:14px;border:2px solid var(--ac);background:var(--card);color:var(--tx);font:inherit;text-align:center;cursor:pointer;box-shadow:0 2px 0 var(--ac)}.p3i:active{transform:translateY(1px);box-shadow:none}
 .p3i .pi{font-size:24px;line-height:1}.p3i .pt{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;max-width:100%}.p3i .pt b{font-size:12px;line-height:1.15}.p3i .pt em{font-style:normal;display:inline-block;margin-top:2px;padding:1px 8px;border-radius:99px;background:var(--ac);color:var(--acx);font-size:12px}.p3i .pt small{color:var(--mut);font-size:10px;line-height:1.2;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.p3i .pg{margin-top:auto;padding:3px 10px;border-radius:99px;background:var(--ac);color:var(--acx);font-size:11px;font-weight:800}
 .p3l.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.btns .gbtn.wide2{grid-column:1/-1}
 .atw{position:relative}.atw .atabs{scrollbar-width:none}.atw .atabs::-webkit-scrollbar{display:none}
 .atw::before,.atw::after{content:'';position:absolute;top:0;bottom:12px;width:28px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:1}
 .atw::before{left:0;background:linear-gradient(90deg,var(--bg,#fff),transparent)}.atw::after{right:0;background:linear-gradient(270deg,var(--bg,#fff),transparent)}
@@ -1342,6 +1343,7 @@ document.addEventListener('click',e=>{const m=e.target.closest&&e.target.closest
 function render(){
   renderChamp();
   {const b=$('achBtn'); if(b)b.hidden=!achShow()}
+  menuFit();
   {const off=!!S.settings.peOff, b=$('peBtn'); if(b)b.hidden=off; if(window.__instLayout)window.__instLayout(); if(off&&typeof peHost!=='undefined'&&peHost){peHost.hidden=true; peHost.dispatchEvent(new Event('pehide'))}}
   {const b=$('admBtn'); if(b)b.textContent=admin?'🔓 Admin ON':'🔒 Admin OFF'; const c=$('cfgBtn'), n=admin?nRq(S.settings):0; if(c)c.innerHTML='⚙️<span class="fl"> Configurações</span>'+(n?` <b style="color:#d11" title="Solicitações pendentes">❗(${n})</b>`:'')}
   $('clubBtn').textContent=clubName(cur)+' ▾'; document.title='Ranking '+clubName(cur); fitTitle();
@@ -1424,6 +1426,7 @@ $('themeBtn').onclick=()=>{const d=!isDark(), h=document.documentElement; h.setA
 $('viewBtn').onclick=()=>{const h=document.documentElement; let m; if(!fx()){h.classList.add('fx');h.classList.remove('cl');m='fx'}else if(!cl()){h.classList.add('cl');m='classic'}else{h.classList.remove('cl','fx');m='simple'} try{localStorage.setItem('tm_visual',m)}catch(e){}; render()};
 $('sndBtn').onclick=()=>{SND=!SND; try{localStorage.setItem('tm_snd',SND?'on':'off')}catch(e){}; render(); if(SND)sfx('hi')};
 let achQ=[], achBusy=false, achId=null;
+function menuFit(){const g=document.querySelector('.btns.nrm'); if(!g)return; const v=[...g.children].filter(e=>e.classList.contains('gbtn')&&!e.hidden&&getComputedStyle(e).display!=='none'); v.forEach(e=>e.classList.remove('wide2')); if(v.length%2===1)v[v.length-1].classList.add('wide2')}
 function achShow(){return !(S&&S.settings&&S.settings.achOff)}
 const achLine=u=>{if(!achShow())return '';const a=ACH.find(x=>x.k===u.k);return `<br>🏅 <b>${u.id?pnl(u.id,u.p):esc(u.p)}</b> ganhou a conquista ${u.id?`<b class="pnk ank" role="link" tabindex="0" data-pid="${u.id}" data-k="${u.k}" style="color:${LV[a.lv].c}">${esc(a.n)}</b>`:`<b style="color:${LV[a.lv].c}">${esc(a.n)}</b>`}`};
 function achNotify(list){if(!S.settings.achOn||!achShow())return; achQ.push(...list); if(!achBusy)achRun()}
@@ -2114,7 +2117,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.176'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.177'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
