@@ -128,6 +128,9 @@ button.pri:disabled{opacity:.4;cursor:not-allowed}
 #mdQ{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:minmax(36px,1fr);gap:6px;margin:0}.qd{min-width:0;margin:0;padding:4px;border:1px solid var(--bd);border-radius:99px;background:var(--card);color:var(--tx);font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center}.qd.qdc{grid-column:1/-1;color:var(--mut);font-weight:500}
 #matchM .sheet{max-height:95%}#mScr{position:sticky;bottom:0;height:46px;margin:-46px -10px 0;padding:0 10px 6px;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(to top,var(--bg) 35%,transparent);color:var(--mut);font-size:12px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .2s;z-index:3}#mScr.on{opacity:1}#mScr b{animation:mscr 1.4s ease-in-out infinite}@keyframes mscr{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}@media (prefers-reduced-motion:reduce){#mScr b{animation:none}}
 #mdS:not([hidden]){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 10px}.stc{display:flex;flex-direction:column;gap:1px;padding:6px 8px;border:1px solid var(--bd);border-radius:10px;background:var(--card);text-align:center;line-height:1.2}.stc span{color:var(--mut);font-size:10.5px}.stc b{font-size:13px}
+h1.ttl .e2{display:inline-block;transform:scaleX(-1)}@keyframes pingE2{0%,100%{transform:scaleX(-1) translateY(0) rotate(-12deg)}50%{transform:scaleX(-1) translateY(-5px) rotate(12deg)}}html.fx h1.ttl .e2{animation-name:pingE2}
+.stc{font:inherit;color:var(--tx);cursor:pointer}.stc i{font-style:normal;font-size:10px;color:var(--ac);font-weight:700;margin-top:2px}.stc:active{transform:translateY(1px)}
+.stl{display:flex;flex-direction:column}.strow{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--bd)}.strow.low{opacity:.6}.stn{flex:none;width:26px;text-align:center;font-weight:800;color:var(--mut);font-size:14px}.stnm{flex:1;min-width:0;display:flex;flex-direction:column;font-weight:700;font-size:15px}.stnm small{font-weight:400;color:var(--mut);font-size:12px}.stv{flex:none;font-size:16px}.stsep{margin:12px 0 2px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
 .atw{position:relative}.atw .atabs{scrollbar-width:none}.atw .atabs::-webkit-scrollbar{display:none}
 .atw::before,.atw::after{content:'';position:absolute;top:0;bottom:12px;width:28px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:1}
 .atw::before{left:0;background:linear-gradient(90deg,var(--bg,#fff),transparent)}.atw::after{right:0;background:linear-gradient(270deg,var(--bg,#fff),transparent)}
@@ -585,7 +588,7 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
   <div class="season" id="seasonLbl"></div>
   <div class="rbar" id="rulesBar" hidden></div>
   <div id="champBar" class="rbar" hidden></div><div id="champHome" hidden></div>
-  <div class="cadt nrm"><span class="ar">⬇️</span> CADASTRAR UMA PARTIDA <span class="ar">⬇️</span></div>
+  <div class="cadt nrm"><span class="ar">⬇️</span> REGISTRAR UMA PARTIDA <span class="ar">⬇️</span></div>
   <div class="row nrm"><button class="sq" id="s1"></button><div class="vs">VS</div><button class="sq" id="s2"></button></div>
   <div class="nrm" style="text-align:center;margin-top:6px"><button class="lnk" id="clrBtn" hidden>✕ limpar seleção</button></div>
   <div class="panel nrm" id="match" hidden>
@@ -652,7 +655,7 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
 
 <div class="modal" id="matchM"><div class="sheet">
   <h3>Partidas</h3><select id="mSeas" style="width:100%;margin-bottom:10px"></select>
-  <div id="mdBox"><div id="mdD"><label class="mdl"><span>De</span><input id="mdA" type="date"></label><label class="mdl"><span>Até</span><input id="mdB" type="date"></label></div><div id="mdQ"><button class="qd" id="mdT">Hoje</button><button class="qd" id="mdY">Ontem</button><button class="qd" id="mdW" title="Últimos 7 dias">Semana</button><button class="qd" id="mdM" title="Do dia 1 do mês até hoje">Mês</button><button class="qd qdc" id="mdC" hidden>✕ limpar datas</button></div></div><details id="mfD" class="pfd" style="margin-bottom:8px"><summary>🔎 Filtros <small id="mfBd"></small></summary><label class="field" style="margin:8px 0 6px"><span>Jogador (nome)</span><input id="mfN" type="text" autocomplete="off" placeholder="Digite para buscar…" style="width:100%"></label><div id="mfCh" class="pfch"></div><div id="mfOp" class="seg" style="grid-template-columns:1fr 1fr;margin:0 0 8px" hidden><button type="button" data-o="and">E · só entre eles</button><button type="button" data-o="or">OU · de qualquer um</button></div><div id="mfSg" class="pfsg"></div><button class="sec" id="mfC" style="margin:0 0 4px;width:100%">Limpar filtro</button></details><button class="sec" id="dupB" hidden style="margin:0 0 8px">🔎 Buscar partidas duplicadas</button><div id="dupBar" hidden style="display:flex;gap:6px;align-items:center;margin:0 0 8px"><button class="sec" id="dupP" style="margin:0;width:44px;flex:none" aria-label="Dia anterior">‹</button><input type="date" id="dupD" style="flex:1;min-width:0" aria-label="Dia da busca"><button class="sec" id="dupN" style="margin:0;width:44px;flex:none" aria-label="Próximo dia">›</button><button class="sec" id="dupT" style="margin:0;width:auto;flex:none;padding:10px 12px">Hoje</button></div>
+  <div id="mdBox"><div id="mdD"><label class="mdl"><span>De</span><input id="mdA" type="date"></label><label class="mdl"><span>Até</span><input id="mdB" type="date"></label></div><div id="mdQ"><button class="qd" id="mdT">Hoje</button><button class="qd" id="mdY">Ontem</button><button class="qd" id="mdW" title="Últimos 7 dias">Semana</button><button class="qd" id="mdM" title="Do dia 1 do mês até hoje">Mês</button><button class="qd qdc" id="mdC" hidden>✕ limpar datas</button></div></div><details id="mfD" class="pfd" style="margin-bottom:8px"><summary>🔎 Filtrar por jogador <small id="mfBd"></small></summary><label class="field" style="margin:8px 0 6px"><span>Jogador (nome)</span><input id="mfN" type="text" autocomplete="off" placeholder="Digite para buscar…" style="width:100%"></label><div id="mfCh" class="pfch"></div><div id="mfOp" class="seg" style="grid-template-columns:1fr 1fr;margin:0 0 8px" hidden><button type="button" data-o="and">E · só entre eles</button><button type="button" data-o="or">OU · de qualquer um</button></div><div id="mfSg" class="pfsg"></div><button class="sec" id="mfC" style="margin:0 0 4px;width:100%">Limpar filtro</button></details><button class="sec" id="dupB" hidden style="margin:0 0 8px">🔎 Buscar partidas duplicadas</button><div id="dupBar" hidden style="display:flex;gap:6px;align-items:center;margin:0 0 8px"><button class="sec" id="dupP" style="margin:0;width:44px;flex:none" aria-label="Dia anterior">‹</button><input type="date" id="dupD" style="flex:1;min-width:0" aria-label="Dia da busca"><button class="sec" id="dupN" style="margin:0;width:44px;flex:none" aria-label="Próximo dia">›</button><button class="sec" id="dupT" style="margin:0;width:auto;flex:none;padding:10px 12px">Hoje</button></div>
   <div id="mfS" class="legend" style="margin:0 0 8px"></div><button class="sec" id="undoBtn" style="margin:0 0 10px">↩️ Desfazer última partida</button>
   <div id="mdS" hidden></div><div id="matchL"></div>
   <button class="sec" id="mvB" hidden>🔗 Levar partidas para outro clube</button>
@@ -661,6 +664,8 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
   <div id="mScr" aria-hidden="true"><b>⌄ Role para ver mais ⌄</b></div>
 </div></div>
 
+
+<div class="modal" id="stM"><div class="sheet"><div class="ahead"><h3 id="stT"></h3><button class="x2" id="stX" aria-label="Fechar">✕</button></div><p class="legend" id="stSub"></p><div id="stB"></div><button class="sec" data-close>Fechar</button></div></div>
 
 <div class="modal" id="emM"><div class="sheet"><h3>✏️ Corrigir partida</h3><p class="legend" id="emInfo"></p>
   <div class="field"><span>Quem ganhou?</span><div class="seg" id="emW" style="grid-template-columns:1fr 1fr"></div></div>
@@ -1785,8 +1790,8 @@ function renderMatches(){
   }
   const so=seasOpts(false,'Todas as temporadas',mSel); if($('mSeas').dataset.h!==so){$('mSeas').innerHTML=so;$('mSeas').dataset.h=so}
   $('undoBtn').hidden=!(admin&&mSel==='cur'&&l.length&&!mP.length); mfUi(); { let v=0,d=0; if(mP.length===1)l.forEach(m=>m.winner===mP[0]?v++:d++); $('mfS').textContent=mP.length?l.length+' partida'+(l.length===1?'':'s')+' no filtro'+(mP.length>1?(mOp==='or'?' (jogos de qualquer um dos selecionados)':' (só jogos entre os selecionados)'):'')+(mP.length===1&&l.length?' · '+v+'V '+d+'D · '+Math.round(v*100/l.length)+'%':''):'' }
-  { const box=$('mdS'), ST0=(()=>{const v=matchView(); return v.length?mStats(v):null})(), R0=ST0?stRows(ST0):[]; box.hidden=!R0.length;
-    box.innerHTML=R0.map(r=>`<div class="stc"><span>${esc(r[0])}</span><b>${esc(r[1])}</b><b style="color:${r[3]==='up'?'var(--ok)':r[3]==='dn'?'var(--bad)':'inherit'}">${esc(r[2])}</b></div>`).join('') }
+  { const box=$('mdS'), ST0=(()=>{const v=matchView(); return v.length?mStats(v):null})(), defs=[['pts','Mais Pontos'],['played','Mais Partidas Jogadas'],['pct','Maior % de Vitórias']];
+    const hh=ST0?defs.filter(d=>ST0[d[0]][0]).map(([k,lab])=>{const r0=ST0[k][0], v=r0.t.split(' · ')[0].replace(/ jogos?$/,''); return `<button type="button" class="stc" data-k="${k}"><span>${lab}</span><b>${esc(r0.n)}</b><b style="color:${r0.c==='up'?'var(--ok)':r0.c==='dn'?'var(--bad)':'inherit'}">${esc(v)}</b><i>Ver lista ›</i></button>`}).join(''):''; box.hidden=!hh; box.innerHTML=hh }
   $('jpgMatches').textContent='🖼️ Exportar partidas + estatísticas (JPG)';
   $('mvB').hidden=!admin; $('dupB').hidden=!admin; $('dupB').textContent=dupOn?'✕ Sair da busca de duplicadas':'🔎 Buscar partidas duplicadas'; $('dupB').onclick=()=>{mDup=!mDup;mAll=false;renderMatches()};
   { const bar=$('dupBar'); bar.hidden=!dupOn; if(dupOn){ const dd=$('dupD'); dd.value=mDupDay||localDay(); dd.max=localDay(); dd.onchange=()=>{mDupDay=dd.value||'';renderMatches()};
@@ -1818,6 +1823,11 @@ function renderMatches(){
   $('matchL').querySelectorAll('.rq').forEach(b=>b.onclick=()=>reqMatch(b.dataset.id));
   mScrUp();
 }
+function openStList(k){const v=matchView(); if(!v.length)return; const ST=mStats(v), L=ST.full[k]||[], T={pts:'🏆 Mais Pontos',played:'🏓 Mais Partidas Jogadas',pct:'📈 Maior % de Vitórias'}[k];
+  $('stT').textContent=T; $('stSub').textContent=v.length+' partida'+(v.length===1?'':'s')+' no período'+(k==='pct'?' · quem jogou menos de '+ST.min+' partidas aparece no fim':'');
+  let lowShown=false; $('stB').innerHTML=L.length?`<div class="stl">`+L.map((x,i)=>{const sep=(k==='pct'&&x.low&&!lowShown)?(lowShown=true,'<div class="stsep">Poucos jogos</div>'):''; return sep+`<div class="strow${x.low?' low':''}"><span class="stn">${i+1}</span><span class="stnm">${esc(x.n)}<small>${esc(x.x)}</small></span><b class="stv" style="color:${x.c==='up'?'var(--ok)':x.c==='dn'?'var(--bad)':'inherit'}">${esc(x.t)}</b></div>`}).join('')+`</div>`:'<p class="legend">Nada para mostrar.</p>';
+  open('stM'); const sh=$('stM').querySelector('.sheet'); if(sh)sh.scrollTop=0}
+$('mdS').onclick=e=>{const b=e.target.closest('.stc'); if(b)openStList(b.dataset.k)};
 function mScrUp(){const sh=$('matchM').querySelector('.sheet'), h=$('mScr'); if(!sh||!h)return; h.classList.toggle('on',$('matchM').classList.contains('on')&&sh.scrollHeight-sh.clientHeight-sh.scrollTop>30)}
 {const sh=$('matchM').querySelector('.sheet'); sh.addEventListener('scroll',mScrUp,{passive:true}); window.addEventListener('resize',mScrUp); new MutationObserver(()=>setTimeout(mScrUp,60)).observe($('matchM'),{attributes:true,attributeFilter:['class']})}
 function reqMatch(id){
@@ -2134,7 +2144,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.184'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.188'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2284,7 +2294,12 @@ function mStats(all){
   return {min:MIN,
     pts:L.slice().sort((a,b)=>b.p-a.p||b.g-a.g).slice(0,5).map(x=>({n:x.n,t:(x.p>0?'+':x.p<0?'−':'')+Math.abs(x.p),c:x.p>0?'up':x.p<0?'dn':'tx'})),
     pct:el.slice().sort((a,b)=>b.w/b.g-a.w/a.g||b.g-a.g).slice(0,5).map(x=>({n:x.n,t:Math.round(x.w*100/x.g)+'% · '+x.w+'/'+x.g,c:'tx'})),
-    played:L.slice().sort((a,b)=>b.g-a.g||b.w-a.w).slice(0,5).map(x=>({n:x.n,t:x.g+' jogo'+(x.g===1?'':'s'),c:'tx'}))};
+    played:L.slice().sort((a,b)=>b.g-a.g||b.w-a.w).slice(0,5).map(x=>({n:x.n,t:x.g+' jogo'+(x.g===1?'':'s'),c:'tx'})),
+    full:{
+      pts:L.slice().sort((a,b)=>b.p-a.p||b.g-a.g).map(x=>({n:x.n,t:(x.p>0?'+':x.p<0?'−':'')+Math.abs(x.p),c:x.p>0?'up':x.p<0?'dn':'tx',x:x.w+'V '+(x.g-x.w)+'D'})),
+      played:L.slice().sort((a,b)=>b.g-a.g||b.w-a.w).map(x=>({n:x.n,t:x.g+' jogo'+(x.g===1?'':'s'),c:'tx',x:x.w+'V '+(x.g-x.w)+'D · '+Math.round(x.w*100/x.g)+'%'})),
+      pct:L.slice().sort((a,b)=>((b.g>=MIN)-(a.g>=MIN))||b.w/b.g-a.w/a.g||b.g-a.g).map(x=>({n:x.n,t:Math.round(x.w*100/x.g)+'%',c:'tx',x:x.w+'V '+(x.g-x.w)+'D',low:x.g<MIN}))
+    }};
 }
 $('jpgMatches').onclick=async e=>{
   const btn=e.currentTarget; await imgFonts(); const P=imgPal(), f=P.fx, all=matchView().reverse(), cap=200, l=all.slice(0,cap), W=900, RH=f?54:40, MX=450;
@@ -2466,7 +2481,8 @@ function normHead(mid){ const sh=$(mid).querySelector('.sheet'); if(!sh)return; 
   al.className='al'; ar.className='ar'; if(mid==='tourM'||mid==='playM'||mid==='achM'){const bk=document.createElement('button'); bk.className='bk'; bk.hidden=true; bk.textContent='←'; bk.title='Voltar'; bk.setAttribute('aria-label','Voltar'); ar.appendChild(bk)}
   kids.slice(1).forEach(k=>ar.appendChild(k)); hd.prepend(al); hd.appendChild(ar) }
 function setBack(mid,fn){ const b=$(mid).querySelector('.ahead .bk'); if(!b)return; b.hidden=!fn; b.onclick=fn||null }
-['rankM','matchM','playM','achAllM','helpM','tourM','pxM','achM','tpM','mesM'].forEach(normHead);
+['rankM','matchM','playM','achAllM','helpM','tourM','pxM','achM','tpM','mesM','stM'].forEach(normHead);
+$('stX').onclick=()=>$('stM').classList.remove('on');
 ['rankM','matchM','playM','achAllM','helpM','tourM'].forEach(mid=>{const sh=$(mid).querySelector('.sheet'), b=document.createElement('button'); b.className='x2 lkb'; b.title='Copiar link desta tela'; b.setAttribute('aria-label','Copiar link desta tela'); b.textContent='🔗';
   b.onclick=()=>copyViewLink(mid,b); const ar=sh.querySelector('.ahead>.ar'), bk=ar.querySelector('.bk'); ar.insertBefore(b,bk?bk.nextSibling:ar.firstChild); if(mid==='tourM')b.onclick=()=>tCopyLink(b)});
 async function tCopyLink(b){ const t=tv.v==='det'&&(S.tourns||[]).find(x=>x.id===tOpenId); if(!t)return copyViewLink('tourM',b); const u=tLink(t); try{await navigator.clipboard.writeText(u); flash(b,'✅')}catch(e){try{if(navigator.share){await navigator.share({title:t.name,url:u})}else{prompt('Copie o link:',u)}}catch(x){}} }
