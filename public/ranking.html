@@ -1754,9 +1754,9 @@ function renderMatches(){
   }
   const so=seasOpts(false,'Todas as temporadas',mSel); if($('mSeas').dataset.h!==so){$('mSeas').innerHTML=so;$('mSeas').dataset.h=so}
   $('undoBtn').hidden=!(admin&&mSel==='cur'&&l.length&&!mP.length); mfUi(); { let v=0,d=0; if(mP.length===1)l.forEach(m=>m.winner===mP[0]?v++:d++); $('mfS').textContent=mP.length?l.length+' partida'+(l.length===1?'':'s')+' no filtro'+(mP.length>1?(mOp==='or'?' (jogos de qualquer um dos selecionados)':' (só jogos entre os selecionados)'):'')+(mP.length===1&&l.length?' · '+v+'V '+d+'D · '+Math.round(v*100/l.length)+'%':''):'' }
-  { const box=$('mdS'), ST0=(mFrom||mUntil)?mStats(matchView()):null, R0=ST0?stRows(ST0):[]; box.hidden=!R0.length;
+  { const box=$('mdS'), ST0=(()=>{const v=matchView(); return v.length?mStats(v):null})(), R0=ST0?stRows(ST0):[]; box.hidden=!R0.length;
     box.innerHTML=R0.map(r=>`<div style="margin:0 0 3px"><span style="color:var(--mut);font-size:11px">${esc(r[0])}</span><br><b>${esc(r[1])}</b> <b style="color:${r[3]==='up'?'var(--ok)':r[3]==='dn'?'var(--bad)':'inherit'}">${esc(r[2])}</b></div>`).join('') }
-  $('jpgMatches').textContent=(mFrom||mUntil)?'🖼️ Exportar partidas + estatísticas do período (JPG)':'🖼️ Exportar partidas (JPG)';
+  $('jpgMatches').textContent='🖼️ Exportar partidas + estatísticas (JPG)';
   $('mvB').hidden=!admin; $('dupB').hidden=!admin; $('dupB').textContent=dupOn?'✕ Sair da busca de duplicadas':'🔎 Buscar partidas duplicadas'; $('dupB').onclick=()=>{mDup=!mDup;mAll=false;renderMatches()};
   { const bar=$('dupBar'); bar.hidden=!dupOn; if(dupOn){ const dd=$('dupD'); dd.value=mDupDay||localDay(); dd.max=localDay(); dd.onchange=()=>{mDupDay=dd.value||'';renderMatches()};
       const mv=n=>{const d=new Date((mDupDay||localDay())+'T12:00:00'); d.setDate(d.getDate()+n); const v=d.toISOString().slice(0,10); mDupDay=v>localDay()?localDay():v; renderMatches()};
@@ -2088,7 +2088,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.164'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.165'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2243,7 +2243,7 @@ function mStats(all){
 $('jpgMatches').onclick=async e=>{
   const btn=e.currentTarget; await imgFonts(); const P=imgPal(), f=P.fx, all=matchView().reverse(), cap=200, l=all.slice(0,cap), W=900, RH=f?54:40, MX=450;
   const lbl=(mSel==='all'?'Todas as temporadas':sN(mSel==='cur'?curS():+mSel))+(mFrom||mUntil?' · '+(mFrom?fmtD(mFrom):'início')+' a '+(mUntil?fmtD(mUntil):'hoje'):'')+(mP.length?' · '+mP.map(id=>mfNames().get(id)||'?').join(', '):'');
-  const ST=(mFrom||mUntil)&&all.length?mStats(all):null, STH=0;
+  const ST=all.length?mStats(all):null, STH=0;
   const H=(f?150:92)+STH+(f?44:48)+Math.max(l.length,1)*RH+(all.length>cap?40:0)+64;
   saveJpg(btn,`partidas-${slug(clubName(cur))}-${today()}.jpg`,W,H,x=>{
     imgBg(x,W,H,P); let y=imgHeader(x,W,P,'🏓 Partidas · '+clubName(cur),`${lbl} · ${all.length} partida${all.length===1?'':'s'}`);
