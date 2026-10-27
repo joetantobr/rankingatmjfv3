@@ -113,6 +113,20 @@ button.pri:disabled{opacity:.4;cursor:not-allowed}
 .atabs{display:flex;gap:4px;overflow-x:auto;margin-bottom:10px;padding-bottom:2px}
 .atabs button{flex:none;padding:6px 12px;border:1px solid var(--bd);border-radius:99px;background:var(--card);color:var(--tx);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .atabs button.on{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+.badm{display:inline-block;padding:1px 7px;border-radius:99px;background:var(--ac);color:var(--acx);font-size:11px;font-weight:700;white-space:nowrap}.bus{display:inline-block;padding:1px 7px;border-radius:99px;border:1px solid var(--bd);color:var(--mut);font-size:11px;font-weight:600;white-space:nowrap}
+.amenu{display:flex;flex-direction:column;gap:8px}.ami{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;min-height:56px;border:1px solid var(--bd);border-radius:14px;background:var(--card);color:var(--tx);font:inherit;text-align:left;cursor:pointer}.ami .ai{font-size:24px;flex:none;width:32px;text-align:center}.ami .at{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.ami .at b{font-size:15px}.ami .at small{color:var(--mut);font-size:12px;line-height:1.3}.ami .amc{color:var(--mut);font-size:22px;flex:none}.ami .rdot.rd2{position:static;flex:none}
+.x2,.bk{width:44px;height:44px;font-size:18px}.x2.ped{width:44px}
+.p3 .ver{font-style:normal;margin-top:4px;padding:3px 12px;border-radius:99px;background:rgba(255,255,255,.9);color:#222;font-size:11px;font-weight:800;letter-spacing:.04em;box-shadow:0 1px 3px rgba(0,0,0,.35)}html.fx.cl .p3 .ver{background:#f6f1e7;color:var(--g1)}
+.p3h{margin:6px 0 2px;padding:8px 12px;border-radius:12px;background:rgba(255,122,26,.16);border:1px dashed #ff7a1a;font-size:13px;line-height:1.35;display:flex;gap:8px;align-items:center;justify-content:space-between;cursor:pointer}.p3h .tx{flex:1;min-width:0}.p3h .xx{flex:none;color:var(--mut);padding:4px 6px}
+.p3.hint{animation:p3pulse 1.6s ease-in-out infinite}@keyframes p3pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}@media (prefers-reduced-motion:reduce){.p3.hint{animation:none}}
+.p3l{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0 14px}.p3i{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;min-width:0;margin:0;padding:8px 4px 8px;border-radius:14px;border:2px solid var(--ac);background:var(--card);color:var(--tx);font:inherit;text-align:center;cursor:pointer;box-shadow:0 2px 0 var(--ac)}.p3i:active{transform:translateY(1px);box-shadow:none}
+.p3i .pi{font-size:24px;line-height:1}.p3i .pt{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;max-width:100%}.p3i .pt b{font-size:12px;line-height:1.15}.p3i .pt em{font-style:normal;display:inline-block;margin-top:2px;padding:1px 8px;border-radius:99px;background:var(--ac);color:var(--acx);font-size:12px}.p3i .pt small{color:var(--mut);font-size:10px;line-height:1.2;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.p3i .pg{margin-top:auto;padding:3px 10px;border-radius:99px;background:var(--ac);color:var(--acx);font-size:11px;font-weight:800}
+.p3l.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.atw{position:relative}.atw .atabs{scrollbar-width:none}.atw .atabs::-webkit-scrollbar{display:none}
+.atw::before,.atw::after{content:'';position:absolute;top:0;bottom:12px;width:28px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:1}
+.atw::before{left:0;background:linear-gradient(90deg,var(--bg,#fff),transparent)}.atw::after{right:0;background:linear-gradient(270deg,var(--bg,#fff),transparent)}
+.atw.mr::after,.atw.ml::before{opacity:1}
+.atabs button{position:relative}.rdot{position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:#e53935;color:#fff;font-size:10px;font-weight:700;line-height:16px;text-align:center;box-sizing:border-box}
 .agroup{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:2px 12px;margin-bottom:10px}
 .agroup h4{margin:10px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
 .arow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}.arow:last-child{border-bottom:0}
@@ -531,7 +545,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
 #emM,#seasM,#adjM,#rstM,#dpM,#impM,#mvM,#trM,#tpM{z-index:12}
 .pfch,.pfsg{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}.pfc,.pfs{margin:0;padding:5px 10px;border-radius:99px;font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx)}.pfc{background:var(--g1,var(--ac));border-color:var(--g1,var(--ac));color:#fff;font-weight:700}
 .chi{margin:0 0 6px;padding:7px 10px;border:1px solid var(--bd);border-left:4px solid var(--ok);border-radius:8px;background:var(--card);font-size:13px;line-height:1.5}.chi.l{border-left-color:var(--bad)}.chi small{font-size:12px;color:var(--mut)}.chi .tbd{margin:0}
-#playM.pdet .sheet>.ahead{display:block;height:0;margin:0}#playM.pdet .sheet>.ahead .ar{position:absolute;top:12px;right:14px;z-index:4}#playM.pdet .sheet>.ahead .al,#playM.pdet .sheet>.ahead h3{display:none}#playM .pbig{font-weight:800!important}
+#playM.pdet .sheet>.ahead{display:block;height:44px;margin:0 0 4px}#playM.pdet .sheet>.ahead .ar{position:absolute;top:10px;right:14px;z-index:4}#playM.pdet .sheet>.ahead .al,#playM.pdet .sheet>.ahead h3{display:none}#playM .pbig{font-weight:800!important}
 #rkLeg,.ctr,#achP>.legend{text-align:center}.achtop{justify-content:center;text-align:center}.atabs{justify-content:safe center}
 .pfd{border:1px solid var(--bd);border-radius:8px;padding:8px 10px;margin:0 0 8px;background:var(--card)}.pfd summary{cursor:pointer;font-weight:700;font-size:14px}.pfd summary small{color:var(--ac);font-weight:700}
 body.champ .nrm{display:none!important}
@@ -645,12 +659,12 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
   <div class="field"><span>Quem ganhou?</span><div class="seg" id="emW" style="grid-template-columns:1fr 1fr"></div></div>
   <label class="field"><span>Placar do vencedor x perdedor (ex.: 3x1; vazio = sem placar)</span><input id="emS" maxlength="5" autocomplete="off"></label>
   <label class="field"><span>Data e horário da partida</span><input id="emD" type="datetime-local" style="width:100%"></label><p class="legend" id="emSe" style="margin-top:-4px"></p>
-  <div id="emErr" class="dn"></div><button class="pri" id="emOk">Salvar correção</button><button class="sec" data-close>Voltar</button></div></div>
+  <div id="emErr" class="dn"></div><button class="pri" id="emOk">Salvar correção</button><button class="sec" data-close>Cancelar</button></div></div>
 
-<div class="modal" id="rqM"><div class="sheet"><h3>🚩 Pedir correção</h3><p class="legend" id="rqInfo"></p>
+<div class="modal" id="rqM"><div class="sheet"><h3>✏️ Pedir correção</h3><p class="legend" id="rqInfo"></p><p class="legend">Você está pedindo ao administrador para revisar esta partida. <b>Nada muda até ele aprovar.</b></p>
   <div class="field"><span>O que você quer?</span><div class="seg" id="rqT" style="grid-template-columns:1fr 1fr"><button data-t="alt" class="on">✏️ Alterar</button><button data-t="exc">🗑 Excluir</button></div></div>
   <label class="field"><span>Explique (o que está errado / como deveria ser)</span><textarea id="rqN" rows="3" maxlength="300" style="width:100%"></textarea></label>
-  <div id="rqErr" class="dn"></div><button class="pri" id="rqOk">Enviar pedido</button><button class="sec" data-close>Voltar</button><p class="legend">Só o administrador vê e decide o pedido.</p></div></div>
+  <div id="rqErr" class="dn"></div><button class="pri" id="rqOk">Enviar pedido ao administrador</button><button class="sec" data-close>Cancelar</button></div></div>
 
 <div class="modal" id="clubM"><div class="sheet"><h3>Escolher clube</h3><div id="clubL" style="display:grid;gap:6px"></div>
   <div class="sub">➕ Novo clube</div><div class="wrow"><input id="clubNm" maxlength="40" placeholder="Nome do clube" autocomplete="off"><button class="pri" id="clubNew" style="margin:0">Criar</button></div>
@@ -1190,7 +1204,7 @@ async function del(col,id){
 /* ---- helpers de UI ---- */
 function open(id){$(id).classList.add('on'); if(id==='playM')playTop()} 
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.modal').classList.remove('on'));
-document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m){if(m.dataset.dirty&&['addM','emM','rqM','impM','mvM','adjM','rstM'].includes(m.id)){const sh=m.querySelector('.sheet');if(sh&&sh.animate)sh.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:200});return}m.classList.remove('on')}}));
 function msg(h){const m=$('msg');m.innerHTML=h;m.hidden=false;m.style.animation='none';void m.offsetWidth;m.style.animation=''}
 function undoUi(mid,wn,ln){
   const box=document.createElement('div'); $('msg').appendChild(box);
@@ -1231,7 +1245,7 @@ function recentHtml(st){
   loadNames([...(st.log||[]).slice(0,50).map(x=>x.by),...rec.map(m=>m.by)]).then(c=>{if(c&&admin&&op('admM')&&admTab==='adv')renderAdm()});
   return `<div class="agroup"><h4>📱 Lançamentos de partidas</h4>${rec.length?`<details><summary>Ver os últimos ${rec.length} lançamentos</summary><table><tr><th>Cadastrada em</th><th>Partida</th><th>Quem · aparelho</th></tr>${rec.map(m=>`<tr><td style="white-space:nowrap">${fmt(m.cr||m.at)}</td><td>${pnl(m.winner,nameOf(m.winner,m.wn))} x ${pnl(m.loser,nameOf(m.loser,m.ln))}${m.score?' ('+esc(m.score)+')':''}</td><td>${(m.by||m.dev)?esc(whoTxt(m.by)||'—')+' · '+esc(devTxt(m.dev)):'<span style="color:var(--mut)">sem registro</span>'}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma partida ainda.</p>'}<p class="legend" style="margin:4px 0 8px">Cada partida guarda a conta de quem lançou, o aparelho e o navegador. Partidas antigas não têm esse registro.</p></div>`;
 }
-async function logA(t){await put('settings',{...S.settings,log:[{at:Date.now(),t,by:myId,dev:deviceInfo()},...(S.settings.log||[])].slice(0,300)})}
+async function logA(t){await put('settings',{...S.settings,log:[{at:Date.now(),t,by:myId,dev:deviceInfo(),adm:!!admin},...(S.settings.log||[])].slice(0,300)})}
 function focusPin(){const el=$('pin'); if(el){try{el.focus({preventScroll:true});el.select()}catch(e){}}}
 function needAdmin(fn){ if(admin){fn();return} pend=fn; renderAdm(); open('admM'); focusPin(); setTimeout(focusPin,120) }
 
@@ -1327,6 +1341,7 @@ let _cfT; window.addEventListener('resize',()=>{clearTimeout(_cfT);_cfT=setTimeo
 document.addEventListener('click',e=>{const m=e.target.closest&&e.target.closest('.swm'); document.querySelectorAll('.swtip').forEach(x=>x.remove()); if(!m)return; e.stopPropagation(); e.preventDefault(); const r=m.getBoundingClientRect(), d=document.createElement('div'); d.className='swtip'; d.textContent=m.dataset.sw; document.body.appendChild(d); d.style.left=Math.max(8,Math.min(innerWidth-d.offsetWidth-8,r.left-20))+'px'; d.style.top=Math.min(innerHeight-d.offsetHeight-8,r.bottom+6)+'px'; setTimeout(()=>document.addEventListener('click',()=>d.remove(),{once:true}),0)},true);
 function render(){
   renderChamp();
+  {const b=$('achBtn'); if(b)b.hidden=!achShow()}
   {const off=!!S.settings.peOff, b=$('peBtn'); if(b)b.hidden=off; if(window.__instLayout)window.__instLayout(); if(off&&typeof peHost!=='undefined'&&peHost){peHost.hidden=true; peHost.dispatchEvent(new Event('pehide'))}}
   {const b=$('admBtn'); if(b)b.textContent=admin?'🔓 Admin ON':'🔒 Admin OFF'; const c=$('cfgBtn'), n=admin?nRq(S.settings):0; if(c)c.innerHTML='⚙️<span class="fl"> Configurações</span>'+(n?` <b style="color:#d11" title="Solicitações pendentes">❗(${n})</b>`:'')}
   $('clubBtn').textContent=clubName(cur)+' ▾'; document.title='Ranking '+clubName(cur); fitTitle();
@@ -1409,8 +1424,9 @@ $('themeBtn').onclick=()=>{const d=!isDark(), h=document.documentElement; h.setA
 $('viewBtn').onclick=()=>{const h=document.documentElement; let m; if(!fx()){h.classList.add('fx');h.classList.remove('cl');m='fx'}else if(!cl()){h.classList.add('cl');m='classic'}else{h.classList.remove('cl','fx');m='simple'} try{localStorage.setItem('tm_visual',m)}catch(e){}; render()};
 $('sndBtn').onclick=()=>{SND=!SND; try{localStorage.setItem('tm_snd',SND?'on':'off')}catch(e){}; render(); if(SND)sfx('hi')};
 let achQ=[], achBusy=false, achId=null;
-const achLine=u=>{const a=ACH.find(x=>x.k===u.k);return `<br>🏅 <b>${u.id?pnl(u.id,u.p):esc(u.p)}</b> ganhou a conquista ${u.id?`<b class="pnk ank" role="link" tabindex="0" data-pid="${u.id}" data-k="${u.k}" style="color:${LV[a.lv].c}">${esc(a.n)}</b>`:`<b style="color:${LV[a.lv].c}">${esc(a.n)}</b>`}`};
-function achNotify(list){if(!S.settings.achOn)return; achQ.push(...list); if(!achBusy)achRun()}
+function achShow(){return !(S&&S.settings&&S.settings.achOff)}
+const achLine=u=>{if(!achShow())return '';const a=ACH.find(x=>x.k===u.k);return `<br>🏅 <b>${u.id?pnl(u.id,u.p):esc(u.p)}</b> ganhou a conquista ${u.id?`<b class="pnk ank" role="link" tabindex="0" data-pid="${u.id}" data-k="${u.k}" style="color:${LV[a.lv].c}">${esc(a.n)}</b>`:`<b style="color:${LV[a.lv].c}">${esc(a.n)}</b>`}`};
+function achNotify(list){if(!S.settings.achOn||!achShow())return; achQ.push(...list); if(!achBusy)achRun()}
 function achRun(){
   if(!achQ.length){achBusy=false;return} achBusy=true;
   let st=$('achStack'); if(!st){st=document.createElement('div'); st.id='achStack'; document.body.appendChild(st)}
@@ -1498,7 +1514,7 @@ function renderAchAll(){
   $('achAllG').querySelectorAll('.acwp').forEach(b=>b.onclick=()=>openAch(b.dataset.id));
 }
 $('achAllX').onclick=()=>$('achAllM').classList.remove('on');
-$('achBtn').onclick=()=>{renderAchAll();open('achAllM')};
+$('achBtn').onclick=()=>{if(!achShow())return;renderAchAll();open('achAllM')};
 const HELP={
  uso:()=>`<h4>📲 Como cadastrar uma partida</h4><p>Cadastre logo depois de jogar. Leva menos de 10 segundos.</p>
   <ol class="st">
@@ -1674,6 +1690,7 @@ function goPlayer(id){plOnly=null;chSel=null;histId=id;pSel='all';document.query
 var mgSelId='', mgFor='', rkPendOpen=false;
 function rkSet(h){const el=$('rankL'); if(el.dataset.h===h)return; el.dataset.h=h; el.innerHTML=h} /* não refaz (nem reanima) o ranking se nada mudou */
 function renderRank(){
+  if(!achShow()&&rkMode==='ach')rkMode='pts'; {const ab=$('rkTab').querySelector('[data-m=ach]'); if(ab)ab.hidden=!achShow(); $('rkTab').style.gridTemplateColumns=achShow()?'repeat(3,1fr)':'repeat(2,1fr)'}
   $('rkTab').querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.m===rkMode);b.onclick=()=>{rkMode=b.dataset.m;renderRank()}});
   $('shareB').textContent='📤 Compartilhar ranking (WhatsApp)'; $('jpgRank').textContent='🖼️ Exportar ranking com estatísticas (JPG)';
   $('jpgRank').style.display='';
@@ -1771,7 +1788,8 @@ function renderMatches(){
     return `<tr class="dup${c} dupI"><td colspan="5">${parts.join('<br>')}<br><button class="dok" data-id="${m.id}">${c==='G'?'↩ Tirar o OK':'✔ Marcar como OK'}</button></td></tr>`};
   const RQ=new Set((S.settings.requests||[]).filter(r=>r.st==='open').map(r=>r.mid));
   const lim=(dupOn||mAll||document.body.classList.contains('champ'))?Infinity:50, shown=l.slice(0,lim);
-  $('matchL').innerHTML=(nCf?`<div class="cfbar">❗ ${nCf} partida${nCf===1?'':'s'} com possível conflito (toque no ❗ para ver).</div>`:'')+(l.length?`<table class="mt ad"><tr><th>Data</th><th>Vencedor</th><th class="sc">Placar</th><th>Perdedor</th><th></th></tr>`+shown.map(m=>{const d=D[m.id]||[0,0];const dc=DUP&&DUP.get(m.id);return `<tr${dc?` class="dup${dc}"`:''}><td ${admin&&devTitle(m)?`title="${esc(devTitle(m))}"`:''}>${fmt(m.at).replace(',','')}${m.link?' 🔗':''}${m.tid?` <button class="tbd" data-tm="${m.id}" title="Partida de campeonato" aria-label="Partida de campeonato">🏆</button>`:''}${CF[m.id]?` <button class="cfb" data-id="${m.id}" title="Possível conflito" aria-label="Possível conflito">❗</button>`:''}</td><td><div class="mc"><b class="up nm">${pn(m.winner,m.wn)}</b><small class="up">+${d[0]}${d[2]>1?' ×'+d[2]:''}</small></div></td><td class="sc">${m.score?esc(m.score):'–'}</td><td><div class="mc"><span class="nm">${pn(m.loser,m.ln)}</span><small class="dn">−${d[1]}</small></div></td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:`<td><button class="x1 rq" data-id="${m.id}" style="color:var(--tx)" title="${RQ.has(m.id)?'Pedido já enviado':'Pedir correção ou exclusão'}" aria-label="Pedir correção">${RQ.has(m.id)?'⏳':'🚩'}</button></td>`}</tr>`+(CF[m.id]&&confOpen.has(m.id)?det(m):'')+(dc?dupInfo(m,dc):'')}).join('')+'</table>'+(l.length>shown.length?`<button class="sec" id="mMore" style="margin-top:10px">MAIS (${l.length-shown.length} restantes)</button>`:''):(dupOn?'<p style="color:var(--mut)">✅ Nenhuma suspeita de duplicidade.</p>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>'));
+  const rqHint=(!admin&&l.length&&!(()=>{try{return localStorage.getItem('rqHint')}catch(e){return 1}})())?'<div class="cfbar" id="rqHint" style="background:var(--card2,transparent);border:1px solid var(--bd,#8884)">✏️ Viu algo errado? Toque no ✏️ da partida para <b>pedir correção</b> ao administrador. <button class="x1" id="rqHintX" style="color:var(--tx)" aria-label="Dispensar">✕</button></div>':'';
+  $('matchL').innerHTML=rqHint+(nCf?`<div class="cfbar">❗ ${nCf} partida${nCf===1?'':'s'} com possível conflito (toque no ❗ para ver).</div>`:'')+(l.length?`<table class="mt ad"><tr><th>Data</th><th>Vencedor</th><th class="sc">Placar</th><th>Perdedor</th><th></th></tr>`+shown.map(m=>{const d=D[m.id]||[0,0];const dc=DUP&&DUP.get(m.id);return `<tr${dc?` class="dup${dc}"`:''}><td ${admin&&devTitle(m)?`title="${esc(devTitle(m))}"`:''}>${fmt(m.at).replace(',','')}${m.link?' 🔗':''}${m.tid?` <button class="tbd" data-tm="${m.id}" title="Partida de campeonato" aria-label="Partida de campeonato">🏆</button>`:''}${CF[m.id]?` <button class="cfb" data-id="${m.id}" title="Possível conflito" aria-label="Possível conflito">❗</button>`:''}</td><td><div class="mc"><b class="up nm">${pn(m.winner,m.wn)}</b><small class="up">+${d[0]}${d[2]>1?' ×'+d[2]:''}</small></div></td><td class="sc">${m.score?esc(m.score):'–'}</td><td><div class="mc"><span class="nm">${pn(m.loser,m.ln)}</span><small class="dn">−${d[1]}</small></div></td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:`<td><button class="x1 rq" data-id="${m.id}" style="color:var(--tx)" title="${RQ.has(m.id)?'Pedido já enviado':'Pedir correção ou exclusão'}" aria-label="Pedir correção">${RQ.has(m.id)?'⏳':'✏️'}</button></td>`}</tr>`+(CF[m.id]&&confOpen.has(m.id)?det(m):'')+(dc?dupInfo(m,dc):'')}).join('')+'</table>'+(l.length>shown.length?`<button class="sec" id="mMore" style="margin-top:10px">MAIS (${l.length-shown.length} restantes)</button>`:''):(dupOn?'<p style="color:var(--mut)">✅ Nenhuma suspeita de duplicidade.</p>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>'));
   if($('mMore'))$('mMore').onclick=()=>{mAll=true;renderMatches()};
 
   $('matchL').querySelectorAll('.dok').forEach(b=>b.onclick=async()=>{const id=b.dataset.id, cur2=new Set(S.settings.dupOk||[]); cur2.has(id)?cur2.delete(id):cur2.add(id); const valid=new Set(S.matches.map(x=>x.id)); await put('settings',{...S.settings,dupOk:[...cur2].filter(x=>valid.has(x))}); renderMatches()});
@@ -1780,6 +1798,7 @@ function renderMatches(){
   $('matchL').querySelectorAll('.cfb').forEach(b=>b.onclick=()=>{const id=b.dataset.id; confOpen.has(id)?confOpen.delete(id):confOpen.add(id); renderMatches()});
   $('matchL').querySelectorAll('.rm').forEach(b=>b.onclick=()=>sure(b,async()=>{const m=S.matches.find(x=>x.id===b.dataset.id);await del('matches',b.dataset.id);if(m)await logA(`Partida apagada: ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)} (${fmt(m.at)})`)}));
   $('matchL').querySelectorAll('.ed').forEach(b=>b.onclick=()=>editMatch(b.dataset.id));
+  if($('rqHintX'))$('rqHintX').onclick=()=>{try{localStorage.setItem('rqHint','1')}catch(e){} $('rqHint').remove()};
   $('matchL').querySelectorAll('.rq').forEach(b=>b.onclick=()=>reqMatch(b.dataset.id));
 }
 function reqMatch(id){
@@ -1867,7 +1886,7 @@ function renderPlayers(){
   let rr=r0p(p); const ser=[rr]; all.forEach(m=>{const d=D[m.id]||[0,0]; rr+=m.winner===p.id?d[0]:-d[1]; ser.push(rr)});
   const idx=all.map((m,i)=>i).filter(i=>inSeason(all[i],pSel)), ms=idx.map(i=>all[i]).reverse(), hist=idx.length?[ser[idx[0]],...idx.map(i=>ser[i+1])]:[];
   const nw=ms.filter(m=>m.winner===p.id).length, nl=ms.length-nw; let pxC={n:0,h:''}; try{pxC=tPlayerHtml(p.id)}catch(e){}
-  let h=`${(()=>{const r=S.raw.find(x=>x.id===p.id)||{},gc=sideCards(r);return `<div class="phd"><div class="pst0 t${tier(p)}"><span class="badge">${tier(p)}</span><div class="pr"><b>${p.rating}</b><small>pts</small></div><em><span class="up">${nw}V</span> <span class="dn">${nl}D</span></em></div><div class="pmid"><div class="pbig t${tier(p)}">${esc(p.name)}</div>${gc}</div><div class="sp"></div></div><div class="p3"><button class="sec achbig" id="achB"><span class="mi">🏅</span><span class="mt">Conquistas<b>${Object.keys(p.ach||{}).filter(k=>ACH.some(a=>a.k===k)).length}/${ACH.length}</b></span></button><button class="sec achbig" id="mB"><span class="mi">🏓</span><span class="mt">Partidas<b>${ms.length}</b></span></button><button class="sec achbig" id="cB"><span class="mi">🏟️</span><span class="mt">Campeonatos<b>${pxC.n}</b></span></button></div>`})()}${pNextHtml(p.id)}<div class="phead t${tier(p)}">`+(pSel==='cur'&&g<3?`<div style="color:var(--mut);font-size:13px;margin-bottom:6px">${g}/3 partidas para entrar no ranking</div>`:'')+`<div><select id="pS" style="width:100%">${seasOpts(true,'Geral (todas as temporadas)',pSel)}</select></div>`+(chM=[null,...idx.map(i=>all[i])],chH=hist,chart(hist,[null,...idx.map(i=>all[i].at)],chM))+xpFull(p)+`</div>`;
+  let h=`${(()=>{const r=S.raw.find(x=>x.id===p.id)||{},gc=sideCards(r);return `<div class="phd"><div class="pst0 t${tier(p)}"><span class="badge">${tier(p)}</span><div class="pr"><b>${p.rating}</b><small>pts</small></div><em><span class="up">${nw}V</span> <span class="dn">${nl}D</span></em></div><div class="pmid"><div class="pbig t${tier(p)}">${esc(p.name)}</div>${gc}</div><div class="sp"></div></div><div class="p3l${achShow()?'':' two'}"><button class="p3i" id="mB"><span class="pi">🏓</span><span class="pt"><b>Partidas</b><em>${ms.length}</em><small>${ms.length?(()=>{const m0=ms[0],w0=m0.winner===p.id;return 'Última: '+(w0?'ganhou de ':'perdeu p/ ')+esc(nameOf(w0?m0.loser:m0.winner,w0?m0.ln:m0.wn))+(m0.score?' ('+esc(m0.score)+')':'')})():'Nenhuma partida ainda'}</small></span><span class="pg">Ver ›</span></button>${achShow()?`<button class="p3i" id="achB"><span class="pi">🏅</span><span class="pt"><b>Conquistas</b><em>${Object.keys(p.ach||{}).filter(k=>ACH.some(a=>a.k===k)).length}/${ACH.length}</em><small>Medalhas desbloqueadas</small></span><span class="pg">Ver ›</span></button>`:''}<button class="p3i" id="cB"><span class="pi">🏟️</span><span class="pt"><b>Campeonatos</b><em>${pxC.n}</em><small>${pxC.n?'Jogos em torneios':'Nenhum campeonato ainda'}</small></span><span class="pg">Ver ›</span></button></div>`})()}${pNextHtml(p.id)}<div class="phead t${tier(p)}">`+(pSel==='cur'&&g<3?`<div style="color:var(--mut);font-size:13px;margin-bottom:6px">${g}/3 partidas para entrar no ranking</div>`:'')+`<div><select id="pS" style="width:100%">${seasOpts(true,'Geral (todas as temporadas)',pSel)}</select></div>`+(chM=[null,...idx.map(i=>all[i])],chH=hist,chart(hist,[null,...idx.map(i=>all[i].at)],chM))+xpFull(p)+`</div>`;
   let stH=''; {const asc=[...ms].reverse(); let cur=0,cw=null,best=0,run=0; asc.forEach(m=>{const won=m.winner===p.id; run=won?run+1:0; if(run>best)best=run});
     for(const m of ms){const won=m.winner===p.id; if(cw===null)cw=won; if(won!==cw)break; cur++}
     const O={}; ms.forEach(m=>{const won=m.winner===p.id,o=won?m.loser:m.winner,n=won?m.ln:m.wn; O[o]=O[o]||{id:o,n:nameOf(o,n),w:0,l:0}; won?O[o].w++:O[o].l++});
@@ -1891,7 +1910,7 @@ function renderPlayers(){
     const PF=[['hand','Mão dominante',['Destro','Canhoto']],['grip','Empunhadura',['Clássica','Caneta']],['rubber','Borracha',['Lisa','Pino Curto','Pino Longo']]], raw0=S.raw.find(x=>x.id===p.id)||{};
     $('pflds').innerHTML=PF.map(([k,t,o])=>`<div class="pfld"><span>${t}</span><div class="seg" data-f="${k}">${o.map(v=>`<button class="${raw0[k]===v?'on':''}" data-v="${v}">${v}</button>`).join('')}</div></div>`).join('');
     $('playD').querySelectorAll('.pfld .seg').forEach(sg=>sg.querySelectorAll('button').forEach(b=>b.onclick=async()=>{const k=sg.dataset.f, q={...S.raw.find(x=>x.id===p.id)}; if(q[k]===b.dataset.v)delete q[k]; else q[k]=b.dataset.v; await put('players',q)}));
-    $('achB').onclick=()=>openAch(p.id);
+    if($('achB'))$('achB').onclick=()=>openAch(p.id);
   }
   $('arB').onclick=e=>sure(e.currentTarget,async()=>{const re=admin&&p.hidden; await put('players',{...S.raw.find(x=>x.id===p.id),hidden:!re}); await logA(`${re?'Reativado':'Arquivado'}: ${p.name}`)});
   if(admin){
@@ -1907,11 +1926,11 @@ function renderPlayers(){
 
 /* ---- admin (PIN), configurações, backup, temporada ---- */
 const sha=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('tm:'+s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
-$('cfgBtn').onclick=()=>{pend=null;renderAdm();open('admM'); if(!admin){focusPin();setTimeout(focusPin,120)}};
+$('cfgBtn').onclick=()=>{pend=null;admTab='menu';renderAdm();open('admM'); if(!admin){focusPin();setTimeout(focusPin,120)}};
 $('admBtn').onclick=()=>{ if(admin){admin=false;render();if($('admM').classList.contains('on'))renderAdm();return} needAdmin(()=>{}) };
 const nRq=st=>(st.requests||[]).filter(r=>r.st==='open').length;
-let admTab='geral', bkText='', bkData=null;
-const ADM_TABS=[['geral','Geral'],['pts','Pontuação'],['jog','Jogadores'],['sol','Solicitações'],['temp','Temporada'],['bkp','Backup'],['adv','Avançado']];
+let admTab='menu', bkText='', bkData=null;
+const ADM_TABS=[['geral','Geral','⚙️','Nome do clube, notificações, acesso e regras'],['pts','Pontuação','🎯','Bônus por faixa e fator ON FIRE'],['jog','Jogadores','👥','Alterar pontuação, importar, levar partidas'],['sol','Solicitações','📩','Pedidos de correção dos jogadores'],['temp','Temporada','📅','Encerrar e nomear temporadas'],['bkp','Backup','💾','Exportar e restaurar os dados'],['adv','Avançado','🛠️','Lançamentos, registro de alterações, zona de perigo']];
 const arow=(l,sm,c)=>`<div class="arow"><div class="al">${l}${sm?`<small>${sm}</small>`:''}</div>${c}</div>`;
 const admHead=(t,extra)=>`<div class="ahead"><div class="al"></div><h3>${t}</h3><div class="ar"><button class="x2" id="admLk" title="Copiar link desta tela" aria-label="Copiar link desta tela">🔗</button>${extra||''}<button class="x2" id="admX" title="Fechar" aria-label="Fechar">✕</button></div></div>`;
 const bind=(id,fn)=>{const el=$(id); if(el)el.onclick=fn}, bindCh=(id,fn)=>{const el=$(id); if(el)el.onchange=fn};
@@ -1928,7 +1947,7 @@ function renderAdm(){
   const T=admTab; let body='';
   if(T==='geral')body=`<div class="agroup"><h4>Clube</h4>${arow('Nome do clube','',`<span style="display:flex;gap:6px"><input id="cnI" class="cin w" maxlength="40" value="${esc(clubName(cur))}"><button class="cb" id="cnB">Salvar</button></span>`)}</div>
     <div class="agroup"><h4>Notificações</h4>${arow('Pop-ups de conquistas',S.settings.achOn?'Ligados · aparece o pop-up no topo da tela quando alguém conquista (todos os dispositivos)':'Desativados · sem pop-up no topo; as conquistas continuam aparecendo após registrar a partida',`<button class="cb ${S.settings.achOn?'':'bad'}" id="achNT">${S.settings.achOn?'🔔 Ligados':'🔕 Desativados'}</button>`)}</div>
-    <div class="agroup"><h4>Acesso</h4>${arow('Lançamentos',st.locked?'Trancados · ninguém cadastra partidas avulsas na tela principal (campeonatos continuam lançando)':'Liberados · qualquer pessoa pode cadastrar partidas',`<button class="cb ${st.locked?'bad':''}" id="lkT">${st.locked?'🔒 Trancados':'🔓 Liberados'}</button>`)}${arow('Placar Eletrônico',st.peOff?'Desativado · o botão some da tela inicial para todos':'Ativado · botão visível na tela inicial para todos',`<button class="cb ${st.peOff?'bad':''}" id="peT">${st.peOff?'📟 Desativado':'📟 Ativado'}</button>`)}${arow('PIN do administrador','Alterar o PIN deste clube','<button class="cb" id="pinChg">🔑 Alterar</button>')}
+    <div class="agroup"><h4>Acesso</h4>${arow('Lançamentos',st.locked?'Trancados · ninguém cadastra partidas avulsas na tela principal (campeonatos continuam lançando)':'Liberados · qualquer pessoa pode cadastrar partidas',`<button class="cb ${st.locked?'bad':''}" id="lkT">${st.locked?'🔒 Trancados':'🔓 Liberados'}</button>`)}${arow('Conquistas',st.achOff?'Desativadas · somem do app para todos (botão, avisos e perfil); continuam sendo ganhas em segundo plano':'Ativadas · botão, avisos e perfil mostram as conquistas',`<button class="cb ${st.achOff?'bad':''}" id="achT2">${st.achOff?'🏅 Desativadas':'🏅 Ativadas'}</button>`)}${arow('Placar Eletrônico',st.peOff?'Desativado · o botão some da tela inicial para todos':'Ativado · botão visível na tela inicial para todos',`<button class="cb ${st.peOff?'bad':''}" id="peT">${st.peOff?'📟 Desativado':'📟 Ativado'}</button>`)}${arow('PIN do administrador','Alterar o PIN deste clube','<button class="cb" id="pinChg">🔑 Alterar</button>')}
       <div id="pinForm" hidden style="padding:6px 0 8px"><div style="display:grid;gap:6px"><input id="pinCur" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN atual" style="width:100%"><input id="pinNew" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Novo PIN (mínimo 4 dígitos)" style="width:100%"><input id="pinNew2" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Repetir o novo PIN" style="width:100%"></div><div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="cb pri2" id="pinSv">Salvar PIN</button><span id="pinMsg" class="legend" style="margin:0"></span></div></div></div>
     <div class="agroup"><h4>Regras do ranking</h4>${arow('Margem de faixa','Folga para cair de faixa. Ex.: 50 = só cai do A abaixo de 1750',`<input id="mg" class="cin" type="number" min="0" inputmode="numeric" value="${+st.margin||0}">`)}${arow('Inatividade (dias)','Sai do ranking após esse tempo sem jogar · 0 = nunca',`<input id="ia" class="cin" type="number" min="0" inputmode="numeric" value="${+st.inactiveDays||0}">`)}</div>`;
   if(T==='pts'){const bo=openP(st.bonus), fo=openP(st.fire), cfg={...DEF.bonusCfg,...(st.bonusCfg||{})}, tr=['C','B','A'];
@@ -1949,11 +1968,17 @@ function renderAdm(){
     <div class="agroup"><h4>Restaurar</h4>${arow('Arquivo de backup','<span id="bkN">Nenhum arquivo escolhido</span>','<label class="cb">📂 Escolher<input type="file" id="bkF" accept=".json,application/json" hidden></label>')}
       <details><summary>ou colar o conteúdo</summary><textarea id="bk" rows="3" placeholder="Cole aqui o conteúdo do backup..." style="width:100%;margin-top:6px;font-size:13px"></textarea></details>
       <p id="bkInfo" class="legend" style="margin:6px 0"></p>${arow('Restaurar','Backup de um clube substitui só o clube aberto · backup de todos os dados substitui tudo','<button class="cb bad" id="bkR">♻️ Restaurar</button>')}</div>`;
-  if(T==='adv')body=`${recentHtml(st)}<div class="agroup"><h4>📜 Registro de alterações</h4>${(st.log||[]).length?`<details><summary>Ver últimas ${Math.min(50,st.log.length)} alterações</summary><table>${st.log.slice(0,50).map(x=>`<tr><td style="white-space:nowrap">${fmt(x.at)}</td><td>${esc(x.t)}${(x.by||x.dev)?`<br><small style="color:var(--mut)">${esc(whoTxt(x.by)||'—')} · ${esc(devTxt(x.dev))}</small>`:''}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma alteração registrada ainda.</p>'}</div>
+  if(T==='adv')body=`${recentHtml(st)}<div class="agroup"><h4>📜 Registro de alterações</h4>${(st.log||[]).length?`<details><summary>Ver últimas ${Math.min(50,st.log.length)} alterações</summary><table>${st.log.slice(0,50).map(x=>`<tr><td style="white-space:nowrap">${fmt(x.at)}</td><td>${x.adm===true?'<span class="badm">🔑 Admin</span> ':x.adm===false?'<span class="bus">👤 Sem admin</span> ':''}${esc(x.t)}${(x.by||x.dev)?`<br><small style="color:var(--mut)">${esc(whoTxt(x.by)||'—')} · ${esc(devTxt(x.dev))}</small>`:''}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma alteração registrada ainda.</p>'}</div>
     <div class="agroup" style="border-color:var(--bad)"><h4 style="color:var(--bad)">⚠️ Zona de perigo</h4>${arow('Zerar pontuações','Apaga partidas e temporadas · mantém os jogadores','<button class="cb bad" id="rsP">Zerar</button>')}${arow('Resetar tudo','Apaga jogadores e partidas deste clube','<button class="cb bad" id="rsA">Resetar</button>')}${arow('Zerar conquistas','Todos os jogadores voltam a 0 conquistas','<button class="cb bad" id="rsAch">Zerar</button>')}${arow('Excluir este clube','Remove o clube por completo','<button class="cb bad" id="rsC">Excluir</button>')}</div>`;
-  B.innerHTML=admHead('⚙️ '+esc(clubName(cur)))+`<div class="atabs">${ADM_TABS.map(([k,t])=>`<button data-t="${k}" class="${k===T?'on':''}">${t}${k==='sol'&&nRq(st)?' ('+nRq(st)+')':''}</button>`).join('')}</div>`+body;
+  if(T==='menu'){
+    B.innerHTML=admHead('⚙️ '+esc(clubName(cur)))+`<div class="amenu">${ADM_TABS.map(([k,t,ic,sm])=>`<button class="ami" data-t="${k}"><span class="ai">${ic}</span><span class="at"><b>${t}</b><small>${k==='sol'&&nRq(st)?nRq(st)+' pedido(s) aberto(s) aguardando você':sm}</small></span>${k==='sol'&&nRq(st)?`<span class="rdot rd2">${nRq(st)}</span>`:''}<span class="amc">›</span></button>`).join('')}</div>`;
+    $('admX').onclick=()=>$('admM').classList.remove('on');
+    B.querySelectorAll('.ami').forEach(b=>b.onclick=()=>{admTab=b.dataset.t;renderAdm();const sh=B.closest('.sheet');if(sh)sh.scrollTop=0});
+    return}
+  {const cur_=ADM_TABS.find(x=>x[0]===T)||ADM_TABS[0];
+  B.innerHTML=admHead(cur_[2]+' '+cur_[1]).replace('<div class="al"></div>','<div class="al"><button class="x2" id="admBk" title="Voltar ao menu" aria-label="Voltar ao menu">←</button></div>')+body;
+  $('admBk').onclick=()=>{admTab='menu';renderAdm();const sh=B.closest('.sheet');if(sh)sh.scrollTop=0}}
   $('admX').onclick=()=>$('admM').classList.remove('on'); 
-  B.querySelectorAll('.atabs button').forEach(b=>b.onclick=()=>{admTab=b.dataset.t;renderAdm()});
   B.querySelectorAll('[data-rq]').forEach(b=>b.onclick=async()=>{const a=b.dataset.rq, rs=S.settings.requests||[], r=rs.find(x=>x.id===b.dataset.id); if(!r)return;
     const setSt=async st=>{await put('settings',{...S.settings,requests:rs.map(x=>x.id===r.id?{...x,st,rt:Date.now()}:x)}); render(); renderAdm()};
     if(a==='ed'){editMatch(r.mid);return}
@@ -1962,6 +1987,7 @@ function renderAdm(){
     if(a==='ok'||a==='no'){await setSt(a);return}
     if(a==='del'){await put('settings',{...S.settings,requests:rs.filter(x=>x.id!==r.id)}); renderAdm()}});
   bind('achNT',async()=>{const v=!S.settings.achOn; await put('settings',{...S.settings,achOn:v}); await logA(v?'Avisos de conquistas ligados':'Avisos de conquistas desativados'); renderAdm()});
+  bind('achT2',async()=>{const v=!S.settings.achOff; await put('settings',{...S.settings,achOff:v}); await logA(v?'Conquistas DESATIVADAS (ocultas)':'Conquistas ATIVADAS'); render(); renderAdm(); if(op('playM'))renderPlayers()});
   bind('peT',async()=>{const v=!S.settings.peOff; await put('settings',{...S.settings,peOff:v}); await logA(v?'Placar Eletrônico DESATIVADO':'Placar Eletrônico ATIVADO'); render(); renderAdm()});
   bind('lkT',async()=>{const v=!S.settings.locked; await put('settings',{...S.settings,locked:v}); await logA(v?'Lançamentos trancados':'Lançamentos destrancados'); renderAdm()});
   bind('pinChg',()=>{const f=$('pinForm'); if(f){f.hidden=!f.hidden; if(!f.hidden)$('pinCur').focus()}});
@@ -2088,7 +2114,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.165'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.176'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2426,6 +2452,24 @@ function setBack(mid,fn){ const b=$(mid).querySelector('.ahead .bk'); if(!b)retu
 async function tCopyLink(b){ const t=tv.v==='det'&&(S.tourns||[]).find(x=>x.id===tOpenId); if(!t)return copyViewLink('tourM',b); const u=tLink(t); try{await navigator.clipboard.writeText(u); flash(b,'✅')}catch(e){try{if(navigator.share){await navigator.share({title:t.name,url:u})}else{prompt('Copie o link:',u)}}catch(x){}} }
 async function copyViewLink(mid,b){const u=viewLink(mid); try{await navigator.clipboard.writeText(u); flash(b,'✅')}catch(e){try{if(navigator.share){await navigator.share({title:'Ranking '+clubName(cur),url:u})}else{prompt('Copie o link:',u)}}catch(x){}}}
 $('admM').addEventListener('click',e=>{const b=e.target.closest('#admLk'); if(b)copyViewLink('admM',b)});
+/* fechar/voltar padronizado: Esc e Voltar do Android fecham uma janela (ou um passo) por vez */
+(()=>{const ms=[...document.querySelectorAll('.modal')]; let n=0, quiet=false;
+  ms.forEach(m=>{m.addEventListener('input',()=>{m.dataset.dirty='1'})});
+  const openL=()=>ms.filter(m=>m.classList.contains('on'));
+  const top=()=>{const o=openL(); o.sort((a,b)=>(+getComputedStyle(a).zIndex||0)-(+getComputedStyle(b).zIndex||0)); return o.pop()};
+  function stepBack(){const m=top(); if(!m)return false;
+    const bk=m.querySelector('.ahead .bk:not([hidden]), #admBk, #playBack:not([hidden])'); if(bk){bk.click();return true}
+    const x=m.querySelector('.ahead .x2:not(.lkb):not(.ped):not(#admLk)'); if(x)x.click();
+    if(m.classList.contains('on'))m.classList.remove('on'); return true}
+  const sync=()=>{ms.forEach(m=>{if(!m.classList.contains('on'))delete m.dataset.dirty}); const c=openL().length;
+    if(c>n){while(n<c){try{history.pushState({rk:1},'')}catch(e){}n++}}
+    else if(c<n){const d=n-c; n=c; quiet=true; try{history.go(-d)}catch(e){quiet=false}}};
+  const mo=new MutationObserver(sync); ms.forEach(m=>mo.observe(m,{attributes:true,attributeFilter:['class']}));
+  window.addEventListener('popstate',()=>{if(quiet){quiet=false;return} if(n>0){n--; stepBack()}});
+  document.addEventListener('keydown',e=>{if(e.key!=='Escape'||e.defaultPrevented)return; if(openL().length){e.preventDefault(); stepBack()}});
+  window.__stepBack=stepBack;
+})();
+
 
 /* ---- abrir jogador por link/código ---- */
 function openPlayerById(id){
@@ -3563,7 +3607,7 @@ async function doReset(kind){
   if(all){for(const t of [...S.tourns])await del('tournaments',t.id); for(const p of [...S.raw])await del('players',p.id)}
   else{for(const p of [...S.raw]){const {adj,start,ach,...rest}=p; if(adj||start!=null||ach)await put('players',rest)}}
   await put('settings',{...DEF,id:sid(),pin:st.pin,locked:st.locked,margin:st.margin,inactiveDays:st.inactiveDays,seasonStart:0,seasons:[],sNames:{},bonusCfg:st.bonusCfg||DEF.bonusCfg,bonus:st.bonus||[],fire:st.fire||[],fireF:st.fireF||1.5,
-    log:[{at:Date.now(),t:all?'Banco de dados resetado (tudo apagado)':'Pontuações zeradas (jogadores mantidos)'},...(all?[]:(st.log||[]))].slice(0,300)});
+    log:[{at:Date.now(),adm:true,t:all?'Banco de dados resetado (tudo apagado)':'Pontuações zeradas (jogadores mantidos)'},...(all?[]:(st.log||[]))].slice(0,300)});
 }
 
 /* ---- exportar CSV ---- */
