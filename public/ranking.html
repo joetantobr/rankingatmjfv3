@@ -632,7 +632,7 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
 
 <div class="modal" id="matchM"><div class="sheet">
   <h3>Partidas</h3><select id="mSeas" style="width:100%;margin-bottom:10px"></select>
-  <div class="wrow" style="margin-bottom:6px"><label class="field" style="margin:0"><span>De</span><input id="mdA" type="date" style="width:100%"></label><label class="field" style="margin:0"><span>Até</span><input id="mdB" type="date" style="width:100%"></label></div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px"><button class="lnk" id="mdT">📅 Hoje</button><button class="lnk" id="mdC" hidden>✕ limpar datas</button></div><details id="mfD" class="pfd" style="margin-bottom:8px"><summary>🔎 Filtros <small id="mfBd"></small></summary><label class="field" style="margin:8px 0 6px"><span>Jogador (nome)</span><input id="mfN" type="text" autocomplete="off" placeholder="Digite para buscar…" style="width:100%"></label><div id="mfCh" class="pfch"></div><div id="mfOp" class="seg" style="grid-template-columns:1fr 1fr;margin:0 0 8px" hidden><button type="button" data-o="and">E · só entre eles</button><button type="button" data-o="or">OU · de qualquer um</button></div><div id="mfSg" class="pfsg"></div><button class="sec" id="mfC" style="margin:0 0 4px;width:100%">Limpar filtro</button></details><button class="sec" id="dupB" hidden style="margin:0 0 8px">🔎 Buscar partidas duplicadas</button><div id="dupBar" hidden style="display:flex;gap:6px;align-items:center;margin:0 0 8px"><button class="sec" id="dupP" style="margin:0;width:44px;flex:none" aria-label="Dia anterior">‹</button><input type="date" id="dupD" style="flex:1;min-width:0" aria-label="Dia da busca"><button class="sec" id="dupN" style="margin:0;width:44px;flex:none" aria-label="Próximo dia">›</button><button class="sec" id="dupT" style="margin:0;width:auto;flex:none;padding:10px 12px">Hoje</button></div>
+  <div class="wrow" style="margin-bottom:6px"><label class="field" style="margin:0"><span>De</span><input id="mdA" type="date" style="width:100%"></label><label class="field" style="margin:0"><span>Até</span><input id="mdB" type="date" style="width:100%"></label></div><div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px"><div style="display:grid;grid-template-columns:auto auto;gap:8px 18px;justify-content:start;justify-items:start;flex:none"><button class="lnk" id="mdT">📅 Hoje</button><button class="lnk" id="mdY">Ontem</button><button class="lnk" id="mdW" title="Últimos 7 dias">Semana</button><button class="lnk" id="mdM" title="Do dia 1 do mês até hoje">Mês</button><button class="lnk" id="mdC" hidden style="grid-column:1/-1">✕ limpar datas</button></div><div id="mdS" hidden style="flex:1;min-width:0;text-align:right;font-size:12px;line-height:1.25"></div></div><details id="mfD" class="pfd" style="margin-bottom:8px"><summary>🔎 Filtros <small id="mfBd"></small></summary><label class="field" style="margin:8px 0 6px"><span>Jogador (nome)</span><input id="mfN" type="text" autocomplete="off" placeholder="Digite para buscar…" style="width:100%"></label><div id="mfCh" class="pfch"></div><div id="mfOp" class="seg" style="grid-template-columns:1fr 1fr;margin:0 0 8px" hidden><button type="button" data-o="and">E · só entre eles</button><button type="button" data-o="or">OU · de qualquer um</button></div><div id="mfSg" class="pfsg"></div><button class="sec" id="mfC" style="margin:0 0 4px;width:100%">Limpar filtro</button></details><button class="sec" id="dupB" hidden style="margin:0 0 8px">🔎 Buscar partidas duplicadas</button><div id="dupBar" hidden style="display:flex;gap:6px;align-items:center;margin:0 0 8px"><button class="sec" id="dupP" style="margin:0;width:44px;flex:none" aria-label="Dia anterior">‹</button><input type="date" id="dupD" style="flex:1;min-width:0" aria-label="Dia da busca"><button class="sec" id="dupN" style="margin:0;width:44px;flex:none" aria-label="Próximo dia">›</button><button class="sec" id="dupT" style="margin:0;width:auto;flex:none;padding:10px 12px">Hoje</button></div>
   <div id="mfS" class="legend" style="margin:0 0 8px"></div><button class="sec" id="undoBtn" style="margin:0 0 10px">↩️ Desfazer última partida</button>
   <div id="matchL"></div>
   <button class="sec" id="mvB" hidden>🔗 Levar partidas para outro clube</button>
@@ -1714,6 +1714,10 @@ $('matchBtn').onclick=()=>{mDup=false;mDupDay='';mAll=false;mSel='cur';mP=[];$('
 const setRange=()=>{mFrom=$('mdA').value;mUntil=$('mdB').value; if((mFrom||mUntil)&&mSel==='cur')mSel='all'; $('mdC').hidden=!(mFrom||mUntil); $('mdT').style.fontWeight=(mFrom&&mFrom===mUntil&&mFrom===localDay())?'800':''; renderMatches()};
 const localDay=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
 $('mdT').onclick=()=>{$('mdA').value=$('mdB').value=localDay();setRange()};
+const dayOff=n=>{const d=new Date(); d.setDate(d.getDate()+n); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10)};
+$('mdY').onclick=()=>{$('mdA').value=$('mdB').value=dayOff(-1);setRange()};
+$('mdW').onclick=()=>{$('mdA').value=dayOff(-6);$('mdB').value=localDay();setRange()};
+$('mdM').onclick=()=>{$('mdA').value=localDay().slice(0,8)+'01';$('mdB').value=localDay();setRange()};
 $('mdA').onchange=setRange; $('mdB').onchange=setRange; $('mdC').onclick=()=>{$('mdA').value=$('mdB').value='';setRange()};
 function mfNames(){const M=new Map(); S.matches.forEach(m=>{M.set(m.winner,nameOf(m.winner,m.wn));M.set(m.loser,nameOf(m.loser,m.ln))}); return M}
 function mfUi(){ const M=mfNames(), ch=$('mfCh'), g=$('mfSg'), q=pxNorm($('mfN').value.trim());
@@ -1750,6 +1754,9 @@ function renderMatches(){
   }
   const so=seasOpts(false,'Todas as temporadas',mSel); if($('mSeas').dataset.h!==so){$('mSeas').innerHTML=so;$('mSeas').dataset.h=so}
   $('undoBtn').hidden=!(admin&&mSel==='cur'&&l.length&&!mP.length); mfUi(); { let v=0,d=0; if(mP.length===1)l.forEach(m=>m.winner===mP[0]?v++:d++); $('mfS').textContent=mP.length?l.length+' partida'+(l.length===1?'':'s')+' no filtro'+(mP.length>1?(mOp==='or'?' (jogos de qualquer um dos selecionados)':' (só jogos entre os selecionados)'):'')+(mP.length===1&&l.length?' · '+v+'V '+d+'D · '+Math.round(v*100/l.length)+'%':''):'' }
+  { const box=$('mdS'), ST0=(mFrom||mUntil)?mStats(matchView()):null, R0=ST0?stRows(ST0):[]; box.hidden=!R0.length;
+    box.innerHTML=R0.map(r=>`<div style="margin:0 0 3px"><span style="color:var(--mut);font-size:11px">${esc(r[0])}</span><br><b>${esc(r[1])}</b> <b style="color:${r[3]==='up'?'var(--ok)':r[3]==='dn'?'var(--bad)':'inherit'}">${esc(r[2])}</b></div>`).join('') }
+  $('jpgMatches').textContent=(mFrom||mUntil)?'🖼️ Exportar partidas + estatísticas do período (JPG)':'🖼️ Exportar partidas (JPG)';
   $('mvB').hidden=!admin; $('dupB').hidden=!admin; $('dupB').textContent=dupOn?'✕ Sair da busca de duplicadas':'🔎 Buscar partidas duplicadas'; $('dupB').onclick=()=>{mDup=!mDup;mAll=false;renderMatches()};
   { const bar=$('dupBar'); bar.hidden=!dupOn; if(dupOn){ const dd=$('dupD'); dd.value=mDupDay||localDay(); dd.max=localDay(); dd.onchange=()=>{mDupDay=dd.value||'';renderMatches()};
       const mv=n=>{const d=new Date((mDupDay||localDay())+'T12:00:00'); d.setDate(d.getDate()+n); const v=d.toISOString().slice(0,10); mDupDay=v>localDay()?localDay():v; renderMatches()};
@@ -2081,7 +2088,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.161'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.164'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2224,12 +2231,27 @@ async function jpgAchRank(btn){
     y+=18; x.fillStyle=P.mut; x.font='15px system-ui,sans-serif'; x.fillText('Desempate: conquistas mais difíceis valem mais (Fácil 1 · Médio 2 · Difícil 3 · Impossível 5).',30,y+10);
     imgFooter(x,W,H,P)});
 }
+const stRows=ST=>[['Mais Pontos',ST.pts[0]],['Mais Partidas Jogadas',ST.played[0]],['Maior % de Vitórias',ST.pct[0]]].filter(r=>r[1]).map(r=>[r[0],r[1].n,r[1].t.split(' · ')[0].replace(/ jogos?$/,''),r[1].c]);
+function mStats(all){
+  const T={}; all.forEach(m=>{const d=D[m.id]||[0,0,1]; const a=T[m.winner]=T[m.winner]||{id:m.winner,n:nameOf(m.winner,m.wn),g:0,w:0,p:0}; const b=T[m.loser]=T[m.loser]||{id:m.loser,n:nameOf(m.loser,m.ln),g:0,w:0,p:0}; a.g++;a.w++;a.p+=d[0]; b.g++;b.p-=d[1]});
+  const L=Object.values(T), top=(arr,k)=>arr.slice(0,5), MIN=3, el=L.filter(x=>x.g>=MIN);
+  return {min:MIN,
+    pts:L.slice().sort((a,b)=>b.p-a.p||b.g-a.g).slice(0,5).map(x=>({n:x.n,t:(x.p>0?'+':x.p<0?'−':'')+Math.abs(x.p),c:x.p>0?'up':x.p<0?'dn':'tx'})),
+    pct:el.slice().sort((a,b)=>b.w/b.g-a.w/a.g||b.g-a.g).slice(0,5).map(x=>({n:x.n,t:Math.round(x.w*100/x.g)+'% · '+x.w+'/'+x.g,c:'tx'})),
+    played:L.slice().sort((a,b)=>b.g-a.g||b.w-a.w).slice(0,5).map(x=>({n:x.n,t:x.g+' jogo'+(x.g===1?'':'s'),c:'tx'}))};
+}
 $('jpgMatches').onclick=async e=>{
   const btn=e.currentTarget; await imgFonts(); const P=imgPal(), f=P.fx, all=matchView().reverse(), cap=200, l=all.slice(0,cap), W=900, RH=f?54:40, MX=450;
   const lbl=(mSel==='all'?'Todas as temporadas':sN(mSel==='cur'?curS():+mSel))+(mFrom||mUntil?' · '+(mFrom?fmtD(mFrom):'início')+' a '+(mUntil?fmtD(mUntil):'hoje'):'')+(mP.length?' · '+mP.map(id=>mfNames().get(id)||'?').join(', '):'');
-  const H=(f?150:92)+(f?44:48)+Math.max(l.length,1)*RH+(all.length>cap?40:0)+64;
+  const ST=(mFrom||mUntil)&&all.length?mStats(all):null, STH=0;
+  const H=(f?150:92)+STH+(f?44:48)+Math.max(l.length,1)*RH+(all.length>cap?40:0)+64;
   saveJpg(btn,`partidas-${slug(clubName(cur))}-${today()}.jpg`,W,H,x=>{
     imgBg(x,W,H,P); let y=imgHeader(x,W,P,'🏓 Partidas · '+clubName(cur),`${lbl} · ${all.length} partida${all.length===1?'':'s'}`);
+    if(ST){const rows=stRows(ST), XR=W-40, y0=f?26:14, st=f?31:29;
+      rows.forEach((r,k)=>{const yy=y0+k*st+(f?8:6); x.textBaseline='middle'; x.textAlign='right'; x.font=f?`700 11px ${P.FB}`:'bold 11px system-ui,sans-serif'; x.fillStyle=P.mut; x.fillText(r[0],XR,yy-(f?8:7));
+        x.font='bold 15px system-ui,sans-serif'; const wv=x.measureText(r[2]).width; x.font=f?`700 17px ${P.FB}`:'bold 14px system-ui,sans-serif'; const nm=fitTxt(x,r[1],XR-560-wv-10);
+        x.textAlign='right'; x.font=f?'bold 15px system-ui,sans-serif':'bold 14px system-ui,sans-serif'; x.fillStyle=r[3]==='up'?P.up:r[3]==='dn'?P.dn:P.tx; x.fillText(r[2],XR,yy+(f?8:7)); x.font=f?`700 16px ${P.FB}`:'bold 14px system-ui,sans-serif'; x.fillStyle=P.tx; x.fillText(nm,XR-wv-10,yy+(f?8:7))});
+      x.textAlign='left'}
     x.fillStyle=P.mut; x.font=f?`700 12px ${P.FH}`:'bold 13px system-ui,sans-serif'; x.fillText('DATA',f?44:30,y+22); x.textAlign='right'; x.fillText('VENCEDOR',MX-48,y+22); x.textAlign='center'; x.fillText('PLACAR',MX,y+22); x.textAlign='left'; x.fillText('PERDEDOR',MX+48,y+22); y+=f?44:48;
     if(!l.length){x.fillStyle=P.mut;x.font=`18px ${P.FB}`;x.fillText('Nenhuma partida neste período.',30,y+20);y+=RH}
     l.forEach((m,i)=>{const d=D[m.id]||[0,0,1], cy=y+RH/2, wn=nameOf(m.winner,m.wn), ln=nameOf(m.loser,m.ln);
