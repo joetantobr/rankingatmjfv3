@@ -642,7 +642,7 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
 <div class="modal" id="rankM"><div class="sheet">
   <h3>Ranking geral</h3>
   <div class="seg" id="rkTab" style="grid-template-columns:repeat(3,1fr)"><button data-m="pts" class="on">🏓 Pontos</button><button data-m="ach">🏅 Conquistas</button><button data-m="var">📈 Variação</button></div>
-  <p class="legend" id="rkLeg"><span class="badge tA">A</span>1800+ <span class="badge tB">B</span>1500+ <span class="badge tC">C</span>1200+ &nbsp;·&nbsp; <a href="#" id="rkPcL" onclick="return false" style="color:var(--mut);font-size:12px;text-decoration:underline;text-underline-offset:2px;white-space:nowrap"></a></p>
+  <p class="legend" id="rkLeg"><span class="badge tA">A</span>1800+ <span class="badge tB">B</span>1500+ <span class="badge tC">C</span>1200+ <span id="rkPcQ" style="display:flex;gap:6px;align-items:center;margin-top:8px"></span></p>
   <div id="rankL"></div><p class="legend" id="rankNote"></p><div id="rankHi"></div>
   <button class="sec" id="shareB">📤 Compartilhar ranking (WhatsApp)</button>
   <button class="sec" data-exp hidden id="jpgRank">🖼️ Exportar ranking com estatísticas (JPG)</button>
@@ -1757,11 +1757,17 @@ function vrData(){const [a,b]=vrRange(), M={}, sg_=new Set(); let tc=0; S.matche
   const vs=new Set(vis().map(p=>p.id)); const R_=Object.values(M).filter(x=>vs.has(x.id)).sort((x,y)=>y.pts-x.pts||(y.v+y.d)-(x.v+x.d)||x.n.localeCompare(y.n)); R_.tot=tc; return R_}
 const VR_N={hoje:'Hoje',sem:'Últimos 7 dias',esc:'Escolher',temp:'Temporada',ger:'Geral'};
 const vrLbl=()=>vrP==='esc'?`${vrA?new Date(vrA+'T00:00').toLocaleDateString('pt-BR'):'início'} a ${vrB?new Date(vrB+'T00:00').toLocaleDateString('pt-BR'):'hoje'}`:vrP==='temp'?sN(curS()):VR_N[vrP];
-let rkPc='hoje';
+let rkPc='sem', rkPcOp=false;
 const RK_PC={hoje:'Hoje',sem:'Semanal',mes:'Mensal'};
 function rkMoves(l){const n=new Date(), d0=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(), a=rkPc==='hoje'?d0:rkPc==='sem'?d0-6*864e5:d0-29*864e5, P={};
   S.matches.forEach(m=>{if(m.at<a)return; const d=D[m.id]; if(!d)return; P[m.winner]=(P[m.winner]||0)+d[0]; P[m.loser]=(P[m.loser]||0)-d[1]});
-  const old=l.map((p,i)=>({id:p.id,r:p.rating-(P[p.id]||0),i})).sort((x,y)=>y.r-x.r||x.i-y.i), M={}; old.forEach((x,j)=>M[x.id]=j-x.i); return M}
+  const old=l.map((p,i)=>({id:p.id,r:p.rating-(P[p.id]||0),i})).sort((x,y)=>y.r-x.r||x.i-y.i), M={}; old.forEach((x,j)=>M[x.id]=j-x.i);
+  RKT={}; const T0={}; [...S.matches].filter(m=>m.at>=a).sort((x,y)=>x.at-y.at).forEach(m=>{const x=AX[m.id]; if(!x)return; if(!(m.winner in T0))T0[m.winner]=x.wt0; if(!(m.loser in T0))T0[m.loser]=x.lt0});
+  l.forEach(p=>{const f=T0[p.id]; if(f&&f!==p.tier)RKT[p.id]={f,t:p.tier,up:f>p.tier}}); return M}
+let RKT={};
+const rkTierTag=id=>{const x=RKT[id]; return x?` <small class="rkt" title="${x.up?'Subiu':'Desceu'} de Ranking" style="font-weight:700;white-space:nowrap;color:${x.up?'#16a34a':'#dc2626'}">${x.up?'⬆️':'⬇️'}${x.f}→${x.t}</small>`:''};
+const rkTierSum=l=>{const u=l.filter(p=>RKT[p.id]&&RKT[p.id].up), d=l.filter(p=>RKT[p.id]&&!RKT[p.id].up), f=a=>a.map(p=>`<b>${esc(p.name)}</b> (${RKT[p.id].f}→${RKT[p.id].t})`).join(', ');
+  return (u.length||d.length)?`<div class="panel" style="margin:8px 0;font-size:13px;line-height:1.6;text-align:left"><b>🔄 Mudanças de Ranking · ${RK_PC[rkPc]}</b>${u.length?`<br><span style="color:#16a34a">⬆️ Subiram:</span> ${f(u)}`:''}${d.length?`<br><span style="color:#dc2626">⬇️ Desceram:</span> ${f(d)}`:''}</div>`:''}
 const rkArrow=v=>`<span class="rkmv" style="color:${v>0?'#16a34a':'#dc2626'}">${v>0?'▲'+v:v<0?'▼'+(-v):''}</span>`;
 const sg=n=>n>0?'+'+n:n<0?'−'+(-n):'0';
 function renderRankVar(){
@@ -1791,13 +1797,13 @@ function renderRank(){
   $('jpgRank').style.display='';
   if(rkMode==='ach')return renderRankAch();
   if(rkMode==='var')return renderRankVar();
-  $('rkLeg').hidden=false; $('rkPcL').textContent='Variação: '+RK_PC[rkPc]; $('rkPcL').onclick=()=>{rkPc=rkPc==='hoje'?'sem':rkPc==='sem'?'mes':'hoje';renderRank()};
+  $('rkLeg').hidden=false; $('rkPcQ').style.cssText='display:block;position:relative;margin-top:8px;text-align:center'; $('rkPcQ').innerHTML=`<button type="button" id="rkPcB" class="qd" aria-haspopup="true" aria-expanded="${rkPcOp}" style="display:inline-block;width:auto;padding:5px 14px;font-size:13px">📈 Variação: ${RK_PC[rkPc]} ${rkPcOp?'▴':'▾'}</button>`+(rkPcOp?`<div id="rkPcM" role="menu" style="position:absolute;left:50%;transform:translateX(-50%);top:100%;margin-top:4px;z-index:5;background:var(--card);border:1px solid var(--bd);border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.18);padding:4px;min-width:150px">${Object.keys(RK_PC).map(k=>`<button type="button" role="menuitem" class="qd" data-pc="${k}" style="display:block;width:100%;border:0;border-radius:10px;padding:8px 12px;margin:0${k===rkPc?';background:var(--ac);color:#fff':''}">${RK_PC[k]}</button>`).join('')}</div>`:''); $('rkPcB').onclick=e=>{e.preventDefault();rkPcOp=!rkPcOp;renderRank()}; $('rkPcQ').querySelectorAll('[data-pc]').forEach(b=>b.onclick=e=>{e.preventDefault();rkPc=b.dataset.pc;rkPcOp=false;renderRank()});
   const l=ranked(), pendL=vis().filter(p=>!l.includes(p)), pend=pendL.length;
   $('rankNote').innerHTML=pend?`${pend} jogador(es) fora do ranking (menos de 3 partidas${S.settings.inactiveDays?' ou inativo há mais de '+S.settings.inactiveDays+' dias':''}). <button class="sec" id="rankPendB" style="margin:6px 0 0;padding:4px 10px;font-size:13px">${rkPendOpen?'Ocultar':'Mostrar'}</button><div id="rankPend"${rkPendOpen?'':' hidden'} style="margin-top:8px;column-count:3;column-gap:6px">${pendL.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="sec pname" data-id="${p.id}" style="margin:0 0 6px;break-inside:avoid;padding:4px 6px;font-size:13px;width:100%;line-height:1.15;min-height:30px;border-radius:16px">${esc(p.name)}</button>`).join('')}</div>`:'';
   if(pend){$('rankPendB').onclick=()=>{const d=$('rankPend');d.hidden=!d.hidden;rkPendOpen=!d.hidden;$('rankPendB').textContent=d.hidden?'Mostrar':'Ocultar'};
     $('rankNote').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id))}
   const MV=rkMoves(l);
-  rkSet(podium(l)+(l.length?`<table><tr><th>#</th><th>Jogador</th><th class="n">V</th><th class="n">D</th><th class="n">Pontos</th></tr>`+l.map((p,i)=>`<tr class="t${tier(p)}"><td>${['🥇','🥈','🥉'][i]||i+1}</td><td>${rkArrow(MV[p.id])}<span class="badge">${tier(p)}</span><button class="pname" data-id="${p.id}" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px">${esc(p.name)}</button>${fire(p)}</td><td class="n">${p.wins}</td><td class="n">${p.losses}</td><td class="n"><b style="color:var(--t)">${p.rating}</b></td></tr>`).join('')+'</table>':'<p style="color:var(--mut)">Ninguém no ranking ainda. É preciso jogar pelo menos 3 partidas.</p>'));
+  rkSet(rkTierSum(l)+podium(l)+(l.length?`<table><tr><th>#</th><th>Jogador</th><th class="n">V</th><th class="n">D</th><th class="n">Pontos</th></tr>`+l.map((p,i)=>`<tr class="t${tier(p)}"><td>${['🥇','🥈','🥉'][i]||i+1}</td><td>${rkArrow(MV[p.id])}<span class="badge">${tier(p)}</span><button class="pname" data-id="${p.id}" style="background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px">${esc(p.name)}</button>${rkTierTag(p.id)}${fire(p)}</td><td class="n">${p.wins}</td><td class="n">${p.losses}</td><td class="n"><b style="color:var(--t)">${p.rating}</b></td></tr>`).join('')+'</table>':'<p style="color:var(--mut)">Ninguém no ranking ainda. É preciso jogar pelo menos 3 partidas.</p>'));
   $('rankL').querySelectorAll('.pname').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id));
   const act=vis().filter(p=>p.wins+p.losses>0), top=(f)=>act.slice().sort(f)[0], lead=['A','B','C'].map(t=>[t,l.find(p=>p.tier===t)]).filter(x=>x[1]);
   const up=top((a,b)=>(b.rating-b.r0)-(a.rating-a.r0)), many=top((a,b)=>games(b)-games(a)), wins=top((a,b)=>b.wins-a.wins);
@@ -2235,7 +2241,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.219'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.222'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
