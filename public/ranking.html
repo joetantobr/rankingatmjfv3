@@ -2235,7 +2235,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.218'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.219'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -3018,7 +3018,7 @@ function tListR(){
     +(FL.reg&&admin&&regL.length&&tEmoFix().length?`<button class="sec" id="tEmoAll" style="margin-top:12px">🎨 Aplicar emojis automáticos e ativar ícones (${tEmoFix().length})</button>`:'')
     +(FL.reg&&admin&&regL.length?`<button class="sec" id="tRegAll" style="margin-top:12px">🗑️ Apagar todas as inscrições abertas (${regL.length})</button>`:'')
     +(arc.length?`<button class="sec" id="tArc">📦 ${tv.arc?'Ocultar':'Ver'} arquivados (${arc.length})</button>`+(tv.arc?`<div class="tsh">Arquivados</div><div class="tgrid">${arc.map(card).join('')}</div>`:''):'')
-    +(L.some(x=>x.done)?`<button class="sec" id="tHallB">🏆 Quadro de campeões</button>`:'')+`<button class="sec" data-close>Fechar</button>`;
+    +(FL.end&&L.some(x=>x.done)?`<button class="sec" id="tHallB">🏆 Quadro de campeões</button>`:'')+`<button class="sec" data-close>Fechar</button>`;
   $('tourB').querySelectorAll('[data-fl]').forEach(b=>b.onclick=()=>{tv.fl=b.dataset.fl;tListR()});
   if($('tHallB'))$('tHallB').onclick=()=>{tv={v:'hall'};tourRender();$('tourM').querySelector('.sheet').scrollTop=0};
   if($('tArc'))$('tArc').onclick=()=>{tv.arc=!tv.arc;tListR()};
