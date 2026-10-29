@@ -338,7 +338,7 @@ html.fx .pl.newp{animation:zoomIn2 .5s both,blinkGlow 1s ease-in-out 4}
 .h2h-title{font-weight:900;font-size:16px;margin-bottom:2px}
 html.fx .h2h-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx);text-shadow:0 0 8px rgba(34,230,255,.35)}
 @media (orientation:landscape) and (max-height:520px){.h2h-title,html.fx .h2h-title{font-size:12px}}
-.sq{position:relative}
+.sq{position:relative}.dpB{position:absolute;bottom:6px;font-size:11px;line-height:1.2;padding:3px 9px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--tx);cursor:pointer;max-width:72%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;z-index:3}#s1 .dpB{right:6px}#s2 .dpB{left:6px}.dpB.on,.sq .dpB.on,html.fx .sq .dpB.on,html.cl .sq .dpB.on{background:var(--ac);color:#fff!important;-webkit-text-fill-color:#fff;text-shadow:none!important;opacity:1!important;border-color:var(--ac)}
 .xpv{position:absolute;top:14px;bottom:14px;width:7px;border-radius:99px;background:rgba(127,144,181,.28);overflow:hidden}
 #s1 .xpv{left:9px}#s2 .xpv{right:9px}
 .xpv i{position:absolute;left:0;right:0;bottom:0;border-radius:99px;background:linear-gradient(0deg,var(--t),#fff);box-shadow:0 0 8px var(--t);transition:height .6s}
@@ -589,7 +589,7 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
   <div class="season" id="seasonLbl"></div>
   <div class="rbar" id="rulesBar" hidden></div>
   <div id="champBar" class="rbar" hidden></div><div id="champHome" hidden></div>
-  <div class="cadt nrm"><span class="ar">⬇️</span> REGISTRAR UMA PARTIDA <span class="ar">⬇️</span></div>
+  <div class="cadt nrm"><span class="ar">⬇️</span> REGISTRAR UMA PARTIDA<span id="cadD"></span> <span class="ar">⬇️</span></div>
   <div class="row nrm"><button class="sq" id="s1"></button><div class="vs">VS</div><button class="sq" id="s2"></button></div>
   <div class="nrm" style="text-align:center;margin-top:6px"><button class="lnk" id="clrBtn" hidden>✕ limpar seleção</button></div>
   <div class="panel nrm" id="match" hidden>
@@ -956,9 +956,9 @@ input[type=text]{font:16px var(--ui);padding:11px;border-radius:10px;border:1.5p
 const START={A:1800,B:1500,C:1200};
 const DEF={id:'main',maxScore:4,margin:50,inactiveDays:0,pin:'',seasonStart:0,seasons:[],bonusCfg:{CC:1.5,CB:1.5,CA:2,BC:1,BB:1,BA:1,AC:1,AB:1,AA:1},bonus:[],fire:[],fireF:1.5};
 const APP_URL='https://rankingatmjfv3.lovable.app';
-var AX={};
+var AX={}, DX={};
 const pnl=(id,n)=>(id&&S.raw.some(x=>x.id===id))?`<span class="pnk" role="link" tabindex="0" data-pid="${id}">${esc(n)}</span>`:esc(n); /* nome de jogador clicável → perfil */
-let G={raw:[],matches:[],sets:[],clubs:[],tourns:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, justAdded=null, lastPair='', SND=(()=>{try{return localStorage.getItem('tm_snd')!=='off'}catch(e){return true}})(), pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
+let dpart=[null,null]; let G={raw:[],matches:[],sets:[],clubs:[],tourns:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, justAdded=null, lastPair='', SND=(()=>{try{return localStorage.getItem('tm_snd')!=='off'}catch(e){return true}})(), pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
 let pendingV=(()=>{try{const h=location.hash+location.search, m=h.match(/[?#&](ranking|partidas|jogadores|conquistas|admin|ajuda|campeonatos|campeonato|inscricoes|placar)(?![A-Za-z])/); if(!m)return null; const g=k=>{const x=h.match(new RegExp('[?#&]'+k+'=([A-Za-z0-9_-]+)'));return x?x[1]:''}; return {v:m[1],c:g('c'),n:g('n'),k:g('k'),t:g('campeonato')}}catch(e){return null}})();
 const $=id=>document.getElementById(id), op=id=>$(id).classList.contains('on');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1040,6 +1040,19 @@ function winMult(w,l,at){ /* bônus só para a VITÓRIA: faixa (por período lig
 }
 function calc(w,l,at,tw){const E=1/(1+Math.pow(10,(l.rating-w.rating)/400)), mu=winMult(w,l,at==null?Date.now():at), q=tw>0?tw:1;
   return [Math.max(1,Math.round(K(w)*(1-E)*mu*q)),Math.max(1,Math.round(K(l)*(1-E)*q)),mu,q]}
+/* ---- duplas: uma partida vira 2 registros ligados (W1 x L1 e W2 x L2); os pontos saem da média da dupla ---- */
+const tierOfR=r=>r>=1800?'A':r>=1500?'B':'C';
+function dblPts(W,L,at){ const rW=(W[0].rating+W[1].rating)/2, rL=(L[0].rating+L[1].rating)/2, E=1/(1+Math.pow(10,(rL-rW)/400)), tl=tierOfR(rL), mu=W.map(w=>winMult(w,{tier:tl},at==null?Date.now():at));
+  return {a:W.map((w,i)=>Math.max(1,Math.round(K(w)*(1-E)*mu[i]))), b:L.map(l=>Math.max(1,Math.round(K(l)*(1-E)))), mu, rW, rL, wr:W.map(w=>w.rating), lr:L.map(l=>l.rating)} }
+function dblCalc(m,M,DG){ const d=m.dbl, W=d.w.map(i=>M[i]), L=d.l.map(i=>M[i]); if(W.some(x=>!x)||L.some(x=>!x))return null; const c=DG[d.g]||(DG[d.g]=dblPts(W,L,m.at)); return [c.a[d.i],c.b[d.i],c.mu[d.i],1] }
+const dGroup=m=>{ if(!m||!m.dbl)return null; const g=m.dbl.g; return S.matches.filter(x=>x.dbl&&x.dbl.g===g).sort((a,b)=>a.dbl.i-b.dbl.i) };
+const collapseD=l=>{const seen=new Set(); return l.filter(m=>{if(!m.dbl)return true; if(seen.has(m.dbl.g))return false; seen.add(m.dbl.g); return true})};
+const withGroups=l=>{const gs=new Set(l.filter(m=>m.dbl).map(m=>m.dbl.g)); return gs.size?[...new Set([...l,...S.matches.filter(m=>m.dbl&&gs.has(m.dbl.g))])]:l};
+const wLbl=m=>m.dbl?m.dbl.wn.map((n,i)=>nameOf(m.dbl.w[i],n)).join(' / '):nameOf(m.winner,m.wn);
+const lLbl=m=>m.dbl?m.dbl.ln.map((n,i)=>nameOf(m.dbl.l[i],n)).join(' / '):nameOf(m.loser,m.ln);
+const mTxt=m=>wLbl(m)+' x '+lLbl(m);
+async function delMatch(m){ for(const x of (dGroup(m)||[m]))await del('matches',x.id) }
+const inM=(m,id)=>m.winner===id||m.loser===id||(!!m.dbl&&(m.dbl.w.includes(id)||m.dbl.l.includes(id)));
 const twOf=(m,TW)=>{const c=m.tid&&TW[m.tid]; return c?((c.ph||{})[m.ph]||c.all||1):1}; /* peso do campeonato (admin) */
 function setTier(p){const m=+S.settings.margin||0;
   if(p.tier==='C'&&p.rating>=1500)p.tier='B'; if(p.tier==='B'&&p.rating>=1800)p.tier='A';
@@ -1047,12 +1060,12 @@ function setTier(p){const m=+S.settings.margin||0;
 const r0p=p=>p.start!=null?p.start:START[p.group];
 function compute(){
   const M={}; S.raw.forEach(p=>M[p.id]={...p,rating:r0p(p),tier:p.group,wins:0,losses:0,tw:0,tl:0,st0:p.group,r0:r0p(p),hist:[r0p(p)],last:0,str:0,ach:{}}); /* conquistas sempre recalculadas do histórico: se a partida for corrigida/apagada, a conquista some */
-  const ss=S.settings.seasonStart||0, AM=[...S.matches].sort((a,b)=>a.at-b.at); D={}; AX={}; const TW={}; (G.tourns||[]).forEach(t=>TW[t.id]=t.wt||{}); let crossed=false; const AS={dc:{},opp:{},pc:{},last:{},gm:{},wn:{},sr:{},dw:{},sp:{},lv:{},zb:{},ba:{}}, cut=S.settings.achFrom||Infinity;
+  const ss=S.settings.seasonStart||0, AM=[...S.matches].sort((a,b)=>a.at-b.at); D={}; AX={}; const DG={}; DX=DG; const TW={}; (G.tourns||[]).forEach(t=>TW[t.id]=t.wt||{}); let crossed=false; const AS={dd:{},dg:{},dwn:{},dp:{},dpp:{},dl:{},dc:{},opp:{},pc:{},last:{},gm:{},wn:{},sr:{},dw:{},sp:{},lv:{},zb:{},ba:{}}, cut=S.settings.achFrom||Infinity;
   const snap=()=>{Object.values(M).forEach(x=>{x.st0=x.tier;x.r0=x.rating;x.wins=0;x.losses=0});crossed=true};
   AM.forEach(m=>{const w=M[m.winner],l=M[m.loser]; if(!crossed&&m.at>=ss)snap(); if(!w||!l)return;
     const wt0=w.tier,lt0=l.tier,gap=l.rating-w.rating,lead=leaderId(M);
-    const [a,b,mu,tq]=calc(w,l,m.at,twOf(m,TW)); D[m.id]=[a,b,mu,tq]; w.rating+=a; l.rating-=b; w.wins++; l.losses++; w.tw++; l.tl++; w.str++; l.str=0;
-    w.hist.push(w.rating); l.hist.push(l.rating); w.last=l.last=m.at; setTier(w); setTier(l); AX[m.id]={g:gap,wt0,lt0,wt1:w.tier,bl:lead===l.id}; achieve(AS,m,w,l,wt0,lt0,gap,lead,cut)});
+    const [a,b,mu,tq]=(m.dbl&&dblCalc(m,M,DG))||calc(w,l,m.at,twOf(m,TW)); D[m.id]=[a,b,mu,tq]; w.rating+=a; l.rating-=b; w.wins++; l.losses++; w.tw++; l.tl++; w.str++; l.str=0;
+    w.hist.push(w.rating); l.hist.push(l.rating); w.last=l.last=m.at; setTier(w); setTier(l); AX[m.id]={g:gap,wt0,lt0,wt1:w.tier,bl:lead===l.id}; if(!m.dbl)achieve(AS,m,w,l,wt0,lt0,gap,lead,cut); else if(!AS.dd[m.dbl.g]){AS.dd[m.dbl.g]=1; if(DG[m.dbl.g])achieveD(AS,m,M,DG[m.dbl.g],cut)}});
   try{tAchieve(M,cut)}catch(e){}
   if(!crossed)snap();
   Object.values(M).forEach(x=>{if(x.adj){x.rating+=x.adj;setTier(x)}});
@@ -1111,13 +1124,19 @@ const ACH=[
  {k:'t5',lv:1,n:'Presença Certa',i:'📅',d:'Participar de 5 campeonatos'},
  {k:'tzebra',lv:2,n:'Zebra de Campeonato',i:'🦓',d:'Vencer, em campeonato, alguém com 200 pontos ou mais acima de você'},
  {k:'tfin',lv:2,n:'Finalista',i:'🥈',d:'Disputar a final de um campeonato'},
- {k:'tcamp',lv:3,n:'Campeão!',i:'🏆',d:'Ser campeão de um campeonato'}
+ {k:'tcamp',lv:3,n:'Campeão!',i:'🏆',d:'Ser campeão de um campeonato'},
+ {k:'dfirst',lv:0,n:'Primeira Dupla',i:'🤝',d:'Jogar a primeira partida de duplas'},
+ {k:'dfirstWin',lv:0,n:'Estreia em Dupla',i:'🎊',d:'Vencer a primeira partida de duplas'},
+ {k:'dpart5',lv:1,n:'Dupla Dinâmica',i:'🔄',d:'Vencer jogando ao lado de 5 parceiros diferentes'},
+ {k:'dpair',lv:1,n:'Dupla de Ferro',i:'⛓️',d:'Vencer 5 partidas de duplas com o mesmo parceiro'},
+ {k:'dvinga',lv:1,n:'Vingança em Dupla',i:'🤺',d:'Vencer uma dupla que já tinha vencido a sua'},
+ {k:'dcarry',lv:2,n:'Carregou a Dupla',i:'🦸',d:'Vencer em dupla com um parceiro 200 pontos ou mais abaixo de você, ou contra uma dupla com média 150 pontos ou mais acima da sua'}
 ];
 const TACH_FROM=1792283900000, TK=['tpart','tvit','tgrp','tpod','t5','tzebra','tfin','tcamp','tm5','tklass']; /* conquistas de campeonato valem só para campeonatos criados a partir da v0.4.2.11 */
 function tAchieve(M,cut){
   if(!(cut<Infinity))return;
   const U=(id,k,m,t)=>{const p=M[id]; if(!p||!m||!(m.at>=cut))return; const o=p.ach[k]; if(!o||m.at<o.at)p.ach[k]={at:m.at,m:m.id,t:t.id}}, part={}, pm={};
-  (S.tourns||[]).forEach(t=>{ if(!(t.at>=TACH_FROM)||tRegOpen(t))return; let R; try{R=tState(t)}catch(e){return}
+  (S.tourns||[]).forEach(t=>{ if(!(t.at>=TACH_FROM)||tRegOpen(t)||t.dup)return; let R; try{R=tState(t)}catch(e){return}
     const first={}, pairs=[]; const ft0=t.fx.filter(f=>f.ph==='g');
     t.fx.forEach(f=>{const r=R[f.id]; if(!r||!r.m||!r.done||r.wo)return; const m=r.m;
       [m.winner,m.loser].forEach(id=>{if(!first[id]||m.at<first[id].at)first[id]=m; U(id,'tpart',m,t); (pm[id]=pm[id]||[]).push({m,t})});
@@ -1140,6 +1159,17 @@ function tAchieve(M,cut){
 const achOrd=k=>{const i=ACH.findIndex(a=>a.k===k);return ACH[i].lv*100+i};
 const leaderId=M=>{let b=null; Object.values(M).forEach(p=>{if(p.hidden||p.tw+p.tl<3)return; if(!b||p.rating>b.rating)b=p}); return b&&b.id};
 const isAndre=q=>{const n=(q.name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); return /\bandre\b/.test(n)&&/\bluiz\b/.test(n)};
+function achieveD(AS,m,M,c,cut){ /* conquistas de duplas: uma vez por partida (grupo), com as pontuações de antes da partida */
+  const d=m.dbl, g=d.g, W=d.w.map(i=>M[i]), L=d.l.map(i=>M[i]); if(W.some(x=>!x)||L.some(x=>!x))return;
+  const key=a=>[...a].sort().join('|'), kw=key(d.w), kl=key(d.l), lostBefore=!!AS.dl[kw+'>'+kl]; AS.dl[kl+'>'+kw]=1;
+  if(!(m.at>=cut))return;
+  const U=(p,k)=>{if(!p.ach[k])p.ach[k]={at:m.at,m:g}}, inc=(mp,k)=>(mp[k]=(mp[k]||0)+1);
+  [...W,...L].forEach(p=>{if(inc(AS.dg,p.id)===1)U(p,'dfirst')});
+  W.forEach((p,i)=>{ if(inc(AS.dwn,p.id)===1)U(p,'dfirstWin'); const st=AS.dp[p.id]=AS.dp[p.id]||new Set(); st.add(W[1-i].id); if(st.size>=5)U(p,'dpart5');
+    if(c.wr[1-i]<=c.wr[i]-200||c.rL-c.rW>=150)U(p,'dcarry') });
+  if(inc(AS.dpp,kw)>=5)W.forEach(p=>U(p,'dpair'));
+  if(lostBefore)W.forEach(p=>U(p,'dvinga'));
+}
 function achieve(AS,m,w,l,wt0,lt0,gap,lead,cut){ /* só conta partidas a partir do início das conquistas (cut); só acrescenta, nunca remove */
   const key=[w.id,l.id].sort().join('|'), prev=AS.last[key]; AS.last[key]=w.id;
   if(!(m.at>=cut))return;
@@ -1225,7 +1255,7 @@ function undoUi(mid,wn,ln){
     box.innerHTML=ask?`<div class="uask">Quer desfazer? <button class="y" id="uY">Sim</button><button id="uN">Não</button></div>`:`<button class="uarrow" id="uB" title="Desfazer partida" aria-label="Desfazer partida">↩</button>`;
     if(ask){
       $('uY').onclick=async()=>{
-        const lk=(G.matches.find(x=>x.id===mid)||{}).link, ids=G.matches.filter(x=>x.id===mid||(lk&&x.link===lk)).map(x=>x.id);
+        const m0=G.matches.find(x=>x.id===mid)||{}, lk=m0.link, dg=m0.dbl&&m0.dbl.g, ids=G.matches.filter(x=>x.id===mid||(lk&&x.link===lk)||(dg&&x.dbl&&x.dbl.g===dg)).map(x=>x.id);
         for(const id of ids)await del('matches',id);
         if(ids.length)await logA(`Partida desfeita: ${wn} x ${ln}`+(ids.length>1?` (e em ${ids.length-1} outro(s) clube(s))`:''));
         msg(`↩ Partida desfeita: <b>${esc(wn)}</b> x ${esc(ln)}. Os pontos voltaram.`+(ids.length>1?' Também nos outros clubes.':''));
@@ -1254,9 +1284,9 @@ async function loadNames(ids){
 }
 const devTitle=m=>(m.by||m.dev)?'Lançada por '+(whoTxt(m.by)||'—')+(m.dev?' · '+devTxt(m.dev):'')+(m.cr?' · '+fmt(m.cr):''):'';
 function recentHtml(st){
-  const rec=[...S.matches].sort((a,b)=>(b.cr||b.at)-(a.cr||a.at)).slice(0,40);
+  const rec=collapseD([...S.matches].sort((a,b)=>(b.cr||b.at)-(a.cr||a.at))).slice(0,40);
   loadNames([...(st.log||[]).slice(0,50).map(x=>x.by),...rec.map(m=>m.by)]).then(c=>{if(c&&admin&&op('admM')&&admTab==='adv')renderAdm()});
-  return `<div class="agroup"><h4>📱 Lançamentos de partidas</h4>${rec.length?`<details><summary>Ver os últimos ${rec.length} lançamentos</summary><table><tr><th>Cadastrada em</th><th>Partida</th><th>Quem · aparelho</th></tr>${rec.map(m=>`<tr><td style="white-space:nowrap">${fmt(m.cr||m.at)}</td><td>${pnl(m.winner,nameOf(m.winner,m.wn))} x ${pnl(m.loser,nameOf(m.loser,m.ln))}${m.score?' ('+esc(m.score)+')':''}</td><td>${(m.by||m.dev)?esc(whoTxt(m.by)||'—')+' · '+esc(devTxt(m.dev)):'<span style="color:var(--mut)">sem registro</span>'}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma partida ainda.</p>'}<p class="legend" style="margin:4px 0 8px">Cada partida guarda a conta de quem lançou, o aparelho e o navegador. Partidas antigas não têm esse registro.</p></div>`;
+  return `<div class="agroup"><h4>📱 Lançamentos de partidas</h4>${rec.length?`<details><summary>Ver os últimos ${rec.length} lançamentos</summary><table><tr><th>Cadastrada em</th><th>Partida</th><th>Quem · aparelho</th></tr>${rec.map(m=>`<tr><td style="white-space:nowrap">${fmt(m.cr||m.at)}</td><td>${m.dbl?'👥 '+esc(mTxt(m)):pnl(m.winner,nameOf(m.winner,m.wn))+' x '+pnl(m.loser,nameOf(m.loser,m.ln))}${m.score?' ('+esc(m.score)+')':''}</td><td>${(m.by||m.dev)?esc(whoTxt(m.by)||'—')+' · '+esc(devTxt(m.dev)):'<span style="color:var(--mut)">sem registro</span>'}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma partida ainda.</p>'}<p class="legend" style="margin:4px 0 8px">Cada partida guarda a conta de quem lançou, o aparelho e o navegador. Partidas antigas não têm esse registro.</p></div>`;
 }
 async function logA(t){await put('settings',{...S.settings,log:[{at:Date.now(),t,by:myId,dev:deviceInfo(),adm:!!admin},...(S.settings.log||[])].slice(0,300)})}
 function focusPin(){const el=$('pin'); if(el){try{el.focus({preventScroll:true});el.select()}catch(e){}}}
@@ -1308,7 +1338,7 @@ function renderChamp(){ const L=champList(), multi=L.length>1, c=champT(), on=!!
   if(!c){$('champHome').innerHTML=''; return}
   if(champBy){bar.innerHTML=`🎯 Modo Campeonato ativo: <b>${multi?L.length+' campeonatos':esc(c.t.name)}</b> · <button class="lnk" id="chBack">Voltar ao modo campeonato</button>`; $('chBack').onclick=()=>{champBy=false;render()}; return}
   const t=c.t, pr=c.pr, pct=pr.tot?Math.round(pr.dn*100/pr.tot):0, isG=t.fmt==='gr', isRR=t.fmt==='rr', hasCh=tIsKo(t)||(isG&&!t.gf), nrdy=(()=>{try{return tNext(t,c.R).length}catch(e){return 0}})();
-  const ms=S.matches.filter(m=>m.tid===t.id).sort((a,b)=>b.at-a.at).slice(0,8), SCh=tSched(t,c.R), PN={}; t.players.forEach(p=>PN[p.id]=p.name);
+  const ms=S.matches.filter(m=>m.tid===t.id&&!(t.dup&&m.dbl&&m.dbl.i)).sort((a,b)=>b.at-a.at).slice(0,8), SCh=tSched(t,c.R), PN={}; t.players.forEach(p=>PN[p.id]=p.name);
   const nxs=SCh?tNext(t,c.R).filter(f=>SCh.g[f.id]&&SCH_TB(SCh,f)).slice(0,8):[]; /* próximos jogos por horário (até 8), inclusive mais de um do mesmo jogador */
   const MT=multi?tMesaList(t):null, mzH=multi?(MT===null?'':MT.length?`<div class="chmz">🏓 Mesa${MT.length>1?'s':''} deste campeonato: <b>${MT.join(', ')}</b></div>`:`<div class="chmz w">⏳ Aguardando mesa · o administrador ou gerente define em Multi-Campeonatos</div>`):'', bnH=multi?champFreeHtml(L):'';
   $('champHome').innerHTML=`${multi?champStrip(L,c):''}${bnH}<div class="chh"><div class="chn">${tIco(t,40)} ${esc(t.name)}</div><div class="chs">${esc(tMini(t))}</div><div class="chp"><i style="width:${pct}%"></i></div><small>${pr.dn}/${pr.tot} partidas jogadas${nrdy?' · '+nrdy+' pronta'+(nrdy===1?'':'s')+' para jogar':''}</small></div>
@@ -1317,7 +1347,7 @@ function renderChamp(){ const L=champList(), multi=L.length>1, c=champT(), on=!!
   ${nxs.length?`<div class="chl"><div class="sub">🕒 Em seguida</div><div class="chs2">${nxs.map(f=>{const q=c.R[f.id], cc=SCh.g[f.id], gl=f.ph==='g'?(f.gid?'Grupo '+tGN(f.gid):''):tPhN(f.ph,t)+(t.fmt==='gr'&&!t.gf&&f.rt?' · Rating '+f.rt:''); return `<button class="chr" data-nf="${f.id}"><span class="cn" title="${esc(nameOf(q.a,PN[q.a]))} x ${esc(nameOf(q.b,PN[q.b]))}" data-n1="${esc(nameOf(q.a,PN[q.a]))}" data-n2="${esc(nameOf(q.b,PN[q.b]))}"><b>${esc(nameOf(q.a,PN[q.a]))}</b> x <b>${esc(nameOf(q.b,PN[q.b]))}</b></span><small data-c="${gl?esc(gl.replace('Grupo ','G '))+' · ':''}M${cc.tb}">${gl?esc(gl)+' · ':''}Mesa ${cc.tb}</small></button>`}).join('')}</div></div>`:''}
   <div class="chg">${isG||isRR?`<button class="gbtn g-rank" data-ch="gr"><span class="gi">📊</span><span class="gl">${isRR?'Classificação':'Grupos'}</span></button>`:''}${hasCh?`<button class="gbtn g-ach" data-ch="ch"><span class="gi">🏆</span><span class="gl">Chaveamento</span></button>`:''}<button class="gbtn g-match" data-ch="nx"><span class="gi">🕒</span><span class="gl">Próximas Partidas</span></button><button class="gbtn g-play" data-ch="pl"><span class="gi">👥</span><span class="gl">Jogadores</span></button><button class="gbtn g-add${((isG||isRR?1:0)+(hasCh?1:0)+3)%2?' chm':''}" data-ch="mg"><span class="gi">⚙️</span><span class="gl">Gerenciamento</span></button></div>
   ${multi?`<button class="gbtn g-add" id="chMulti" style="width:100%;margin:0 0 8px"><span class="gi">🏓</span><span class="gl">Gerenciamento de Multi-Campeonatos</span></button>`:''}
-  ${ms.length?`<div class="chl"><div class="sub">Últimos resultados</div><div class="chs2">${ms.map(m=>{const f2=t.fx.find(x=>x.id===m.fx), gl=f2?(f2.ph==='g'?(f2.gid?'Grupo '+tGN(f2.gid):''):tPhN(f2.ph,t)+(t.fmt==='gr'&&!t.gf&&f2.rt?' · Rating '+f2.rt:'')):'', w=esc(nameOf(m.winner,m.wn)), l=esc(nameOf(m.loser,m.ln)), sc=m.score?esc(m.score):'x'; return `<button class="chr" data-m="${m.id}"><span class="cn" title="${w} ${sc} ${l}" data-n1="${w}" data-n2="${l}" data-s="${sc}" data-bl="1"><b>${w}</b> ${sc} ${l}</span><small data-c="${esc(gl.replace('Grupo ','G '))}">${esc(gl)}</small></button>`}).join('')}</div></div>`:''}
+  ${ms.length?`<div class="chl"><div class="sub">Últimos resultados</div><div class="chs2">${ms.map(m=>{const f2=t.fx.find(x=>x.id===m.fx), gl=f2?(f2.ph==='g'?(f2.gid?'Grupo '+tGN(f2.gid):''):tPhN(f2.ph,t)+(t.fmt==='gr'&&!t.gf&&f2.rt?' · Rating '+f2.rt:'')):'', w=esc(t.dup&&m.tw?nameOf(m.tw,PN[m.tw]):nameOf(m.winner,m.wn)), l=esc(t.dup&&m.tl?nameOf(m.tl,PN[m.tl]):nameOf(m.loser,m.ln)), sc=m.score?esc(m.score):'x'; return `<button class="chr" data-m="${m.id}"><span class="cn" title="${w} ${sc} ${l}" data-n1="${w}" data-n2="${l}" data-s="${sc}" data-bl="1"><b>${w}</b> ${sc} ${l}</span><small data-c="${esc(gl.replace('Grupo ','G '))}">${esc(gl)}</small></button>`}).join('')}</div></div>`:''}
   ${multi?'':champAdmHtml(L,c)}
   <button class="gbtn chcad" id="chCad"><span class="gi">🏠</span><span class="gl">Voltar ao Menu Principal</span></button>`;
   champBind(L,c);
@@ -1352,8 +1382,10 @@ function champFit(){ const g=document.querySelector('#champHome .chs2'); if(!g)r
   g.classList.remove('one'); fit(true) }
 let _cfT; window.addEventListener('resize',()=>{clearTimeout(_cfT);_cfT=setTimeout(champFit,150)});
 document.addEventListener('click',e=>{const m=e.target.closest&&e.target.closest('.swm'); document.querySelectorAll('.swtip').forEach(x=>x.remove()); if(!m)return; e.stopPropagation(); e.preventDefault(); const r=m.getBoundingClientRect(), d=document.createElement('div'); d.className='swtip'; d.textContent=m.dataset.sw; document.body.appendChild(d); d.style.left=Math.max(8,Math.min(innerWidth-d.offsetWidth-8,r.left-20))+'px'; d.style.top=Math.min(innerHeight-d.offsetHeight-8,r.bottom+6)+'px'; setTimeout(()=>document.addEventListener('click',()=>d.remove(),{once:true}),0)},true);
+function duoOn(){return !!S.settings.duoOn}
+function dpBtn(i){const q=dpart[i]?byId(dpart[i]):null; if(dpart[i]&&!q)dpart[i]=null; return `<span class="dpB${q?' on':''}" data-dp="${i}" role="button" tabindex="0" title="Escolher a dupla do Jogador ${i+1}">👥 ${q?esc(q.name):'Dupla'}</span>`}
 function render(){
-  renderChamp();
+  renderChamp(); if(!duoOn())dpart=[null,null];
   {const b=$('achBtn'); if(b)b.hidden=!achShow()}
   {const b=$('addBtn'); if(b)b.hidden=!!S.settings.addOff}
   menuFit();
@@ -1366,11 +1398,20 @@ function render(){
    $('rulesBar').innerHTML=pr.map(esc).join('<br>'); $('rulesBar').hidden=!pr.length}
   [0,1].forEach(i=>{const p=sel[i]?byId(sel[i]):null; if(!p)sel[i]=null; const b=$('s'+(i+1));
     b.className='sq'+(p?' filled t'+tier(p):'');
-    b.innerHTML=p?`<small>Jogador ${i+1} · Ranking ${tier(p)}</small><span class="nm">${esc(p.name)}${fire(p)}</span><span class="rt">${p.rating}</span>${xpBarV(p)}`:`<span style="font-size:28px">＋</span><span>Selecionar<br>Jogador ${i+1}</span>`});
+    const q2=(p&&duoOn()&&dpart[i])?byId(dpart[i]):null, dAvg=q2?Math.round((p.rating+q2.rating)/2):0;
+    b.innerHTML=q2?`<small>Dupla ${i+1}</small><span class="nm" style="font-size:.85em">${esc(p.name)}${fire(p)} <span style="opacity:.6">+</span> ${esc(q2.name)}${fire(q2)}</span><span class="rt">${dAvg}</span><small style="opacity:.75;white-space:nowrap">média ${p.rating} + ${q2.rating}</small><span style="display:block;height:18px"></span>${dpBtn(i)}`:p?`<small>Jogador ${i+1} · Ranking ${tier(p)}</small><span class="nm">${esc(p.name)}${fire(p)}</span><span class="rt">${p.rating}</span>${xpBarV(p)}${duoOn()?dpBtn(i):''}`:`<span style="font-size:28px">＋</span><span>Selecionar<br>Jogador ${i+1}</span>`});
   const a=sel[0]&&byId(sel[0]), b=sel[1]&&byId(sel[1]); $('match').hidden=!(a&&b); $('clrBtn').hidden=!(sel[0]||sel[1]);
   if(a&&b){const k=a.id+'|'+b.id; if(k!==lastPair){lastPair=k; setTimeout(focusMatch,160)}} else lastPair='';
   $('viewBtn').innerHTML='<span class="fl">Mudar Visual </span><span style="font-size:1.35em;line-height:1">'+(cl()?'🏛️':fx()?'🎮':'🧊')+'</span>'; $('viewBtn').title='Visual: '+(cl()?'Clássica':fx()?'Futurista':'Simples')+' (clique para trocar)'; $('sndBtn').textContent=SND?'🔊':'🔇'; $('sndBtn').title='Som: '+(SND?'ligado':'desligado')+' (clique para trocar)'; $('themeBtn').textContent=isDark()?'🌙':'☀️'; $('themeBtn').title='Tema: '+(isDark()?'escuro':'claro')+' (clique para trocar)'; ['viewBtn','sndBtn','themeBtn'].forEach(i=>$(i).setAttribute('aria-label',$(i).title)); fitFoot();
-  if(a&&b){
+  {const dm=!!(dpart[0]||dpart[1]); $('cadD').textContent=dm?' DE DUPLAS':''; $('match').classList.toggle('dbl',dm)}
+  if(a&&b&&(dpart[0]||dpart[1])){
+    const a2=dpart[0]&&byId(dpart[0]), b2=dpart[1]&&byId(dpart[1]), both=!!(a2&&b2), nA=a2?a.name+' / '+a2.name:a.name, nB=b2?b.name+' / '+b2.name:b.name;
+    $('w1').textContent='🏆 '+nA+(a2?' venceram':' venceu'); $('w2').textContent='🏆 '+nB+(b2?' venceram':' venceu'); $('n1').textContent=nA; $('n2').textContent=nB; drawScore(); $('multiBox').innerHTML=''; $('w1').disabled=$('w2').disabled=!!S.settings.locked||!both; $('lockNote').hidden=!S.settings.locked;
+    if(!both)$('h2h').innerHTML='<div class="h2h-line">👥 Partida de duplas: escolha a dupla dos <b>dois</b> lados (ou tire a dupla para lançar um jogo de simples).</div>';
+    else{ const k=l=>[...l].sort().join('|'), kA=k([a.id,a2.id]), kB=k([b.id,b2.id]), cD=L=>{const x=L.filter(m=>m.dbl&&m.dbl.i===0); return x.filter(m=>k(m.dbl.w)===kA&&k(m.dbl.l)===kB).length+' x '+x.filter(m=>k(m.dbl.w)===kB&&k(m.dbl.l)===kA).length},
+        pa=dblPts([a,a2],[b,b2],Date.now()), pb=dblPts([b,b2],[a,a2],Date.now()), mx=(v,u)=>u>1?' (×'+u+')':'', P_=q=>pnl(q.id,q.name);
+      $('h2h').innerHTML=`<div class="h2h-title">👥 Estatística do Encontro (duplas)</div><div class="h2h-line">Desde sempre: ${P_(a)} / ${P_(a2)} <b>${cD(S.matches)}</b> ${P_(b)} / ${P_(b2)}</div><div class="h2h-line">${esc(sN(curS()))}: <b>${cD(MV)}</b></div><div class="h2h-cap">Pontuação no Ranking (cada jogador da dupla)</div><div class="h2h-points">${P_(a)} +${pa.a[0]}${mx(0,pa.mu[0])} · ${P_(a2)} +${pa.a[1]}${mx(0,pa.mu[1])}<br>${P_(b)} −${pa.b[0]} · ${P_(b2)} −${pa.b[1]}</div><div class="h2h-line" style="margin-top:6px">${P_(b)} +${pb.a[0]}${mx(0,pb.mu[0])} · ${P_(b2)} +${pb.a[1]}${mx(0,pb.mu[1])}<br>${P_(a)} −${pb.b[0]} · ${P_(a2)} −${pb.b[1]}</div>` }
+  } else if(a&&b){
     $('w1').textContent='🏆 '+a.name+' venceu'; $('w2').textContent='🏆 '+b.name+' venceu'; $('n1').textContent=a.name; $('n2').textContent=b.name; drawScore(); drawMulti(a,b); $('w1').disabled=$('w2').disabled=!!S.settings.locked; $('lockNote').hidden=!S.settings.locked;
     const c=L=>L.filter(m=>m.winner===a.id&&m.loser===b.id).length+' x '+L.filter(m=>m.winner===b.id&&m.loser===a.id).length, [x,y,m1]=calc(a,b), [u,v,m2]=calc(b,a);
     $('h2h').innerHTML=`<div class="h2h-title">Estatística do Encontro</div><div class="h2h-line">Desde sempre: ${pnl(a.id,a.name)} <b>${c(S.matches)}</b> ${pnl(b.id,b.name)}</div><div class="h2h-line">${esc(sN(curS()))}: ${pnl(a.id,a.name)} <b>${c(MV)}</b> ${pnl(b.id,b.name)}</div><div class="h2h-cap">Pontuação no Ranking</div><div class="h2h-points">${pnl(a.id,a.name)} vence: +${x}${m1>1?' (×'+m1+')':''} / ${pnl(b.id,b.name)} −${y}</div><div class="h2h-line">${pnl(b.id,b.name)} vence: +${u}${m2>1?' (×'+m2+')':''} / ${pnl(a.id,a.name)} −${v}</div>`;
@@ -1380,15 +1421,18 @@ function render(){
 }
 
 /* ---- escolher jogadores ---- */
-$('s1').onclick=()=>pick(0); $('s2').onclick=()=>pick(1);
-$('clrBtn').onclick=()=>{sel=[null,null];sc=[null,null];multi.clear();render()};
+$('s1').onclick=e=>{if(e.target.closest('.dpB'))pickD(0);else pick(0)}; $('s2').onclick=e=>{if(e.target.closest('.dpB'))pickD(1);else pick(1)};
+$('clrBtn').onclick=()=>{dpart=[null,null];sel=[null,null];sc=[null,null];multi.clear();render()};
+function pickD(i){pickIdx=2+i;$('pickT').textContent='Dupla do Jogador '+(i+1);$('pq').value='';renderPick();open('pickM')}
 function pick(i){pickIdx=i;$('pickT').textContent='Jogador '+(i+1);$('pq').value='';renderPick();open('pickM')}
 $('pq').oninput=()=>renderPick();
 function renderPick(){
-  const other=sel[1-pickIdx], q=pxNorm($('pq').value.trim());
+  const ex=new Set(pickIdx<2?[sel[1-pickIdx],dpart[0],dpart[1]]:[sel[0],sel[1],dpart[3-pickIdx]]), q=pxNorm($('pq').value.trim());
   const l=vis().filter(p=>pxNorm(p.name).includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
-  $('pickL').innerHTML=l.length?l.map(p=>`<button class="pl t${tier(p)}" data-id="${p.id}" ${p.id===other?'disabled':''}><span>${esc(p.name)}</span><b style="color:var(--t)">${p.rating}</b></button>`).join(''):'<p style="color:var(--mut);grid-column:1/-1">Nenhum jogador encontrado.</p>';
-  $('pickL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>{sel[pickIdx]=b.dataset.id;sc=[null,null];multi.clear();$('msg').hidden=true;$('pickM').classList.remove('on');render();popSel(pickIdx)});
+  $('pickL').innerHTML=l.length?l.map(p=>`<button class="pl t${tier(p)}" data-id="${p.id}" ${ex.has(p.id)?'disabled':''}><span>${esc(p.name)}</span><b style="color:var(--t)">${p.rating}</b></button>`).join(''):'<p style="color:var(--mut);grid-column:1/-1">Nenhum jogador encontrado.</p>';
+  if(pickIdx>=2&&dpart[pickIdx-2])$('pickL').insertAdjacentHTML('afterbegin','<button class="pl" id="dpNo" style="column-span:all"><span>✕ Sem dupla</span></button>');
+  if($('dpNo'))$('dpNo').onclick=()=>{dpart[pickIdx-2]=null;$('pickM').classList.remove('on');render()};
+  $('pickL').querySelectorAll('.pl[data-id]').forEach(b=>b.onclick=()=>{if(pickIdx>=2){dpart[pickIdx-2]=b.dataset.id;$('msg').hidden=true;$('pickM').classList.remove('on');render();return} sel[pickIdx]=b.dataset.id;sc=[null,null];multi.clear();$('msg').hidden=true;$('pickM').classList.remove('on');render();popSel(pickIdx)});
 }
 
 /* ---- novo jogador ---- */
@@ -1404,7 +1448,7 @@ $('aSave').onclick=async()=>{
   unlockAudio();
   const name=$('aName').value.trim(); if(!name){$('aErr').textContent='Digite o nome.';return}
   if(S.raw.some(p=>p.name.toLowerCase()===name.toLowerCase())){$('aErr').textContent='Já existe um jogador com esse nome.';return}
-  const g=tAdm()?newGrp:'C', nid=uid(), fromWiz=!!(tNewWait&&tNew&&op('tourM')&&tv.v==='new'); await put('players',{id:nid,name,group:g,}); const pi=addPickIdx; addPickIdx=null; if(pi!=null){sel[pi]=nid;sc=[null,null];multi.clear();$('msg').hidden=true;$('pickM').classList.remove('on');render();popSel(pi)} else if(!fromWiz)setTimeout(()=>goPlayer(nid),300); if(tNewWait&&tNew&&op('tourM')&&tv.v==='new'){tNew.sel.add(nid); setTimeout(()=>{if(op('tourM')&&tv.v==='new')tNewR()},200)} tNewWait=false; justAdded={id:nid,at:Date.now()}; sfx('add'); addAnim(name,g); msg(`✅ ${esc(name)} adicionado ao Ranking ${g} com ${START[g]} pontos.`);
+  const g=tAdm()?newGrp:'C', nid=uid(), fromWiz=!!(tNewWait&&tNew&&op('tourM')&&tv.v==='new'); await put('players',{id:nid,name,group:g,}); const pi=addPickIdx; addPickIdx=null; if(pi!=null){if(pi>=2)dpart[pi-2]=nid;else{sel[pi]=nid;sc=[null,null]} multi.clear();$('msg').hidden=true;$('pickM').classList.remove('on');render();if(pi<2)popSel(pi)} else if(!fromWiz)setTimeout(()=>goPlayer(nid),300); if(tNewWait&&tNew&&op('tourM')&&tv.v==='new'){tNew.sel.add(nid); setTimeout(()=>{if(op('tourM')&&tv.v==='new')tNewR()},200)} tNewWait=false; justAdded={id:nid,at:Date.now()}; sfx('add'); addAnim(name,g); msg(`✅ ${esc(name)} adicionado ao Ranking ${g} com ${START[g]} pontos.`);
 };
 
 /* ---- animações: boas-vindas e confete ---- */
@@ -1475,7 +1519,7 @@ function renderAch(){
   const x=$('achG').querySelector('.atx'); if(x)x.onclick=()=>{achPSel=null;renderAch()};
 }
 function achProg(p,a){ /* partidas que contam (ou já contam) para a conquista */
-  const AL=[]; [...S.matches].sort((x,y)=>x.at-y.at).forEach(m=>{ if((m.winner!==p.id&&m.loser!==p.id)||!AX[m.id])return; const win=m.winner===p.id, sc=(m.score||'').split('x').map(Number), ok=sc.length===2&&!sc.some(isNaN), o=win?m.loser:m.winner;
+  const AL=[]; [...S.matches].sort((x,y)=>x.at-y.at).forEach(m=>{ if(m.dbl||(m.winner!==p.id&&m.loser!==p.id)||!AX[m.id])return; const win=m.winner===p.id, sc=(m.score||'').split('x').map(Number), ok=sc.length===2&&!sc.some(isNaN), o=win?m.loser:m.winner;
     AL.push({m,win,o,on:win?m.ln:m.wn,ok,a:ok?(win?sc[0]:sc[1]):0,b:ok?(win?sc[1]:sc[0]):0,x:AX[m.id]})});
   const last={}; AL.forEach(e=>{e.rev=e.win&&last[e.o]===false; last[e.o]=e.win});
   const cut=S.settings.achFrom||Infinity, E=AL.filter(e=>e.m.at>=cut), k=a.k, un=p.ach&&p.ach[k], T3={C:0,B:1,A:2}, oa=e=>{const q=byId(e.o); return q&&isAndre(q)};
@@ -1485,6 +1529,18 @@ function achProg(p,a){ /* partidas que contam (ou já contam) para a conquista *
   const F={close:e=>e.win&&e.ok&&e.a-e.b===1&&e.b>=2, sweep:e=>e.win&&e.ok&&e.b===0&&e.a>=3, beatB:e=>e.win&&e.x.lt0==='B', beatA:e=>e.win&&e.x.lt0==='A', zebra:e=>e.win&&e.x.g>=200, zebraT:e=>e.win&&e.x.g>=400, noMercy:e=>e.win&&e.x.g<=-300,
     sensei:e=>e.win&&oa(e), senseiB:e=>oa(e)&&(e.win||(e.ok&&e.b>=1)), beatLeader:e=>e.win&&e.x.bl, revenge:e=>e.rev, evo:e=>e.win&&e.x.wt1<e.x.wt0, elite:e=>e.win&&e.x.wt1==='A'&&e.x.wt0!=='A',
     semMedo:e=>T3[e.win?e.x.lt0:e.x.wt0]>T3[e.win?e.x.wt0:e.x.lt0]};
+  const DK=['dfirst','dfirstWin','dpart5','dpair','dvinga','dcarry'];
+  if(DK.includes(k)){ const seenG=new Set(), DL=[]; [...S.matches].sort((x,y)=>x.at-y.at).forEach(m=>{ if(!m.dbl||seenG.has(m.dbl.g)||!inM(m,p.id))return; seenG.add(m.dbl.g); const d=m.dbl, win=d.w.includes(p.id), my=win?d.w:d.l, op=win?d.l:d.w, on=win?d.ln:d.wn, pn_=win?d.wn:d.ln, pi=my.findIndex(z=>z!==p.id), sc=(m.score||'').split('x').map(Number), ok=sc.length===2&&!sc.some(isNaN), c=DX[d.g]||{};
+      DL.push({m:{id:d.g,at:m.at},win,dd:true,pp:my[pi],ppn:pn_[pi],ops:op.map((i,j)=>[i,on[j]]),ok,a:ok?(win?sc[0]:sc[1]):0,b:ok?(win?sc[1]:sc[0]):0,kw:[...d.w].sort().join('|'),kl:[...d.l].sort().join('|'),carry:win&&c.wr&&(((win&&d.w[0]===p.id)?(c.wr[1]<=c.wr[0]-200):(c.wr[0]<=c.wr[1]-200))||c.rL-c.rW>=150)}) });
+    const DE=DL.filter(e=>e.m.at>=cut);
+    if(k==='dfirst'){g=1;rows=DE} else if(k==='dfirstWin'){g=1;rows=DE.filter(e=>e.win)}
+    else if(k==='dpart5'){g=5; const sn=new Set(); rows=DE.filter(e=>e.win&&!sn.has(e.pp)&&sn.add(e.pp))}
+    else if(k==='dpair'){g=5; const by={}; DE.filter(e=>e.win).forEach(e=>(by[e.pp]=by[e.pp]||[]).push(e)); rows=Object.values(by).sort((x,y)=>y.length-x.length)[0]||[]}
+    else if(k==='dvinga'){ const lost=new Set(); rows=[]; DE.forEach(e=>{ if(e.win&&lost.has(e.kw+'>'+e.kl))rows.push(e); lost.add((e.win?e.kl+'>'+e.kw:e.kw+'>'+e.kl)) }) }
+    else if(k==='dcarry')rows=DE.filter(e=>e.carry);
+    if(g&&un){const i=rows.findIndex(e=>e.m.id===un.m); rows=rows.slice(0,Math.max(i+1,Math.min(rows.length,g)))}
+    if(!g&&un)rows=rows.filter(e=>e.m.id===un.m);
+    return {rows,g,note,n:g?Math.min(rows.length,g):rows.length} }
   if(TK.includes(k)){const TE=E.filter(e=>{const tt=e.m.tid&&(S.tourns||[]).find(z=>z.id===e.m.tid); return tt&&tt.at>=TACH_FROM});
     if(k==='tpart')rows=TE; else if(k==='tvit')rows=TE.filter(e=>e.win); else if(k==='tzebra')rows=TE.filter(e=>e.win&&e.x.g>=200); else if(k==='tm5'){g=5; rows=TE}
     else if(k==='t5'){g=5; const seen=new Set(); rows=TE.filter(e=>!seen.has(e.m.tid)&&seen.add(e.m.tid))}
@@ -1506,7 +1562,7 @@ function achProg(p,a){ /* partidas que contam (ou já contam) para a conquista *
 }
 function achDet(p){
   const a=achPSel&&ACH.find(x=>x.k===achPSel); if(!a)return ''; const r=achProg(p,a), un=p.ach&&p.ach[a.k];
-  const line=e=>`<li class="${e.m.id===(un&&un.m)?'key':''}"><span>${fmt(e.m.at)}</span> ${e.win?'<b class="up">Venceu</b>':'<b class="dn">Perdeu para</b>'} ${pnl(e.o,nameOf(e.o,e.on))} <b>${e.ok?e.a+'x'+e.b:''}</b>${e.m.id===(un&&un.m)?' 🏅':''}</li>`;
+  const line=e=>e.dd?`<li class="${e.m.id===(un&&un.m)?'key':''}"><span>${fmt(e.m.at)}</span> ${e.win?'<b class="up">Venceu</b>':'<b class="dn">Perdeu</b>'} 👥 com ${pnl(e.pp,nameOf(e.pp,e.ppn))} contra ${e.ops.map(([i,n])=>pnl(i,nameOf(i,n))).join(' / ')} <b>${e.ok?e.a+'x'+e.b:''}</b>${e.m.id===(un&&un.m)?' 🏅':''}</li>`:`<li class="${e.m.id===(un&&un.m)?'key':''}"><span>${fmt(e.m.at)}</span> ${e.win?'<b class="up">Venceu</b>':'<b class="dn">Perdeu para</b>'} ${pnl(e.o,nameOf(e.o,e.on))} <b>${e.ok?e.a+'x'+e.b:''}</b>${e.m.id===(un&&un.m)?' 🏅':''}</li>`;
   return `<div class="atdet" style="--c:${LV[a.lv].c}"><div class="atdh"><span class="ati">${a.i}</span><div><b>${esc(a.n)}</b><small>${LV[a.lv].n} · ${esc(a.d)}</small></div><button class="atx" aria-label="Fechar">✕</button></div>`
    +(r.g?`<div class="adm" style="font-size:12px;margin:2px 0 4px">${un?'✅ Concluída':'Progresso'}: <b>${r.n} de ${r.g}</b></div><div class="achbar"><i style="width:${Math.round(r.n/r.g*100)}%"></i></div>`:'')
    +(r.note?`<div class="adm" style="font-size:12px;margin:2px 0">${r.note}</div>`:'')
@@ -1646,8 +1702,27 @@ function drawMulti(a,b){
   $('mlB').onclick=()=>{multiOpen=!multiOpen;drawMulti(a,b)};
   box.querySelectorAll('input').forEach(i=>i.onchange=()=>{i.checked?multi.add(i.dataset.c):multi.delete(i.dataset.c);drawMulti(a,b)});
 }
+async function winD(wi){
+  if(busy)return; if(S.settings.locked){msg('🔒 Lançamentos trancados. Peça ao administrador para destrancar.');return}
+  const W=[sel[wi],dpart[wi]].map(id=>byId(id)), L=[sel[1-wi],dpart[1-wi]].map(id=>byId(id)); if(W.some(x=>!x)||L.some(x=>!x))return;
+  const ws=sc[wi], ls=sc[1-wi], has=ws!==null&&ls!==null;
+  if(has&&ws<=ls){msg('⚠️ O placar não bate com o vencedor escolhido.');return}
+  busy=true; const all=[...W,...L], b4=all.map(q=>({id:q.id,t:q.tier,r:q.rating}));
+  const mid=uid(), at=Date.now(), sc2=has?ws+'x'+ls:'', mu=dblPts(W,L,at).mu[0], sIdx=all.map(q=>Math.max(sel.indexOf(q.id),dpart.indexOf(q.id)));
+  if(!S.settings.achFrom)await put('settings',{...S.settings,achFrom:at});
+  for(let i=0;i<2;i++)await put('matches',{id:i?mid+'d':mid,winner:W[i].id,loser:L[i].id,wn:W[i].name,ln:L[i].name,score:sc2,at,cr:at,by:myId,dev:deviceInfo(),dbl:{g:mid,i,w:W.map(q=>q.id),l:L.map(q=>q.id),wn:W.map(q=>q.name),ln:L.map(q=>q.name)}});
+  const n4=all.map(q=>byId(q.id)), unl=[]; n4.forEach((q,i)=>Object.keys(q.ach||{}).filter(k=>q.ach[k].m===mid&&ACH.some(a=>a.k===k)).sort((a,b)=>achOrd(a)-achOrd(b)).forEach(k=>unl.push({p:q.name,id:q.id,k,s:sIdx[i]}))); const ln=(q,o,n,up)=>`<span class="${up?'up':'dn'}">${pnl(q.id,q.name)}: ${o.r} → ${n.rating} (${up?'+'+(n.rating-o.r):'−'+(o.r-n.rating)})</span>`;
+  msg(`👥 <b>${W.map(q=>pnl(q.id,q.name)).join(' / ')}</b> venceram${has?' por '+ws+'x'+ls:''}<br>`+[0,1].map(i=>ln(W[i],b4[i],n4[i],1)).join('<br>')+'<br>'+[0,1].map(i=>ln(L[i],b4[2+i],n4[2+i],0)).join('<br>')
+    +all.map((q,i)=>n4[i].tier!==b4[i].t?`<br>${n4[i].tier<b4[i].t?'⬆️':'⬇️'} ${pnl(q.id,q.name)} agora está no Ranking ${n4[i].tier}.`:'').join('')+(mu>1?`<br>⚡ Bônus de vitória ×${mu}`:'')+unl.map(achLine).join(''));
+  dpart=[null,null]; sel=[null,null]; sc=[null,null]; multi.clear(); multiOpen=false; busy=false; render(); undoUi(mid,W.map(q=>q.name).join(' / '),L.map(q=>q.name).join(' / ')); confetti(); sfx('win');
+  try{fx()&&!cl()&&navigator.vibrate&&navigator.vibrate([30,40,30])}catch(e){}
+  const up=W.findIndex((q,i)=>n4[i].tier<b4[i].t); if(up>=0)setTimeout(()=>{splash('⬆ Rank up',W[up].name,'agora no Ranking '+n4[up].tier,TCOL[n4[up].tier]);sfx('rank')},800);
+  if(unl.length)setTimeout(()=>achNotify(unl),up>=0?3600:900);
+  return true;
+}
 async function win(wi){
-  if(busy)return; if(S.settings.locked){msg('🔒 Lançamentos trancados. Peça ao administrador para destrancar.');return} const w=byId(sel[wi]), l=byId(sel[1-wi]); if(!w||!l)return;
+  if(busy)return;
+  if(dpart[0]||dpart[1]){ if(dpart[0]&&dpart[1])return winD(wi); msg('👥 Partida de duplas: escolha a dupla dos <b>dois</b> lados (ou tire a dupla para lançar um jogo de simples).'); return } if(S.settings.locked){msg('🔒 Lançamentos trancados. Peça ao administrador para destrancar.');return} const w=byId(sel[wi]), l=byId(sel[1-wi]); if(!w||!l)return;
   const ws=sc[wi], ls=sc[1-wi], has=ws!==null&&ls!==null;
   if(has&&ws<=ls){msg('⚠️ O placar não bate com o vencedor escolhido.');return}
   busy=true; const t0=w.tier,t1=l.tier,r0=w.rating,r1=l.rating;
@@ -1675,11 +1750,11 @@ const vrRange=()=>{const n=new Date(), d0=new Date(n.getFullYear(),n.getMonth(),
   if(vrP==='hoje')return [d0,Infinity]; if(vrP==='sem')return [d0-6*864e5,Infinity];
   if(vrP==='temp')return [S.settings.seasonStart||0,Infinity]; if(vrP==='ger')return [0,Infinity];
   return [vrA?new Date(vrA+'T00:00').getTime():0, vrB?new Date(vrB+'T23:59:59.999').getTime():Infinity]};
-function vrData(){const [a,b]=vrRange(), M={}; S.matches.forEach(m=>{if(m.at<a||m.at>b)return; const d=D[m.id]; if(!d)return;
+function vrData(){const [a,b]=vrRange(), M={}, sg_=new Set(); let tc=0; S.matches.forEach(m=>{if(m.at<a||m.at>b)return; const d=D[m.id]; if(!d)return; if(m.dbl){if(!sg_.has(m.dbl.g)){sg_.add(m.dbl.g);tc++}}else tc++;
     const w=M[m.winner]||(M[m.winner]={id:m.winner,n:nameOf(m.winner,m.wn),v:0,d:0,pts:0,ms:[]}), l=M[m.loser]||(M[m.loser]={id:m.loser,n:nameOf(m.loser,m.ln),v:0,d:0,pts:0,ms:[]});
     w.v++; w.pts+=d[0]; l.d++; l.pts-=d[1]; w.ms.push({m,w:1,p:d[0],o:nameOf(m.loser,m.ln)}); l.ms.push({m,w:0,p:-d[1],o:nameOf(m.winner,m.wn)})});
   Object.values(M).forEach(x=>x.ms.sort((a,b)=>b.m.at-a.m.at));
-  const vs=new Set(vis().map(p=>p.id)); return Object.values(M).filter(x=>vs.has(x.id)).sort((x,y)=>y.pts-x.pts||(y.v+y.d)-(x.v+x.d)||x.n.localeCompare(y.n))}
+  const vs=new Set(vis().map(p=>p.id)); const R_=Object.values(M).filter(x=>vs.has(x.id)).sort((x,y)=>y.pts-x.pts||(y.v+y.d)-(x.v+x.d)||x.n.localeCompare(y.n)); R_.tot=tc; return R_}
 const VR_N={hoje:'Hoje',sem:'Últimos 7 dias',esc:'Escolher',temp:'Temporada',ger:'Geral'};
 const vrLbl=()=>vrP==='esc'?`${vrA?new Date(vrA+'T00:00').toLocaleDateString('pt-BR'):'início'} a ${vrB?new Date(vrB+'T00:00').toLocaleDateString('pt-BR'):'hoje'}`:vrP==='temp'?sN(curS()):VR_N[vrP];
 let rkPc='hoje';
@@ -1692,7 +1767,7 @@ const sg=n=>n>0?'+'+n:n<0?'−'+(-n):'0';
 function renderRankVar(){
   $('shareB').textContent='📤 Compartilhar variação (WhatsApp)'; $('jpgRank').textContent='🖼️ Exportar variação de pontos (JPG)';
   $('rkLeg').hidden=true; $('rankHi').innerHTML='';
-  const pl=vrData(), tot=pl.reduce((t,x)=>t+x.v,0);
+  const pl=vrData(), tot=pl.tot;
   $('rankNote').innerHTML='Toque em um jogador para ver as partidas. Soma dos pontos ganhos e perdidos nas partidas do período. Ajustes manuais do admin e perda por inatividade não entram.';
   rkSet(`<div class="atabs" id="vrP" style="flex-wrap:wrap">${Object.entries(VR_N).map(([k,t])=>`<button data-p="${k}" class="${k===vrP?'on':''}">${t}</button>`).join('')}</div>`+(vrP==='esc'?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><label class="field" style="margin:0"><span>De</span><input id="vrA" type="date" value="${vrA}" style="width:100%"></label><label class="field" style="margin:0"><span>Até</span><input id="vrB" type="date" value="${vrB}" style="width:100%"></label></div>`:'')
     +`<p class="legend" style="margin:0 0 6px">${esc(vrLbl())} · ${tot} partida${tot===1?'':'s'}</p>`
@@ -1767,11 +1842,11 @@ function mfUi(){ const M=mfNames(), ch=$('mfCh'), g=$('mfSg'), q=pxNorm($('mfN')
   $('mfBd').textContent=mP.length?'(ativo)':''; $('mfC').hidden=!mP.length }
 $('mfN').oninput=$('mfN').onfocus=mfUi; $('mfC').onclick=()=>{mP=[];$('mfN').value='';renderMatches()};
 $('mSeas').onchange=()=>{mSel=$('mSeas').value;renderMatches()};
-$('undoBtn').onclick=e=>{const m=MV[MV.length-1]; if(!m)return; sure(e.currentTarget,async()=>{await del('matches',m.id);await logA(`Partida desfeita: ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)}`)})};
+$('undoBtn').onclick=e=>{const m=MV[MV.length-1]; if(!m)return; sure(e.currentTarget,async()=>{await delMatch(m);await logA(`Partida desfeita: ${mTxt(m)}`)})};
 const confOpen=new Set(), CONF_MIN=10;
 function conflicts(){ /* mesmos 2 jogadores, lançadas com poucos minutos de diferença, por aparelhos/pessoas diferentes */
   const key=m=>(m.by||'')+'|'+(m.dev?JSON.stringify(m.dev):''), C={}, by={};
-  S.matches.forEach(m=>{const k=[m.winner,m.loser].sort().join('|'); (by[k]=by[k]||[]).push(m)});
+  S.matches.forEach(m=>{if(m.dbl)return; const k=[m.winner,m.loser].sort().join('|'); (by[k]=by[k]||[]).push(m)});
   Object.values(by).forEach(g=>{ if(g.length<2)return; g.sort((a,b)=>(a.cr||a.at)-(b.cr||b.at));
     for(let i=0;i<g.length;i++)for(let j=i+1;j<g.length;j++){const a=g[i],b=g[j], ta=a.cr||a.at, tb=b.cr||b.at; if(tb-ta>CONF_MIN*60000)break;
       if(key(a)!==key(b)&&(key(a)!=='|'||key(b)!=='|')&&a.winner===b.winner&&(a.score||'')===(b.score||'')){(C[a.id]=C[a.id]||[]).push(b);(C[b.id]=C[b.id]||[]).push(a)}}});
@@ -1779,7 +1854,7 @@ function conflicts(){ /* mesmos 2 jogadores, lançadas com poucos minutos de dif
 }
 function renderMatches(){
   const dupOn=admin&&mDup; let DUP=null, dupN=[0,0,0]; const OKS=new Set(S.settings.dupOk||[]);
-  let l=matchView().reverse();
+  let l=collapseD(matchView()).reverse();
   if(dupOn){
     const sv=[mSel,mFrom,mUntil]; mSel='all'; mFrom=mUntil=''; let base=matchView(); [mSel,mFrom,mUntil]=sv;
     const d0=mDupDay?new Date(mDupDay+'T00:00:00'):new Date(); d0.setHours(0,0,0,0); const t0=d0.getTime(),t1=t0+86400000; base=base.filter(m=>m.at>=t0&&m.at<t1);
@@ -1806,11 +1881,13 @@ function renderMatches(){
     const parts=['👤 <b>'+esc(who)+'</b>', '📱 '+esc(dv.o||'aparelho?')+' · '+esc(dv.b||'?')+(dv.s?' · tela '+esc(dv.s):''), '🕒 lançada às '+t1+(t0!==t1?' (partida às '+t0+')':'')];
     if(m.tid)parts.push('🏆 '+esc(m.tn||'campeonato')); if(m.link)parts.push('🔗 lançada em vários clubes');
     return `<tr class="dup${c} dupI"><td colspan="5">${parts.join('<br>')}<br><button class="dok" data-id="${m.id}">${c==='G'?'↩ Tirar o OK':'✔ Marcar como OK'}</button></td></tr>`};
+  const wC=m=>{const g=dGroup(m); if(!g||g.length<2){const d=D[m.id]||[0,0]; return `<div class="mc"><b class="up nm">${pn(m.winner,m.wn)}</b><small class="up">+${d[0]}${d[2]>1?' ×'+d[2]:''}</small></div>`} return g.map(x=>{const d=D[x.id]||[0,0]; return `<div class="mc"><b class="up nm">${pn(x.winner,x.wn)}</b><small class="up">+${d[0]}${d[2]>1?' ×'+d[2]:''}</small></div>`}).join('')};
+  const lC=m=>{const g=dGroup(m); if(!g||g.length<2){const d=D[m.id]||[0,0]; return `<div class="mc"><span class="nm">${pn(m.loser,m.ln)}</span><small class="dn">−${d[1]}</small></div>`} return g.map(x=>{const d=D[x.id]||[0,0]; return `<div class="mc"><span class="nm">${pn(x.loser,x.ln)}</span><small class="dn">−${d[1]}</small></div>`}).join('')};
   const RQ=new Set((S.settings.requests||[]).filter(r=>r.st==='open').map(r=>r.mid));
   const lim=(dupOn||mAll||document.body.classList.contains('champ'))?Infinity:50, shown=l.slice(0,lim);
   const rqHint=(!admin&&l.length&&!(()=>{try{return localStorage.getItem('rqHint')}catch(e){return 1}})())?'<div class="cfbar" id="rqHint" style="background:var(--card2,transparent);border:1px solid var(--bd,#8884);display:flex;align-items:center;gap:6px;padding:2px 2px 2px 8px;font-size:10px;line-height:1.2"><span style="flex:1;min-width:0">✏️ Viu algo errado? Toque no ✏️ da partida para <b>pedir correção</b>.</span><button class="x1" id="rqHintX" style="color:var(--tx);flex:none;margin:0;padding:8px 10px" aria-label="Dispensar">✕</button></div>':'';
   { const ms0=$('mdS'); $('matchM').querySelector('.sheet').insertBefore(ms0,$('matchL')) }
-  $('matchL').innerHTML=(nCf?`<div class="cfbar">❗ ${nCf} partida${nCf===1?'':'s'} com possível conflito (toque no ❗ para ver).</div>`:'')+rqHint+(l.length?`<table class="mt ad"><tr><th>Data</th><th>Vencedor</th><th class="sc">Placar</th><th>Perdedor</th><th></th></tr>`+shown.map(m=>{const d=D[m.id]||[0,0];const dc=DUP&&DUP.get(m.id);return `<tr${dc?` class="dup${dc}"`:''}><td ${admin&&devTitle(m)?`title="${esc(devTitle(m))}"`:''}>${fmt(m.at).replace(',','')}${m.link?' 🔗':''}${m.tid?` <button class="tbd" data-tm="${m.id}" title="Partida de campeonato" aria-label="Partida de campeonato">🏆</button>`:''}${CF[m.id]?` <button class="cfb" data-id="${m.id}" title="Possível conflito" aria-label="Possível conflito">❗</button>`:''}</td><td><div class="mc"><b class="up nm">${pn(m.winner,m.wn)}</b><small class="up">+${d[0]}${d[2]>1?' ×'+d[2]:''}</small></div></td><td class="sc">${m.score?esc(m.score):'–'}</td><td><div class="mc"><span class="nm">${pn(m.loser,m.ln)}</span><small class="dn">−${d[1]}</small></div></td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:`<td><button class="x1 rq" data-id="${m.id}" style="color:var(--tx)" title="${RQ.has(m.id)?'Pedido já enviado':'Pedir correção ou exclusão'}" aria-label="Pedir correção">${RQ.has(m.id)?'⏳':'✏️'}</button></td>`}</tr>`+(CF[m.id]&&confOpen.has(m.id)?det(m):'')+(dc?dupInfo(m,dc):'')}).join('')+'</table>'+(l.length>shown.length?`<button class="sec" id="mMore" style="margin-top:10px">MAIS (${l.length-shown.length} restantes)</button>`:''):(dupOn?'<p style="color:var(--mut)">✅ Nenhuma suspeita de duplicidade.</p>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>'));
+  $('matchL').innerHTML=(nCf?`<div class="cfbar">❗ ${nCf} partida${nCf===1?'':'s'} com possível conflito (toque no ❗ para ver).</div>`:'')+rqHint+(l.length?`<table class="mt ad"><tr><th>Data</th><th>Vencedor</th><th class="sc">Placar</th><th>Perdedor</th><th></th></tr>`+shown.map(m=>{const d=D[m.id]||[0,0];const dc=DUP&&DUP.get(m.id);return `<tr${dc?` class="dup${dc}"`:''}><td ${admin&&devTitle(m)?`title="${esc(devTitle(m))}"`:''}>${fmt(m.at).replace(',','')}${m.link?' 🔗':''}${m.dbl?' <span title="Partida de duplas">👥</span>':''}${m.tid?` <button class="tbd" data-tm="${m.id}" title="Partida de campeonato" aria-label="Partida de campeonato">🏆</button>`:''}${CF[m.id]?` <button class="cfb" data-id="${m.id}" title="Possível conflito" aria-label="Possível conflito">❗</button>`:''}</td><td>${wC(m)}</td><td class="sc">${m.score?esc(m.score):'–'}</td><td>${lC(m)}</td>${admin?`<td style="white-space:nowrap"><button class="x1 ed" data-id="${m.id}" style="color:var(--tx)">✏️</button><button class="x1 rm" data-id="${m.id}">✕</button></td>`:`<td><button class="x1 rq" data-id="${m.id}" style="color:var(--tx)" title="${RQ.has(m.id)?'Pedido já enviado':'Pedir correção ou exclusão'}" aria-label="Pedir correção">${RQ.has(m.id)?'⏳':'✏️'}</button></td>`}</tr>`+(CF[m.id]&&confOpen.has(m.id)?det(m):'')+(dc?dupInfo(m,dc):'')}).join('')+'</table>'+(l.length>shown.length?`<button class="sec" id="mMore" style="margin-top:10px">MAIS (${l.length-shown.length} restantes)</button>`:''):(dupOn?'<p style="color:var(--mut)">✅ Nenhuma suspeita de duplicidade.</p>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>'));
   { $('matchL').prepend($('mdS')) }
   if($('mMore'))$('mMore').onclick=()=>{mAll=true;renderMatches()};
 
@@ -1818,14 +1895,16 @@ function renderMatches(){
   $('matchL').querySelectorAll('.tbd').forEach(b=>b.onclick=()=>tPop(b.dataset.tm));
   $('matchL').querySelectorAll('.pl').forEach(b=>b.onclick=()=>goPlayer(b.dataset.id));
   $('matchL').querySelectorAll('.cfb').forEach(b=>b.onclick=()=>{const id=b.dataset.id; confOpen.has(id)?confOpen.delete(id):confOpen.add(id); renderMatches()});
-  $('matchL').querySelectorAll('.rm').forEach(b=>b.onclick=()=>sure(b,async()=>{const m=S.matches.find(x=>x.id===b.dataset.id);await del('matches',b.dataset.id);if(m)await logA(`Partida apagada: ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)} (${fmt(m.at)})`)}));
+  $('matchL').querySelectorAll('.rm').forEach(b=>b.onclick=()=>sure(b,async()=>{const m=S.matches.find(x=>x.id===b.dataset.id); if(m){await delMatch(m); await logA(`Partida apagada: ${mTxt(m)} (${fmt(m.at)})`)} else await del('matches',b.dataset.id)}));
   $('matchL').querySelectorAll('.ed').forEach(b=>b.onclick=()=>editMatch(b.dataset.id));
   if($('rqHintX'))$('rqHintX').onclick=()=>{try{localStorage.setItem('rqHint','1')}catch(e){} $('rqHint').remove()};
   $('matchL').querySelectorAll('.rq').forEach(b=>b.onclick=()=>reqMatch(b.dataset.id));
   mScrUp();
 }
+function dblCell(m,pid){ const d=m.dbl, mine=d.w.includes(pid), my=mine?d.w:d.l, op=mine?d.l:d.w, on=mine?d.ln:d.wn, pn_=mine?d.wn:d.ln, pi=my.findIndex(x=>x!==pid), pp=my[pi];
+  return `<small style="color:var(--mut)">👥 com ${pnl(pp,pn_[pi])}</small><br>vs ${op.map((i,k)=>pnl(i,on[k])).join(' / ')}` }
 function openStList(k){const v=matchView(); if(!v.length)return; const ST=mStats(v), L=ST.full[k]||[], T={pts:'🏆 Mais Pontos',played:'🏓 Mais Partidas Jogadas',pct:'📈 Maior % de Vitórias'}[k];
-  $('stT').textContent=T; $('stSub').textContent=v.length+' partida'+(v.length===1?'':'s')+' no período'+(k==='pct'?' · quem jogou menos de '+ST.min+' partidas aparece no fim':'');
+  $('stT').textContent=T; $('stSub').textContent=collapseD(v).length+' partida'+(collapseD(v).length===1?'':'s')+' no período'+(k==='pct'?' · quem jogou menos de '+ST.min+' partidas aparece no fim':'');
   let lowShown=false; $('stB').innerHTML=L.length?`<div class="stl">`+L.map((x,i)=>{const sep=(k==='pct'&&x.low&&!lowShown)?(lowShown=true,'<div class="stsep">Poucos jogos</div>'):''; return sep+`<div class="strow${x.low?' low':''}"><span class="stn">${i+1}</span><span class="stnm">${esc(x.n)}<small>${esc(x.x)}</small></span><b class="stv" style="color:${x.c==='up'?'var(--ok)':x.c==='dn'?'var(--bad)':'inherit'}">${esc(x.t)}</b></div>`}).join('')+`</div>`:'<p class="legend">Nada para mostrar.</p>';
   open('stM'); const sh=$('stM').querySelector('.sheet'); if(sh)sh.scrollTop=0}
 $('mdS').onclick=e=>{const b=e.target.closest('.stc'); if(b)openStList(b.dataset.k)};
@@ -1834,17 +1913,17 @@ function mScrUp(){const sh=$('matchM').querySelector('.sheet'), h=$('mScr'); if(
 function reqMatch(id){
   const m=S.matches.find(x=>x.id===id); if(!m)return; let t='alt';
   if((S.settings.requests||[]).some(r=>r.st==='open'&&r.mid===id)){alert('Já existe um pedido aberto para esta partida. Aguarde o administrador.');return}
-  $('rqInfo').textContent=`${fmt(m.at)} · ${nameOf(m.winner,m.wn)} ${m.score||'x'} ${nameOf(m.loser,m.ln)}`; $('rqN').value=''; $('rqErr').textContent='';
+  $('rqInfo').textContent=`${fmt(m.at)} · ${wLbl(m)} ${m.score||'x'} ${lLbl(m)}`; $('rqN').value=''; $('rqErr').textContent='';
   const seg=()=>$('rqT').querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.t===t);b.onclick=()=>{t=b.dataset.t;seg()}}); seg();
   $('rqOk').onclick=async()=>{const n=$('rqN').value.trim(); if(n.length<3){$('rqErr').textContent='Explique o motivo.';return}
     const cur0=S.settings.requests||[]; if(cur0.some(r=>r.st==='open'&&r.mid===id)){$('rqM').classList.remove('on');return}
-    const r={id:'rq'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),at:Date.now(),mid:id,t,n,st:'open',by:myId,dev:deviceInfo(),snap:{w:nameOf(m.winner,m.wn),l:nameOf(m.loser,m.ln),sc:m.score||'',d:m.at}};
+    const r={id:'rq'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),at:Date.now(),mid:id,t,n,st:'open',by:myId,dev:deviceInfo(),snap:{w:wLbl(m),l:lLbl(m),sc:m.score||'',d:m.at}};
     await put('settings',{...S.settings,requests:[r,...cur0].slice(0,100)}); $('rqM').classList.remove('on'); renderMatches()};
   $('rqM').classList.add('on');
 }
 function editMatch(id){
-  const m=S.matches.find(x=>x.id===id); if(!m)return; let w=m.winner;
-  const ids=[m.winner,m.loser], draw=()=>{$('emW').innerHTML=ids.map(i=>`<button data-id="${i}" class="${w===i?'on':''}">${esc(nameOf(i,i===m.winner?m.wn:m.ln))}</button>`).join('');$('emW').querySelectorAll('button').forEach(b=>b.onclick=()=>{w=b.dataset.id;draw()})};
+  const m=S.matches.find(x=>x.id===id); if(!m)return; let w=m.winner; const DG_=dGroup(m), isD=!!(m.dbl&&DG_&&DG_.length===2);
+  const ids=[m.winner,m.loser], draw=()=>{$('emW').innerHTML=isD?[['w',wLbl(m)],['l',lLbl(m)]].map(([k,t])=>`<button data-id="${k}" class="${(k==='w')===(w===m.winner)?'on':''}">${esc(t)}</button>`).join(''):ids.map(i=>`<button data-id="${i}" class="${w===i?'on':''}">${esc(nameOf(i,i===m.winner?m.wn:m.ln))}</button>`).join('');$('emW').querySelectorAll('button').forEach(b=>b.onclick=()=>{w=isD?(b.dataset.id==='w'?m.winner:m.loser):b.dataset.id;draw()})};
   const info=()=>{$('emInfo').textContent='Partida de '+fmt(m.at)+(m.cr&&m.cr!==m.at?' (lançada em '+fmt(m.cr)+')':'')+'. '+((m.by||m.dev)?'Lançada por '+(whoTxt(m.by)||'—')+(m.dev?' · '+devTxt(m.dev):'')+'. ':'')+'A pontuação de todos é recalculada automaticamente.'}; info(); loadNames([m.by]).then(c=>c&&info()); $('emS').value=m.score||''; $('emErr').textContent=''; draw();
   const toIn=t=>{const d=new Date(t);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)};
   $('emD').value=toIn(m.at);
@@ -1857,6 +1936,9 @@ function editMatch(id){
     if(isNaN(nt)){$('emErr').textContent='Informe a data e o horário.';return}
     if(nt>Date.now()+60000){$('emErr').textContent='A data não pode ser no futuro.';return}
     const at=toIn(nt)===toIn(m.at)?m.at:nt;
+    if(isD){ const sw=w!==m.winner, o=`${wLbl(m)} ${m.score||''} ${lLbl(m)}`;
+      for(const x of DG_){ const d=x.dbl, nd=sw?{...d,w:d.l,l:d.w,wn:d.ln,ln:d.wn}:d; await put('matches',{...x,...(sw?{winner:x.loser,loser:x.winner,wn:x.ln,ln:x.wn}:{}),dbl:nd,score:v,at}) }
+      await logA(`Partida de duplas corrigida (${fmt(m.at)}): ${o} → ${sw?lLbl(m):wLbl(m)} ${v} ${sw?wLbl(m):lLbl(m)}`+(at!==m.at?` · data ${fmt(m.at)} → ${fmt(at)}`:'')); $('emM').classList.remove('on'); return }
     const l=ids.find(i=>i!==w), o=`${nameOf(m.winner,m.wn)} ${m.score||''} ${nameOf(m.loser,m.ln)}`;
     await put('matches',{...m,winner:w,loser:l,wn:nameOf(w),ln:nameOf(l),score:v,at});
     await logA(`Partida corrigida (${fmt(m.at)}): ${o} → ${nameOf(w)} ${v} ${nameOf(l)}`+(at!==m.at?` · data ${fmt(m.at)} → ${fmt(at)}`:'')); $('emM').classList.remove('on')};
@@ -1929,7 +2011,7 @@ function renderPlayers(){
   pxRows=ms.map(m=>{const won=m.winner===p.id,d=D[m.id]||[0,0],x=AX[m.id],on=won?nameOf(m.loser,m.ln):nameOf(m.winner,m.wn),ot=x?(won?x.lt0:x.wt0):((byId(won?m.loser:m.winner)||{}).tier||''),s=m.score?(won?m.score:m.score.split('x').reverse().join('x')):'';return {d:ymd(m.at),at:m.at,oid:won?m.loser:m.winner,on,ot,won,s,pt:won?'+'+d[0]:'-'+d[1],c:!!m.tid}});
   const inp='width:100%;box-sizing:border-box';
   pxD.m=ms.length?`<div class="pfb"><details id="pfD" class="pfd"${pfOpen?' open':''}><summary>🔎 Filtros <small id="pfBd"></small></summary><div class="wrow" style="margin:8px 0 6px"><label class="field" style="margin:0"><span>De</span><input id="pfA" type="date" value="${pF.a}" style="${inp}"></label><label class="field" style="margin:0"><span>Até</span><input id="pfB" type="date" value="${pF.b}" style="${inp}"></label></div><div class="wrow" style="margin-bottom:6px"><label class="field" style="margin:0"><span>Adversário (nome)</span><input id="pfN" type="text" autocomplete="off" placeholder="Digite para buscar…" style="${inp}"></label><label class="field" style="margin:0"><span>Ranking do adversário</span><select id="pfT" style="${inp}"><option value="">Todos</option>${['A','B','C'].map(q=>`<option value="${q}"${pF.t===q?' selected':''}>Ranking ${q}</option>`).join('')}</select></label></div><div id="pfCh" class="pfch"></div><div id="pfSg" class="pfsg"></div><button class="sec" id="pfC" style="margin:0 0 4px;width:100%">Limpar filtros</button></details><div id="pfS" class="legend" style="margin:4px 0 8px"></div></div><table><tr><th>Data</th><th>Adversário</th><th>Resultado</th><th class="n">Placar</th><th class="n">Pontos</th></tr>`+ms.map((m,i)=>{const r=pxRows[i],won=r.won;
-    return `<tr data-i="${i}"><td>${fmt(m.at)}${m.tid?` <button class="tbd" data-tm="${m.id}" title="Partida de campeonato" aria-label="Partida de campeonato">🏆</button>`:''}</td><td>${pnl(won?m.loser:m.winner,r.on)}</td><td class="${won?'up':'dn'}">${won?'Vitória':'Derrota'}</td><td class="n">${esc(r.s||'–')}</td><td class="n ${won?'up':'dn'}">${r.pt.replace('-','−')}</td></tr>`}).join('')+'</table>'+(ms.length>LIM?`<button class="sec" id="allM" style="margin:8px 0 0">${pAllM?'Mostrar só as últimas':'Mostrar todas as partidas ('+ms.length+')'}</button>`:'')+`<button class="sec" id="pfX" style="margin:8px 0 0;width:100%"${dl?'':' hidden'}>🖼️ Exportar (JPG)</button>`:'<p style="color:var(--mut)">Nenhuma partida neste período.</p>';
+    return `<tr data-i="${i}"><td>${fmt(m.at)}${m.tid?` <button class="tbd" data-tm="${m.id}" title="Partida de campeonato" aria-label="Partida de campeonato">🏆</button>`:''}</td><td>${m.dbl?dblCell(m,p.id):pnl(won?m.loser:m.winner,r.on)}</td><td class="${won?'up':'dn'}">${won?'Vitória':'Derrota'}</td><td class="n">${esc(r.s||'–')}</td><td class="n ${won?'up':'dn'}">${r.pt.replace('-','−')}</td></tr>`}).join('')+'</table>'+(ms.length>LIM?`<button class="sec" id="allM" style="margin:8px 0 0">${pAllM?'Mostrar só as últimas':'Mostrar todas as partidas ('+ms.length+')'}</button>`:'')+`<button class="sec" id="pfX" style="margin:8px 0 0;width:100%"${dl?'':' hidden'}>🖼️ Exportar (JPG)</button>`:'<p style="color:var(--mut)">Nenhuma partida neste período.</p>';
   pxD.c=pxC.h;
   h+=`<div class="pbot">`;
   if(admin&&(mgFor!==p.id&&(mgFor=p.id,mgSelId=''),true))h+=`<div class="sub">Admin: ranking inicial</div><div class="seg" id="pg" style="margin-bottom:10px">${['C','B','A'].map(x=>`<button class="t${x}${p.group===x?' on':''}" data-g="${x}">${x} · ${START[x]}</button>`).join('')}</div><div class="sub">Admin: juntar cadastro duplicado</div><div class="wrow" style="margin-bottom:10px"><select id="mgP"><option value="">Escolha o duplicado…</option>${S.raw.filter(x=>x.id!==p.id).sort(byNameArch).map(x=>`<option value="${x.id}"${x.id===mgSelId?' selected':''}>${esc(x.name)}</option>`).join('')}</select><button class="sec" id="mgB" style="margin:0">🔗 Juntar</button></div><div class="legend">As partidas do duplicado passam para ${esc(p.name)} e o duplicado é apagado.</div><div class="wrow" style="margin-bottom:10px"><input id="rn" value="${esc(p.name)}" maxlength="40"><button class="sec" id="rnB" style="margin:0">Salvar nome</button></div><button class="sec" id="dpB" style="margin:0 0 10px;border-color:var(--bad);color:var(--bad)">🗑️ Excluir jogador (apaga também as partidas dele)</button>`;
@@ -1948,7 +2030,9 @@ function renderPlayers(){
     $('pg').querySelectorAll('button').forEach(b=>b.onclick=()=>sure(b,async()=>{const g=b.dataset.g;if(g===p.group)return;const o=p.group;const q={...S.raw.find(x=>x.id===p.id),group:g}; delete q.start; await put('players',q);await logA(`Ranking inicial de ${p.name}: ${o} → ${g}`)}));
     $('mgP').onchange=()=>{mgSelId=$('mgP').value};
     $('mgB').onclick=e=>{const did=$('mgP').value; if(!did)return; sure(e.currentTarget,async()=>{const dp=S.raw.find(x=>x.id===did); if(!dp)return;
-      for(const m of S.matches.filter(m=>m.winner===did||m.loser===did)){const nm={...m}; if(nm.winner===did){nm.winner=p.id;nm.wn=p.name} if(nm.loser===did){nm.loser=p.id;nm.ln=p.name} if(nm.winner===nm.loser)await del('matches',m.id); else await put('matches',nm)}
+      for(const m of S.matches.filter(m=>inM(m,did))){const nm={...m}; if(nm.winner===did){nm.winner=p.id;nm.wn=p.name} if(nm.loser===did){nm.loser=p.id;nm.ln=p.name}
+        if(nm.dbl){const d={...nm.dbl,w:[...nm.dbl.w],l:[...nm.dbl.l],wn:[...nm.dbl.wn],ln:[...nm.dbl.ln]}; d.w=d.w.map((x,i)=>{if(x===did){d.wn[i]=p.name;return p.id}return x}); d.l=d.l.map((x,i)=>{if(x===did){d.ln[i]=p.name;return p.id}return x}); nm.dbl=d; if(new Set([...d.w,...d.l]).size<4){for(const x of (dGroup(m)||[m]))await del('matches',x.id); continue}}
+        if(nm.winner===nm.loser)await del('matches',m.id); else await put('matches',nm)}
       await del('players',did); mgSelId=''; await logA(`Cadastro juntado: ${dp.name} → ${p.name}`)})};
     $('dpB').onclick=()=>delPlayerUi(p.id);
   }
@@ -1978,7 +2062,7 @@ function renderAdm(){
   const T=admTab; let body='';
   if(T==='geral')body=`<div class="agroup"><h4>Clube</h4>${arow('Nome do clube','',`<span style="display:flex;gap:6px"><input id="cnI" class="cin w" maxlength="40" value="${esc(clubName(cur))}"><button class="cb" id="cnB">Salvar</button></span>`)}</div>
     <div class="agroup"><h4>Notificações</h4>${arow('Pop-ups de conquistas',S.settings.achOn?'Ligados · aparece o pop-up no topo da tela quando alguém conquista (todos os dispositivos)':'Desativados · sem pop-up no topo; as conquistas continuam aparecendo após registrar a partida',`<button class="cb ${S.settings.achOn?'':'bad'}" id="achNT">${S.settings.achOn?'🔔 Ligados':'🔕 Desativados'}</button>`)}</div>
-    <div class="agroup"><h4>Acesso</h4>${arow('Lançamentos',st.locked?'Trancados · ninguém cadastra partidas avulsas na tela principal (campeonatos continuam lançando)':'Liberados · qualquer pessoa pode cadastrar partidas',`<button class="cb ${st.locked?'bad':''}" id="lkT">${st.locked?'🔒 Trancados':'🔓 Liberados'}</button>`)}${arow('Conquistas',st.achOff?'Desativadas · somem do app para todos (botão, avisos e perfil); continuam sendo ganhas em segundo plano':'Ativadas · botão, avisos e perfil mostram as conquistas',`<button class="cb ${st.achOff?'bad':''}" id="achT2">${st.achOff?'🏅 Desativadas':'🏅 Ativadas'}</button>`)}${arow('Botão Adicionar jogador',st.addOff?'Escondido · some da tela inicial; continua em Jogadores e ao selecionar jogador':'Visível na tela inicial · também há em Jogadores e ao selecionar jogador',`<button class="cb ${st.addOff?'bad':''}" id="addT">${st.addOff?'➕ Escondido':'➕ Visível'}</button>`)}${arow('Placar Eletrônico',st.peOff?'Desativado · o botão some da tela inicial para todos':'Ativado · botão visível na tela inicial para todos',`<button class="cb ${st.peOff?'bad':''}" id="peT">${st.peOff?'📟 Desativado':'📟 Ativado'}</button>`)}${arow('PIN do administrador','Alterar o PIN deste clube','<button class="cb" id="pinChg">🔑 Alterar</button>')}
+    <div class="agroup"><h4>Acesso</h4>${arow('Lançamentos',st.locked?'Trancados · ninguém cadastra partidas avulsas na tela principal (campeonatos continuam lançando)':'Liberados · qualquer pessoa pode cadastrar partidas',`<button class="cb ${st.locked?'bad':''}" id="lkT">${st.locked?'🔒 Trancados':'🔓 Liberados'}</button>`)}${arow('Conquistas',st.achOff?'Desativadas · somem do app para todos (botão, avisos e perfil); continuam sendo ganhas em segundo plano':'Ativadas · botão, avisos e perfil mostram as conquistas',`<button class="cb ${st.achOff?'bad':''}" id="achT2">${st.achOff?'🏅 Desativadas':'🏅 Ativadas'}</button>`)}${arow('Botão Adicionar jogador',st.addOff?'Escondido · some da tela inicial; continua em Jogadores e ao selecionar jogador':'Visível na tela inicial · também há em Jogadores e ao selecionar jogador',`<button class="cb ${st.addOff?'bad':''}" id="addT">${st.addOff?'➕ Escondido':'➕ Visível'}</button>`)}${arow('Placar Eletrônico',st.peOff?'Desativado · o botão some da tela inicial para todos':'Ativado · botão visível na tela inicial para todos',`<button class="cb ${st.peOff?'bad':''}" id="peT">${st.peOff?'📟 Desativado':'📟 Ativado'}</button>`)}${arow('Duplas (extra)',st.duoOn?'Ativado · aparece o botão Dupla ao escolher o Jogador 1 e o 2 · a partida vale pontos no ranking normal':'Desativado · o botão Dupla fica escondido',`<button class="cb ${st.duoOn?'':'bad'}" id="duoT">${st.duoOn?'👥 Ativado':'👥 Desativado'}</button>`)}${arow('PIN do administrador','Alterar o PIN deste clube','<button class="cb" id="pinChg">🔑 Alterar</button>')}
       <div id="pinForm" hidden style="padding:6px 0 8px"><div style="display:grid;gap:6px"><input id="pinCur" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN atual" style="width:100%"><input id="pinNew" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Novo PIN (mínimo 4 dígitos)" style="width:100%"><input id="pinNew2" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Repetir o novo PIN" style="width:100%"></div><div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="cb pri2" id="pinSv">Salvar PIN</button><span id="pinMsg" class="legend" style="margin:0"></span></div></div></div>
     <div class="agroup"><h4>Regras do ranking</h4>${arow('Margem de faixa','Folga para cair de faixa. Ex.: 50 = só cai do A abaixo de 1750',`<input id="mg" class="cin" type="number" min="0" inputmode="numeric" value="${+st.margin||0}">`)}${arow('Inatividade (dias)','Sai do ranking após esse tempo sem jogar · 0 = nunca',`<input id="ia" class="cin" type="number" min="0" inputmode="numeric" value="${+st.inactiveDays||0}">`)}</div>`;
   if(T==='pts'){const bo=openP(st.bonus), fo=openP(st.fire), cfg={...DEF.bonusCfg,...(st.bonusCfg||{})}, tr=['C','B','A'];
@@ -2018,12 +2102,13 @@ function renderAdm(){
       await put('tournaments',{...tt,reg:{...tt.reg,list:tt.reg.list.filter(x=>x!==en)}}); await logA(`Inscrição removida em “${tt.name}”: ${en.name} (vaga ${en.n}) pelos Avisos`); await setSt('no');return}
     if(a==='ed'){editMatch(r.mid);return}
     if(a==='rm'){if(!b.dataset.s){b.dataset.s=1;b.textContent='Toque de novo para confirmar';setTimeout(()=>{delete b.dataset.s;b.textContent='🗑 Apagar partida'},3000);return}
-      const m=S.matches.find(x=>x.id===r.mid); if(m){await del('matches',m.id); await logA(`Partida apagada (pedido): ${nameOf(m.winner,m.wn)} x ${nameOf(m.loser,m.ln)} (${fmt(m.at)})`)} await setSt('ok');return}
+      const m=S.matches.find(x=>x.id===r.mid); if(m){await delMatch(m); await logA(`Partida apagada (pedido): ${mTxt(m)} (${fmt(m.at)})`)} await setSt('ok');return}
     if(a==='ok'||a==='no'){await setSt(a);return}
     if(a==='del'){await put('settings',{...S.settings,requests:rs.filter(x=>x.id!==r.id)}); renderAdm()}});
   bind('achNT',async()=>{const v=!S.settings.achOn; await put('settings',{...S.settings,achOn:v}); await logA(v?'Avisos de conquistas ligados':'Avisos de conquistas desativados'); renderAdm()});
   bind('achT2',async()=>{const v=!S.settings.achOff; await put('settings',{...S.settings,achOff:v}); await logA(v?'Conquistas DESATIVADAS (ocultas)':'Conquistas ATIVADAS'); render(); renderAdm(); if(op('playM'))renderPlayers()});
   bind('addT',async()=>{const v=!S.settings.addOff; await put('settings',{...S.settings,addOff:v}); await logA(v?'Botão Adicionar jogador da tela inicial ESCONDIDO':'Botão Adicionar jogador da tela inicial VISÍVEL'); render(); renderAdm()});
+  bind('duoT',async()=>{const v=!S.settings.duoOn; await put('settings',{...S.settings,duoOn:v}); await logA(v?'Duplas ATIVADO':'Duplas DESATIVADO'); render(); renderAdm()});
   bind('peT',async()=>{const v=!S.settings.peOff; await put('settings',{...S.settings,peOff:v}); await logA(v?'Placar Eletrônico DESATIVADO':'Placar Eletrônico ATIVADO'); render(); renderAdm()});
   bind('lkT',async()=>{const v=!S.settings.locked; await put('settings',{...S.settings,locked:v}); await logA(v?'Lançamentos trancados':'Lançamentos destrancados'); renderAdm()});
   bind('pinChg',()=>{const f=$('pinForm'); if(f){f.hidden=!f.hidden; if(!f.hidden)$('pinCur').focus()}});
@@ -2096,7 +2181,7 @@ async function doRestoreClub(d){
   const tm={}; (d.tourns||[]).forEach((x,i)=>{const o=owner(G.tourns||[],x.id); tm[x.id]=(o&&o!==cur)?uid()+'t'+i:x.id}); const keepT=new Set(Object.values(tm));
   for(const x of S.tourns.filter(x=>!keepT.has(x.id)))await del('tournaments',x.id);
   for(const x of d.players)await put('players',{id:pm[x.id],name:x.name,group:x.group,...(x.hidden?{hidden:true}:{}),...(x.adj?{adj:x.adj}:{}),...(x.start!=null?{start:x.start}:{}),...(x.hand?{hand:x.hand}:{}),...(x.grip?{grip:x.grip}:{}),...(x.rubber?{rubber:x.rubber}:{})});
-  for(const x of d.matches)await put('matches',{...x,id:mm[x.id],winner:pm[x.winner]||x.winner,loser:pm[x.loser]||x.loser,...(x.tid?{tid:tm[x.tid]||x.tid}:{})});
+  for(const x of d.matches)await put('matches',{...x,id:mm[x.id],winner:pm[x.winner]||x.winner,loser:pm[x.loser]||x.loser,...(x.tid?{tid:tm[x.tid]||x.tid}:{}),...(x.dbl?{dbl:{...x.dbl,g:mm[x.dbl.g]||x.dbl.g,w:x.dbl.w.map(i=>pm[i]||i),l:x.dbl.l.map(i=>pm[i]||i)}}:{})});
   for(const x of (d.tourns||[])){const q=i=>pm[i]||i; await put('tournaments',{...x,id:tm[x.id],players:x.players.map(p=>({...p,id:q(p.id)})),fx:x.fx.map(g=>({...g,...(g.a?{a:q(g.a)}:{}),...(g.b?{b:q(g.b)}:{})})),...(x.groups?{groups:x.groups.map(g=>({...g,ids:g.ids.map(q)}))}:{}),...(x.wd?{wd:Object.fromEntries(Object.entries(x.wd).map(([k,v])=>[q(k),v]))}:{})})}
   if(d.settings&&!Array.isArray(d.settings))await put('settings',{...DEF,...d.settings,id:sid(),pin:S.settings.pin||d.settings.pin||'',locked:S.settings.locked});
   await logA('Backup do clube restaurado'); const b=$('bkR'); if(b)flash(b,'✅ Backup restaurado');
@@ -2136,7 +2221,7 @@ function renderSeason(){
   $('seasTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{sTab=+b.dataset.t;renderSeason()});
   $('seasB').innerHTML=sTab===0
     ?(ch.length?`<table><tr><th>Jogador</th><th>Ranking</th><th class="n">Pontos</th></tr>`+ch.map(p=>{const up=p.tier<p.st0;return `<tr class="t${p.tier}"><td>${pnl(p.id,p.name)}</td><td class="${up?'up':'dn'}">${up?'⬆️':'⬇️'} ${p.st0} → ${p.tier}</td><td class="n">${p.r0} → <b style="color:var(--t)">${p.rating}</b></td></tr>`}).join('')+'</table>':'<p style="color:var(--mut)">Nenhum jogador mudou de ranking nesta temporada.</p>')+'<p class="legend" style="margin-top:10px">Os pontos de cada jogador continuam na próxima temporada.</p>'
-    :(MV.length?`<table><tr><th>Data</th><th>Vencedor</th><th>Perdedor</th><th class="n">Placar</th></tr>`+[...MV].reverse().map(m=>`<tr><td>${fmt(m.at)}</td><td><b class="up">${pnl(m.winner,nameOf(m.winner,m.wn))}</b></td><td>${pnl(m.loser,nameOf(m.loser,m.ln))}</td><td class="n">${m.score?esc(m.score):'–'}</td></tr>`).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>');
+    :(MV.length?`<table><tr><th>Data</th><th>Vencedor</th><th>Perdedor</th><th class="n">Placar</th></tr>`+collapseD([...MV]).reverse().map(m=>`<tr><td>${fmt(m.at)}${m.dbl?' 👥':''}</td><td><b class="up">${m.dbl?esc(wLbl(m)):pnl(m.winner,nameOf(m.winner,m.wn))}</b></td><td>${m.dbl?esc(lLbl(m)):pnl(m.loser,nameOf(m.loser,m.ln))}</td><td class="n">${m.score?esc(m.score):'–'}</td></tr>`).join('')+'</table>':'<p style="color:var(--mut)">Nenhuma partida nesta temporada.</p>');
 }
 $('seasOk').onclick=e=>sure(e.currentTarget,async()=>{
   const rows=ranked().map(p=>[p.name,p.rating,tier(p),p.wins,p.losses]), ss=S.settings.seasons||[];
@@ -2150,7 +2235,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.202'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.216'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2308,7 +2393,7 @@ function mStats(all){
     }};
 }
 $('jpgMatches').onclick=async e=>{
-  const btn=e.currentTarget; await imgFonts(); const P=imgPal(), f=P.fx, all=matchView().reverse(), cap=200, l=all.slice(0,cap), W=900, RH=f?54:40, MX=450;
+  const btn=e.currentTarget; await imgFonts(); const P=imgPal(), f=P.fx, all=collapseD(matchView()).reverse(), cap=200, l=all.slice(0,cap), W=900, RH=f?54:40, MX=450;
   const lbl=(mSel==='all'?'Todas as temporadas':sN(mSel==='cur'?curS():+mSel))+(mFrom||mUntil?' · '+(mFrom?fmtD(mFrom):'início')+' a '+(mUntil?fmtD(mUntil):'hoje'):'')+(mP.length?' · '+mP.map(id=>mfNames().get(id)||'?').join(', '):'');
   const ST=all.length?mStats(all):null, STH=0;
   const H=(f?150:92)+STH+(f?44:48)+Math.max(l.length,1)*RH+(all.length>cap?40:0)+64;
@@ -2321,7 +2406,7 @@ $('jpgMatches').onclick=async e=>{
       x.textAlign='left'}
     x.fillStyle=P.mut; x.font=f?`700 12px ${P.FH}`:'bold 13px system-ui,sans-serif'; x.fillText('DATA',f?44:30,y+22); x.textAlign='right'; x.fillText('VENCEDOR',MX-48,y+22); x.textAlign='center'; x.fillText('PLACAR',MX,y+22); x.textAlign='left'; x.fillText('PERDEDOR',MX+48,y+22); y+=f?44:48;
     if(!l.length){x.fillStyle=P.mut;x.font=`18px ${P.FB}`;x.fillText('Nenhuma partida neste período.',30,y+20);y+=RH}
-    l.forEach((m,i)=>{const d=D[m.id]||[0,0,1], cy=y+RH/2, wn=nameOf(m.winner,m.wn), ln=nameOf(m.loser,m.ln);
+    l.forEach((m,i)=>{const d=D[m.id]||[0,0,1], cy=y+RH/2, wn=wLbl(m), ln=lLbl(m);
       if(f){rr(x,24,y+3,W-48,RH-6,12); x.fillStyle=P.card; x.fill(); x.strokeStyle=P.line; x.lineWidth=1.2; x.stroke(); rr(x,24,y+3,6,RH-6,3); x.fillStyle=P.up; x.fill()}
       else if(i%2===0){x.fillStyle=P.zebra;x.fillRect(0,y,W,RH)}
       x.fillStyle=P.mut; x.font=f?`500 15px ${P.FB}`:'15px system-ui,sans-serif'; x.textAlign='left'; x.fillText(fmt(m.at)+(m.link?' 🔗':''),f?44:30,cy);
@@ -2561,7 +2646,7 @@ function tAskPin(t,cb,o){ o=o||{};
 }
 const tShuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const tOrd={A:0,B:1,C:2};
-const tSeeds=ids=>ids.map(id=>byId(id)).filter(Boolean).sort((a,b)=>b.rating-a.rating||tOrd[a.tier]-tOrd[b.tier]||a.name.localeCompare(b.name)).map((p,i)=>({id:p.id,name:p.name,rating:p.rating,tier:p.tier,seed:i+1}));
+const tSeeds=ids=>ids.map(id=>byId(id)||tTm(id)).filter(Boolean).sort((a,b)=>b.rating-a.rating||tOrd[a.tier]-tOrd[b.tier]||a.name.localeCompare(b.name)).map((p,i)=>({id:p.id,name:p.name,rating:p.rating,tier:p.tier,seed:i+1,...(p.m?{m:p.m}:{})}));
 /* chave padrão (1 x P, 2 x P-1 ...) com 1 e 2 em lados opostos */
 const tPos=P=>{let a=[1,2];while(a.length<P){const m=a.length*2;a=a.flatMap(s=>[s,m+1-s])}return a};
 /* sorteio estilo WTT: seeds 1 e 2 fixos, 3-4 sorteados entre si, 5-8 entre si, 9-16... ; byes sempre para os melhores seeds */
@@ -2739,7 +2824,7 @@ function tRatQ(t,L,C){
   return {ents,slots:t.seedMode==='ab'?tSlotsAB(ents,P,t.groups.length,BY):tSlots(ents,P,true,t.sx===2,BY),perf:true};
 }
 function tState(t){
-  const MM={}; S.matches.forEach(m=>{if(m.tid===t.id&&m.fx)(MM[m.fx]=MM[m.fx]||[]).push(m)});
+  const MM={}; S.matches.forEach(m0=>{if(m0.tid===t.id&&m0.fx){let m=m0; if(t.dup){if(!m0.dbl||m0.dbl.i)return; m={...m0,winner:m0.tw,loser:m0.tl}} (MM[m.fx]=MM[m.fx]||[]).push(m)}});
   const R={}, wd=t.wd||{}, RQ={}, RP=t.rep||{}, FW=t.fwd||[]; let C=null; let lsw=null; const fw=(id,rd)=>{lsw=null; FW.forEach(e=>{if(id&&id===e.o&&rd>=e.rd){id=e.n;lsw=e.o}}); return id}; const rp=id=>{let n=0;while(id&&RP[id]&&n++<20)id=RP[id];return id};
   [...t.fx].sort((x,y)=>x.rd-y.rd).forEach(f=>{
     const side=(s,fixed)=>{if(!s)return {id:fixed||null,ready:true}; const q=R[s.f]; if(!q||!q.fin)return {id:null,ready:false}; return {id:fw((s.t==='w'?q.w:q.l)||null,f.rd),ready:true,sw:lsw}};
@@ -2805,8 +2890,8 @@ function tPodium(t,R){
 }
 const tShort=t=>{const tot={},c={},m={}; const key=f=>(f.rt||'')+f.ph; t.fx.forEach(f=>tot[key(f)]=(tot[key(f)]||0)+1); [...t.fx].sort((a,b)=>a.rd-b.rd).forEach(f=>{c[key(f)]=(c[key(f)]||0)+1;
   m[f.id]=t.gf&&f.ph!=='g'?(f.rt==='B'?'3º lugar':'Final'):t.fmt==='gr'&&f.ph==='g'?'Grupo '+tGN(f.gid):(f.rt?f.rt+'·':'')+tPs(f.ph)+(t.fmt==='rr'||tot[key(f)]===1?'':(/^l\d+$/.test(f.ph)?'.':'')+c[key(f)])});return m};
-const tMini=t=>t.gf?`Grupo + Final · ${t.players.length} jogadores · grupo melhor de ${t.bog||t.bo} · final e 3º lugar melhor de ${t.bo}`:t.fmt==='de'?`Eliminação Dupla · ${t.players.length} jogadores · melhor de ${t.bo}`:t.fmt==='gr'?`Grupos + Ratings · ${t.groups.length} grupos · ${t.rt.length} rating${t.rt.length>1?'s':''} · ${t.players.length} jogadores · grupos melhor de ${t.bog||t.bo} · mata-mata melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''} · ${({perf:'Seeds por desempenho',ab:'Cruzamento A × B',wc:'Estilo Copa'})[t.seedMode]||'Cruzamento fixo'}`
-  :`${t.fmt==='rr'?'Todos contra todos'+(t.dbl?' (ida e volta)':'')+' · '+(t.rule==='sets'?'mais sets':'pontuação'):'Mata-mata'} · ${t.players.length} jogadores · melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''}`;
+const tMini=t=>(t.dup?'👥 Duplas · ':'')+(t.gf?`Grupo + Final · ${t.players.length} jogadores · grupo melhor de ${t.bog||t.bo} · final e 3º lugar melhor de ${t.bo}`:t.fmt==='de'?`Eliminação Dupla · ${t.players.length} jogadores · melhor de ${t.bo}`:t.fmt==='gr'?`Grupos + Ratings · ${t.groups.length} grupos · ${t.rt.length} rating${t.rt.length>1?'s':''} · ${t.players.length} jogadores · grupos melhor de ${t.bog||t.bo} · mata-mata melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''} · ${({perf:'Seeds por desempenho',ab:'Cruzamento A × B',wc:'Estilo Copa'})[t.seedMode]||'Cruzamento fixo'}`
+  :`${t.fmt==='rr'?'Todos contra todos'+(t.dbl?' (ida e volta)':'')+' · '+(t.rule==='sets'?'mais sets':'pontuação'):'Mata-mata'} · ${t.players.length} jogadores · melhor de ${t.bo}${Object.keys(t.bop||{}).length?' (varia por fase)':''}`);
 
 /* chave visual (árvore) */
 function tSwMk(t,R,PN){ const FW=t.fwd||[]; if(!FW.length)return ()=>''; const last={}; t.fx.forEach(f=>{const r=R[f.id]; if(!r)return; [r.a,r.b].forEach(id=>{if(id&&FW.some(e=>e.o===id)&&(!last[id]||f.rd>=last[id].rd))last[id]={id:f.id,rd:f.rd}})});
@@ -2930,6 +3015,7 @@ function tListR(){
     +(FL.act?(act.length?`<div class="tsh">Em andamento</div><div class="tgrid">`+act.map(card).join('')+`</div>`:`<p class="legend ctr">${L.length?'Nenhum campeonato em andamento.':'Nenhum campeonato ainda. Crie o primeiro!'}</p>`):'')
     +(FL.end?(end.length?`<div class="tsh">Encerrados</div><div class="tgrid">`+end.map(card).join('')+`</div>`:`<p class="legend ctr">Nenhum campeonato encerrado.</p>`):'')
     +(FL.reg?`<div class="tsh">Inscrições abertas</div>`+(regL.length?(()=>{const rc=t=>`<button class="tcard" data-t="${t.id}">${tcX(t)}<div class="tcn">${t.reg.ico?tIco(t,24):''}${esc(t.name)}</div><div class="tcs">${t.reg.when?'🕒 '+rwHr(t.reg.when)+' · ':''}Inscrições abertas</div><div class="tcp">${t.reg.list.length}${+t.reg.max?'/'+t.reg.max:''} inscrito${t.reg.list.length===1?'':'s'}</div></button>${tcXP(t)}`; let o='',last=null; regL.forEach(t=>{const k=t.reg.when?rwKey(t.reg.when):0; if(k!==last){if(last!==null)o+='</div>'; o+=`<div class="legend" style="text-align:left;margin:10px 0 4px"><b>${t.reg.when?'📅 '+esc(rwDay(t.reg.when)):'Sem data'}</b></div><div class="tgrid">`; last=k} o+=rc(t)}); return o+'</div>'})():`<p class="legend ctr">Nenhum campeonato com inscrições abertas.</p>`):'')
+    +(FL.reg&&admin&&regL.length&&tEmoFix().length?`<button class="sec" id="tEmoAll" style="margin-top:12px">🎨 Aplicar emojis automáticos e ativar ícones (${tEmoFix().length})</button>`:'')
     +(FL.reg&&admin&&regL.length?`<button class="sec" id="tRegAll" style="margin-top:12px">🗑️ Apagar todas as inscrições abertas (${regL.length})</button>`:'')
     +(arc.length?`<button class="sec" id="tArc">📦 ${tv.arc?'Ocultar':'Ver'} arquivados (${arc.length})</button>`+(tv.arc?`<div class="tsh">Arquivados</div><div class="tgrid">${arc.map(card).join('')}</div>`:''):'')
     +(L.some(x=>x.done)?`<button class="sec" id="tHallB">🏆 Quadro de campeões</button>`:'')+`<button class="sec" data-close>Fechar</button>`;
@@ -2937,7 +3023,8 @@ function tListR(){
   if($('tHallB'))$('tHallB').onclick=()=>{tv={v:'hall'};tourRender();$('tourM').querySelector('.sheet').scrollTop=0};
   if($('tArc'))$('tArc').onclick=()=>{tv.arc=!tv.arc;tListR()};
   $('tourB').querySelector('[data-close]').onclick=()=>$('tourM').classList.remove('on');
-  $('tNewB').onclick=tNewStart; if($('tRegAll'))$('tRegAll').onclick=e=>sure(e.currentTarget,async()=>{const ts=S.tourns.filter(tRegOpen); const n=ts.reduce((a,t)=>a+t.reg.list.length,0); for(const t of ts)await del('tournaments',t.id); await logA(`Todas as inscrições abertas apagadas: ${ts.length} campeonato${ts.length===1?'':'s'}, ${n} inscrito${n===1?'':'s'}`); tv={v:'list',fl:'reg'}; tourRender()});
+  $('tNewB').onclick=tNewStart; if($('tEmoAll'))$('tEmoAll').onclick=async()=>{const ts=tEmoFix(); for(const t of ts){const e=t.ico?'':(t.emo||tEmoAuto(t.name)), u={...t}; if(e)u.emo=e; if(tRegOpen(t))u.reg={...t.reg,ico:true}; await put('tournaments',u)} await logA(`Emojis automáticos aplicados em ${ts.length} campeonato${ts.length===1?'':'s'}`); tv.note='✅ Emojis aplicados e ícones ativados em '+ts.length+' campeonato'+(ts.length===1?'':'s')+'.'; tourRender()};
+  if($('tRegAll'))$('tRegAll').onclick=e=>sure(e.currentTarget,async()=>{const ts=S.tourns.filter(tRegOpen); const n=ts.reduce((a,t)=>a+t.reg.list.length,0); for(const t of ts)await del('tournaments',t.id); await logA(`Todas as inscrições abertas apagadas: ${ts.length} campeonato${ts.length===1?'':'s'}, ${n} inscrito${n===1?'':'s'}`); tv={v:'list',fl:'reg'}; tourRender()});
   if($('tMExp'))$('tMExp').onclick=()=>{tv={v:'mexp',mx:{ids:null,back:'list'}};tourRender()};
   if($('tMImp'))$('tMImp').onclick=()=>{tv={v:'mimp'};tourRender()};
   $('tourB').querySelectorAll('.tcard').forEach(b=>b.onclick=()=>{tOpenId=b.dataset.t;tv={v:'det'};tourRender();$('tourM').querySelector('.sheet').scrollTop=0});
@@ -2954,21 +3041,33 @@ const rwDay=w=>{const x=new Date(w).toLocaleDateString('pt-BR',{weekday:'long',d
 const rwHr=w=>{const d=new Date(w);return d.getHours()+'h'+String(d.getMinutes()).padStart(2,'0')};
 const rwKey=w=>{const d=new Date(w);return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
 function tRegOpen(t){return !!(t&&t.reg&&t.reg.open)}
+function tRegMem(e){ if(e.nm&&e.nm.length===2)return [{pid:e.pid||'',name:e.nm[0]},{pid:e.pid2||'',name:e.nm[1]}]; const p=String(e.name||'').split(' / '); return [{pid:e.pid||'',name:p[0]||''},{pid:e.pid2||'',name:p[1]||''}] }
+function tRegPK(t,e){ if(t.reg.dup){const m=tRegMem(e); return !m[0].pid?0:!m[1].pid?1:-1} return e.pid?-1:0 }
+function tRegSetMem(t,e,k,pid,name){ if(!t.reg.dup){const o={...e,name}; if(pid){o.pid=pid; if(!e.on&&e.name&&pxNorm(e.name)!==pxNorm(name))o.on=e.name} else delete o.pid; return o} const m=tRegMem(e), old=m[k].name, on0=e.on; m[k]={pid,name}; const o={...e,nm:[m[0].name,m[1].name],name:m[0].name+' / '+m[1].name}; if(pid&&old&&pxNorm(old)!==pxNorm(name)&&!(on0&&on0[k])){const a=on0?[...on0]:[null,null]; a[k]=old; o.on=a} if(m[0].pid)o.pid=m[0].pid; else delete o.pid; if(m[1].pid)o.pid2=m[1].pid; else delete o.pid2; return o }
+function tRegFx(t,e){ const ms=t.reg.dup?tRegMem(e):[{pid:e.pid,name:e.name}]; return ms.map((m,k)=>m.pid?` <button class="lnk" data-rfx="${e.n}:${k}" style="font-size:12px;padding:0;margin-left:4px" title="Corrigir o perfil ligado">✏️ ${t.reg.dup?esc(String(m.name).split(' ')[0]):'trocar perfil'}</button>`:'').join('') }
+function tRegPids(L){return L.flatMap(e=>[e.pid,e.pid2]).filter(Boolean)}
+function tTm(id){ const x=typeof tNew!=='undefined'&&tNew&&tNew.teams&&tNew.teams.find(q=>q.id===id); if(!x)return null; const ps=x.m.map(i=>byId(i)).filter(Boolean), r=Math.round(ps.reduce((a,q)=>a+q.rating,0)/(ps.length||1)); return {id:x.id,name:x.name,rating:r,tier:tierOfR(r),m:x.m} }
 function tRegNewR(){
-  $('tourT').textContent='📝 Abrir inscrições'; const n=tv.rn||(tv.rn={name:'',max:0,when:''});
-  $('tourB').innerHTML=`<p class="legend" style="text-align:left">Cria um campeonato só com nome e link. As pessoas se inscrevem sozinhas, como na lista do WhatsApp. Quando você fechar as inscrições, escolhe o formato e o app monta o campeonato com os inscritos.</p><label class="field"><span>Nome do campeonato</span><input id="rnN" maxlength="60" value="${esc(n.name)}" placeholder="Ex.: Torneio de Natal"></label><label class="field"><span>Data e horário do campeonato</span><input id="rnW" type="datetime-local" value="${esc(n.when||'')}"></label><div class="legend" style="text-align:left;margin:8px 0 4px">Vagas</div><div class="seg" style="grid-template-columns:1fr 1fr;margin-bottom:14px"><button data-m="0" class="${n.max?'':'on'}">Ilimitadas</button><button data-m="1" class="${n.max?'on':''}">Limitadas</button></div>${n.max?`<label class="field"><span>Número de vagas</span><input id="rnM" type="number" min="2" max="128" inputmode="numeric" value="${n.max}"></label>`:''}<div class="dn" id="rnE"></div><div class="wrow" style="margin-top:16px"><button class="sec" id="rnBk" style="margin-top:8px">Cancelar</button><button class="pri" id="rnK">Abrir inscrições</button></div>`;
+  $('tourT').textContent='📝 Abrir inscrições'; const n=tv.rn||(tv.rn={name:'',max:0,when:'',dup:false});
+  $('tourB').innerHTML=`<p class="legend" style="text-align:left">Cria um campeonato só com nome e link. As pessoas se inscrevem sozinhas, como na lista do WhatsApp. Quando você fechar as inscrições, escolhe o formato e o app monta o campeonato com os inscritos.</p><label class="field"><span>Nome do campeonato</span><input id="rnN" maxlength="60" value="${esc(n.name)}" placeholder="Ex.: Torneio de Natal"></label><label class="field"><span>Data e horário do campeonato</span><input id="rnW" type="datetime-local" value="${esc(n.when||'')}"></label><div class="legend" style="text-align:left;margin:8px 0 4px">Vagas</div><div class="seg" style="grid-template-columns:1fr 1fr;margin-bottom:14px"><button data-m="0" class="${n.max?'':'on'}">Ilimitadas</button><button data-m="1" class="${n.max?'on':''}">Limitadas</button></div>${n.max?`<label class="field"><span>Número de vagas</span><input id="rnM" type="number" min="2" max="128" inputmode="numeric" value="${n.max}"></label>`:''}<div class="legend" style="text-align:left;margin:8px 0 4px">Tipo de campeonato</div><div class="seg" style="grid-template-columns:1fr 1fr;margin-bottom:6px"><button data-dp="0" class="${n.dup?'':'on'}">Individual</button><button data-dp="1" class="${n.dup?'on':''}">👥 Duplas</button></div>${n.dup?'<p class="legend" style="text-align:left;margin:0 0 10px">Cada vaga é uma dupla: quem se inscreve escolhe os 2 jogadores. As duplas jogam como participantes e a partida vale pontos no ranking de simples, como as partidas de duplas.</p>':''}<div class="dn" id="rnE"></div><div class="wrow" style="margin-top:16px"><button class="sec" id="rnBk" style="margin-top:8px">Cancelar</button><button class="pri" id="rnK">Abrir inscrições</button></div>`;
   $('rnN').oninput=e=>n.name=e.target.value; $('rnW').oninput=e=>n.when=e.target.value; if($('rnM'))$('rnM').oninput=e=>n.max=Math.max(0,+e.target.value||0);
   $('tourB').querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{n.name=$('rnN').value; n.when=$('rnW').value; n.max=b.dataset.m==='1'?(n.max||16):0; tRegNewR()});
+  $('tourB').querySelectorAll('[data-dp]').forEach(b=>b.onclick=()=>{n.name=$('rnN').value; n.when=$('rnW').value; n.dup=b.dataset.dp==='1'; tRegNewR()});
   $('rnBk').onclick=()=>{tv={v:'list'};tourRender()};
   $('rnK').onclick=async()=>{const name=n.name.trim(); if(!name){$('rnE').textContent='Digite o nome do campeonato.';return} if(!n.when||isNaN(new Date(n.when).getTime())){$('rnE').textContent='Informe a data e o horário.';return} if(n.max&&n.max<2){$('rnE').textContent='Use pelo menos 2 vagas.';return}
-    const t={id:uid()+'t',name,fmt:'ko',bo:5,dbl:false,third:false,edit:'any',res:'any',wt:{all:1,ph:{}},at:Date.now(),by:myId,players:[],fx:[],reg:{open:true,max:n.max||0,when:new Date(n.when).getTime(),list:[]}};
-    await put('tournaments',t); await logA('Inscrições abertas: '+name+' ('+rwDay(t.reg.when)+', '+rwHr(t.reg.when)+')'); tOpenId=t.id; tv={v:'det',note:'✅ Inscrições abertas! Compartilhe o link (botão 🔗 no topo) para as pessoas se inscreverem.'}; tourRender(); $('tourM').querySelector('.sheet').scrollTop=0};
+    const t={id:uid()+'t',name,fmt:'ko',bo:5,dbl:false,third:false,edit:'any',res:'any',wt:{all:1,ph:{}},at:Date.now(),by:myId,players:[],fx:[],...(tEmoAuto(name)?{emo:tEmoAuto(name)}:{}),reg:{open:true,max:n.max||0,when:new Date(n.when).getTime(),...(n.dup?{dup:true}:{}),list:[]}};
+    await put('tournaments',t); await logA((n.dup?'Inscrições de duplas abertas: ':'Inscrições abertas: ')+name+' ('+rwDay(t.reg.when)+', '+rwHr(t.reg.when)+')'); tOpenId=t.id; tv={v:'det',note:'✅ Inscrições abertas! Compartilhe o link (botão 🔗 no topo) para as pessoas se inscreverem.'}; tourRender(); $('tourM').querySelector('.sheet').scrollTop=0};
 }
 async function tRegAdd(tid,slot,pl){
   const t=(S.tourns||[]).find(x=>x.id===tid); if(!tRegOpen(t))return 'As inscrições foram encerradas.'; const L=t.reg.list;
   if(L.some(e=>e.n===slot))return 'Essa vaga acabou de ser ocupada. Escolha outra.'; if(+t.reg.max&&L.length>=+t.reg.max)return 'Todas as vagas foram preenchidas.';
-  if(L.some(e=>(pl.pid&&e.pid===pl.pid)||e.name.toLowerCase()===pl.name.toLowerCase()))return 'Esse nome já está na lista.';
-  await put('tournaments',{...t,reg:{...t.reg,list:[...L,{n:slot,...(pl.pid?{pid:pl.pid}:{}),name:pl.name,at:Date.now(),dev:myId}]}}); await logA(`Inscrição em “${t.name}”: ${pl.name} (vaga ${slot})`);
+  if(t.reg.dup){ const m=pl.m; if(!m||m.length!==2||!m[0].name||!m[1].name)return 'Escolha os dois jogadores da dupla.';
+    if(m[0].name.toLowerCase()===m[1].name.toLowerCase()||(m[0].pid&&m[0].pid===m[1].pid))return 'Os dois jogadores da dupla precisam ser diferentes.';
+    const used=new Set(tRegPids(L)), nms=new Set(L.flatMap(e=>tRegMem(e).map(q=>q.name.toLowerCase())));
+    const bad=m.find(q=>(q.pid&&used.has(q.pid))||nms.has(q.name.toLowerCase())); if(bad)return bad.name+' já está em outra dupla da lista.';
+    pl={name:m[0].name+' / '+m[1].name,pid:m[0].pid,pid2:m[1].pid,nm:[m[0].name,m[1].name]} }
+  else if(L.some(e=>(pl.pid&&e.pid===pl.pid)||e.name.toLowerCase()===pl.name.toLowerCase()))return 'Esse nome já está na lista.';
+  await put('tournaments',{...t,reg:{...t.reg,list:[...L,{n:slot,...(pl.pid?{pid:pl.pid}:{}),...(pl.pid2?{pid2:pl.pid2}:{}),...(pl.nm?{nm:pl.nm}:{}),name:pl.name,at:Date.now(),dev:myId}]}}); await logA(`Inscrição em “${t.name}”: ${pl.name} (vaga ${slot})`);
   if(!admin){try{const cur0=S.settings.requests||[]; await put('settings',{...S.settings,requests:[{id:'rq'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),at:Date.now(),t:'insn',st:'open',by:myId,dev:deviceInfo(),tid:t.id,rn:slot,nm:pl.name,n:`${pl.name} se inscreveu em “${t.name}” (vaga ${slot}).`},...cur0].slice(0,100)})}catch(er){}}
   return '';
 }
@@ -2987,41 +3086,61 @@ function tRegParse(txt){
       .replace(/[*_~]/g,'').replace(/^@/,'').replace(/\s+/g,' ').trim();
     if(body)out.push({n,name:body,pg}) });
   return out }
+function tRegImpDup(row,x,names,nameN,seenNm,taken,chosen,pool,pidN){
+  const parts=x.name.split(/\s*(?:\/|\+|&|\s[eE]\s)\s*/).map(q=>q.trim()).filter(Boolean);
+  if(parts.length!==2){row.inc=false;row.st='dup';row.note='precisa de dois nomes (Nome / Nome)';return}
+  const m=parts.map(nm=>{const tk=tRegTok(nm), sc=pool.map(p=>({p,s:tRegScore(tk,tRegTok(p.name))})).filter(o=>o.s>0).sort((a,b)=>b.s-a.s), top=sc.filter(o=>o.s===(sc[0]&&sc[0].s)); return top.length===1&&top[0].s>=2?{pid:top[0].p.id,name:top[0].p.name,on:nm}:{pid:'',name:nm,on:nm}});
+  row.m=m; row.name=m.map(q=>q.name).join(' / '); const nk=pxNorm(row.name);
+  if(m[0].pid&&m[0].pid===m[1].pid){row.inc=false;row.st='dup';row.note='os dois nomes são o mesmo jogador';return}
+  const hit=m.find(q=>q.pid&&(taken.has(q.pid)||chosen.has(q.pid)));
+  if(names.has(nk)){row.inc=false;row.st='dup';row.note='já está na lista de inscritos';row.dupN=nameN.get(nk);return}
+  if(seenNm.has(nk)){row.inc=false;row.st='dup';row.note='dupla repetida na lista colada';return}
+  if(hit){row.inc=false;row.st='dup';row.note=hit.name+' já está em outra dupla';row.dupN=pidN.get(hit.pid);return}
+  seenNm.add(nk); m.forEach(q=>q.pid&&chosen.add(q.pid)); row.st=m.every(q=>q.pid)?'ok':'sem' }
 function tRegImpRows(t,txt,pre){
-  const L=t.reg.list, max=+t.reg.max||0, used=new Set(L.map(e=>e.n)), taken=new Set(L.map(e=>e.pid).filter(Boolean)), names=new Set(L.map(e=>pxNorm(e.name))), nameN=new Map(L.map(e=>[pxNorm(e.name),e.n])), pidN=new Map(L.filter(e=>e.pid).map(e=>[e.pid,e.n]));
+  const L=t.reg.list, dup=!!t.reg.dup, max=+t.reg.max||0, used=new Set(L.map(e=>e.n)), taken=new Set(tRegPids(L)), names=new Set(L.map(e=>pxNorm(e.name))), nameN=new Map(L.map(e=>[pxNorm(e.name),e.n])), pidN=new Map(L.flatMap(e=>[[e.pid,e.n],[e.pid2,e.n]]).filter(x=>x[0]));
   const pool=vis(), res=new Set(), chosen=new Set(), seenNm=new Set(), rows=[];
   (pre||tRegParse(txt)).forEach(x=>{
     const row={n:0,name:x.name,pg:x.pg,pid:'',inc:true,note:'',st:'sem'}, nk=pxNorm(x.name);
+    if(dup)tRegImpDup(row,x,names,nameN,seenNm,taken,chosen,pool,pidN); else {
     if(names.has(nk)){row.inc=false;row.st='dup';row.note='já está na lista de inscritos';row.dupN=nameN.get(nk)}
     else if(seenNm.has(nk)){row.inc=false;row.st='dup';row.note='nome repetido na lista colada'}
     seenNm.add(nk);
     const tk=tRegTok(x.name), sc=pool.map(p=>({p,s:tRegScore(tk,tRegTok(p.name))})).filter(o=>o.s>0).sort((a,b)=>b.s-a.s||a.p.name.localeCompare(b.p.name));
     row.cands=sc.filter(o=>!taken.has(o.p.id)).map(o=>o.p.id); const top=sc.filter(o=>o.s===(sc[0]&&sc[0].s));
     if(row.inc&&top.length===1&&taken.has(top[0].p.id)){row.inc=false;row.st='dup';row.note='já inscrito (perfil '+top[0].p.name+')';row.dupN=pidN.get(top[0].p.id)}
-    if(row.inc){ if(top.length===1){ if(chosen.has(top[0].p.id)){row.inc=false;row.st='dup';row.note='esse jogador já aparece em outra linha'} else{row.pid=top[0].p.id;row.st='ok';chosen.add(row.pid)} }
-      else if(top.length>1){row.st='amb';row.note='mais de um jogador parecido — escolha ao lado'} else row.st='sem' }
+    if(row.inc){ if(top.length===1){ if(chosen.has(top[0].p.id)){row.inc=false;row.st='dup';row.note='esse jogador já aparece em outra linha'} else if(top[0].s<2){row.st='amb';row.note='só o começo do nome bate com “'+top[0].p.name+'” — confirme ao lado'} else{row.pid=top[0].p.id;row.st='ok';chosen.add(row.pid)} }
+      else if(top.length>1){row.st='amb';row.note='mais de um jogador parecido — escolha ao lado'} else row.st='sem' } }
     let n=x.n; const ok=k=>k&&!used.has(k)&&!res.has(k)&&(!max||k<=max);
     if(row.inc){ if(!ok(n)){const old=n; n=0; for(let k=1;k<=(max||999);k++){if(ok(k)){n=k;break}} if(!n){row.inc=false;row.st='dup';row.note='sem vaga livre'} else if(old)row.note=(row.note?row.note+' · ':'')+'vaga '+old+' ocupada: vai para a '+n}
       if(n)res.add(n) }
     row.n=n; rows.push(row) });
   return rows }
 function tRegImpPrev(t,rows){
-  const taken=new Set(t.reg.list.map(e=>e.pid).filter(Boolean)), all=vis().filter(p=>!taken.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name));
+  const taken=new Set(tRegPids(t.reg.list)), all=vis().filter(p=>!taken.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name));
   const nOk=rows.filter(r=>r.inc).length;
   return `<div class="imh">${rows.length} linha${rows.length===1?'':'s'} lida${rows.length===1?'':'s'} · desmarque quem não deve entrar</div>`+rows.map((r,i)=>{
     const ct=new Set(r.cands||[]), opts=`<option value="">👤 Sem perfil (manter “${esc(r.name)}”)</option>`+(r.cands&&r.cands.length?`<optgroup label="Parecidos">${r.cands.map(id=>{const p=byId(id);return p?`<option value="${p.id}"${r.pid===p.id?' selected':''}>${esc(p.name)}</option>`:''}).join('')}</optgroup>`:'')+`<optgroup label="Todos os jogadores">${all.filter(p=>!ct.has(p.id)).map(p=>`<option value="${p.id}"${r.pid===p.id?' selected':''}>${esc(p.name)}</option>`).join('')}</optgroup>`;
-    const stt=r.st==='ok'?'✅ ligado ao perfil':r.st==='amb'?'⚠️ escolha o jogador':r.st==='dup'?'⛔ não entra':'👤 vai sem perfil';
-    return `<div class="imr${r.inc?'':' off'}"><label class="imc"><input type="checkbox" data-imc="${i}"${r.inc?' checked':''}${r.note==='sem vaga livre'?' disabled':''}><b>${r.n||'–'}</b></label><div class="imn"><div class="imt">${esc(r.name)}${r.pg?' <small>💰 pg</small>':''}</div><select data-ims="${i}">${opts}</select><small class="imx">${stt}${r.note?' · '+esc(r.note):''}</small></div></div>`}).join('')+`<button class="pri" id="imK" style="margin:10px 0 0">Importar ${nOk} inscrito${nOk===1?'':'s'}</button>`}
+    const stt=r.m&&r.st!=='dup'?(r.st==='ok'?'✅ dupla ligada aos perfis':'👤 algum jogador sem perfil (ligar depois)'):r.st==='ok'?(byId(r.pid)&&pxNorm(byId(r.pid).name)!==pxNorm(r.name)?'✅ ligado a “'+byId(r.pid).name+'”':'✅ ligado ao perfil'):r.st==='amb'?'⚠️ escolha o jogador':r.st==='dup'?'⛔ não entra':'👤 vai sem perfil';
+    return `<div class="imr${r.inc?'':' off'}"><label class="imc"><input type="checkbox" data-imc="${i}"${r.inc?' checked':''}${r.note==='sem vaga livre'?' disabled':''}><b>${r.n||'–'}</b></label><div class="imn"><div class="imt">${esc(r.name)}${r.pg?' <small>💰 pg</small>':''}</div>${r.m?'':`<select data-ims="${i}">${opts}</select>`}<small class="imx">${stt}${r.note?' · '+esc(r.note):''}</small></div></div>`}).join('')+`<button class="pri" id="imK" style="margin:10px 0 0">Importar ${nOk} inscrito${nOk===1?'':'s'}</button>`}
 async function tRegImpCommit(tid,rows){ tRegImpCommit.last={add:0,sp:0};
   const t=(S.tourns||[]).find(x=>x.id===tid); if(!tRegOpen(t))return 'As inscrições foram encerradas.';
-  const L=[...t.reg.list], max=+t.reg.max||0, used=new Set(L.map(e=>e.n)), taken=new Set(L.map(e=>e.pid).filter(Boolean)), nm=new Set(L.map(e=>pxNorm(e.name))), seenPid=new Set(); let add=0, sp=0; const skip=[];
-  for(const r of rows){ if(!r.inc)continue; const p=r.pid?S.raw.find(x=>x.id===r.pid):null, name=p?p.name:r.name;
+  const L=[...t.reg.list], max=+t.reg.max||0, used=new Set(L.map(e=>e.n)), taken=new Set(tRegPids(L)), nm=new Set(L.map(e=>pxNorm(e.name))), seenPid=new Set(); let add=0, sp=0; const skip=[];
+  for(const r of rows){ if(!r.inc)continue;
+    if(t.reg.dup&&r.m){ const ps=r.m.map(q=>q.pid?S.raw.find(x=>x.id===q.pid):null), nms=r.m.map((q,i)=>ps[i]?ps[i].name:q.name), name=nms.join(' / ');
+      if(ps.some(p=>p&&(taken.has(p.id)||seenPid.has(p.id)))){skip.push(name+' (já inscrito)');continue}
+      if(nm.has(pxNorm(name))){skip.push(name+' (já na lista)');continue}
+      let n=r.n; if(!n||used.has(n)||(max&&n>max)){n=0; for(let k=1;k<=(max||999);k++){if(!used.has(k)){n=k;break}}}
+      if(!n){skip.push(name+' (sem vaga)');continue}
+      used.add(n); nm.add(pxNorm(name)); ps.forEach(p=>p&&seenPid.add(p.id));
+      L.push({n,...(ps[0]?{pid:ps[0].id}:{}),...(ps[1]?{pid2:ps[1].id}:{}),nm:nms,...(r.m.some((q,i)=>ps[i]&&q.on&&pxNorm(q.on)!==pxNorm(ps[i].name))?{on:r.m.map(q=>q.on||q.name)}:{}),name,at:Date.now(),dev:myId,...(r.pg?{pg:true,ok:true}:{})}); add++; if(ps.some(p=>!p))sp++; continue }
+    const p=r.pid?S.raw.find(x=>x.id===r.pid):null, name=p?p.name:r.name;
     if(p&&(taken.has(p.id)||seenPid.has(p.id))){skip.push(name+' (já inscrito)');continue}
     if(nm.has(pxNorm(name))){skip.push(name+' (já na lista)');continue}
     let n=r.n; if(!n||used.has(n)||(max&&n>max)){n=0; for(let k=1;k<=(max||999);k++){if(!used.has(k)){n=k;break}}}
     if(!n){skip.push(name+' (sem vaga)');continue}
     used.add(n); nm.add(pxNorm(name)); if(p)seenPid.add(p.id);
-    L.push({n,...(p?{pid:p.id}:{}),name,at:Date.now(),dev:myId,...(r.pg?{pg:true,ok:true}:{})}); add++; if(!p)sp++ }
+    L.push({n,...(p?{pid:p.id}:{}),name,...(p&&pxNorm(r.name)!==pxNorm(p.name)?{on:r.name}:{}),at:Date.now(),dev:myId,...(r.pg?{pg:true,ok:true}:{})}); add++; if(!p)sp++ }
   tRegImpCommit.last={add,sp};
   if(!add)return 'Nada foi importado.'+(skip.length?' Ignorados: '+skip.join(', ')+'.':'');
   await put('tournaments',{...t,reg:{...t.reg,list:L}}); await logA(`Lista importada em “${t.name}”: ${add} inscrito${add===1?'':'s'} (${sp} sem perfil)`);
@@ -3065,20 +3184,21 @@ function tMgParse(txt){
 async function tRegLinkAll(name,pid,pname,exceptTid){
   const nk=pxNorm(name), out=[];
   for(const t of (S.tourns||[]).filter(tRegOpen)){ if(t.id===exceptTid)continue; const hit=t.reg.list.filter(e=>!e.pid&&pxNorm(e.name)===nk); if(!hit.length)continue; if(t.reg.list.some(e=>e.pid===pid))continue;
-    await put('tournaments',{...t,reg:{...t.reg,list:t.reg.list.map(e=>(!e.pid&&pxNorm(e.name)===nk)?{...e,pid,name:pname}:e)}}); out.push(t.name) }
+    await put('tournaments',{...t,reg:{...t.reg,list:t.reg.list.map(e=>(!e.pid&&pxNorm(e.name)===nk)?{...e,pid,name:pname,...(pxNorm(e.name)!==pxNorm(pname)&&!e.on?{on:e.name}:{})}:e)}}); out.push(t.name) }
   if(out.length)await logA(`Perfil ligado também em outras inscrições: ${pname} → ${out.join(', ')}`); return out }
-function tMgBuild(gs){ return gs.map(g=>{ const ex=(S.tourns||[]).filter(tRegOpen).find(t=>pxNorm(t.name)===pxNorm(g.name)&&(!g.when||!t.reg.when||rwKey(t.reg.when)===rwKey(g.when))), tt=ex||{reg:{list:[],max:0}};
-  return {name:g.name,when:g.when||(ex&&ex.reg.when)||null,noTime:g.noTime&&!(ex&&ex.reg.when),ex:ex?ex.id:null,inc:true,info:g.info||'',rows:tRegImpRows(tt,null,g.entries),nEx:ex?ex.reg.list.length:0} }) }
+function tDupDet(name,entries){ if(/\bduplas?\b/.test(pxNorm(String(name||''))))return true; return (entries||[]).some(x=>String(x.name||'').split(/\s*(?:\/|\+|&|\s[eE]\s)\s*/).filter(q=>q.trim()).length===2) }
+function tMgBuild(gs){ return gs.map(g=>{ const ex=(S.tourns||[]).filter(tRegOpen).find(t=>pxNorm(t.name)===pxNorm(g.name)&&(!g.when||!t.reg.when||rwKey(t.reg.when)===rwKey(g.when))), dd=tDupDet(g.name,g.entries), dup=ex?(!!ex.reg.dup||(!ex.reg.list.length&&dd)):dd, tt=ex?(dup&&!ex.reg.dup?{...ex,reg:{...ex.reg,dup:true}}:ex):{reg:{list:[],max:0,dup}};
+  return {name:g.name,dup,when:g.when||(ex&&ex.reg.when)||null,noTime:g.noTime&&!(ex&&ex.reg.when),ex:ex?ex.id:null,inc:true,info:g.info||'',rows:tRegImpRows(tt,null,g.entries),nEx:ex?ex.reg.list.length:0} }) }
 function tMgRowH(r,key,all){
   const ct=new Set(r.cands||[]), opts=`<option value="">👤 Sem perfil (manter “${esc(r.name)}”)</option>`+(r.cands&&r.cands.length?`<optgroup label="Parecidos">${r.cands.map(id=>{const p=byId(id);return p?`<option value="${p.id}"${r.pid===p.id?' selected':''}>${esc(p.name)}</option>`:''}).join('')}</optgroup>`:'')+`<optgroup label="Todos os jogadores">${all.filter(p=>!ct.has(p.id)).map(p=>`<option value="${p.id}"${r.pid===p.id?' selected':''}>${esc(p.name)}</option>`).join('')}</optgroup>`;
-  const stt=r.st==='ok'?'✅ ligado ao perfil':r.st==='amb'?'⚠️ escolha o jogador':r.st==='dup'?'⛔ não entra':'👤 vai sem perfil';
-  return `<div class="imr${r.inc?'':' off'}"><label class="imc"><input type="checkbox" data-mc="${key}"${r.inc?' checked':''}${r.note==='sem vaga livre'?' disabled':''}><b>${r.n||'–'}</b></label><div class="imn"><div class="imt">${esc(r.name)}${r.pg?' <small>💰 pg</small>':''}</div><select data-ms="${key}">${opts}</select><small class="imx">${stt}${r.note?' · '+esc(r.note):''}</small></div></div>`}
+  const stt=r.m&&r.st!=='dup'?(r.st==='ok'?'✅ dupla ligada aos perfis':'👤 algum jogador sem perfil (ligar depois)'):r.st==='ok'?(byId(r.pid)&&pxNorm(byId(r.pid).name)!==pxNorm(r.name)?'✅ ligado a “'+byId(r.pid).name+'”':'✅ ligado ao perfil'):r.st==='amb'?'⚠️ escolha o jogador':r.st==='dup'?'⛔ não entra':'👤 vai sem perfil';
+  return `<div class="imr${r.inc?'':' off'}"><label class="imc"><input type="checkbox" data-mc="${key}"${r.inc?' checked':''}${r.note==='sem vaga livre'?' disabled':''}><b>${r.n||'–'}</b></label><div class="imn"><div class="imt">${esc(r.name)}${r.pg?' <small>💰 pg</small>':''}</div>${r.m?'':`<select data-ms="${key}">${opts}</select>`}<small class="imx">${stt}${r.note?' · '+esc(r.note):''}</small></div></div>`}
 function tMImpR(){
   $('tourT').textContent='📋 Importar listas'; const mi=tv.mi||(tv.mi={txt:'',gs:null,done:null,orphan:0});
   if(mi.done){ $('tourB').innerHTML=`<div class="msg" style="margin:0 0 8px">${mi.done}</div><button class="pri" id="mgGo">Ver inscrições abertas</button><button class="sec" id="mgBk" style="margin-top:8px">← Campeonatos</button>`;
     $('mgGo').onclick=()=>{tv={v:'list',fl:'reg'};tourRender()}; $('mgBk').onclick=()=>{tv={v:'list'};tourRender()}; return }
   const all=vis().sort((a,b)=>a.name.localeCompare(b.name));
-  const prev=mi.gs?mi.gs.map((g,gi)=>`<div class="panel" style="margin:8px 0"><label style="display:flex;align-items:center;gap:8px;width:auto;min-width:0"><input type="checkbox" data-mgi="${gi}"${g.inc?' checked':''} style="flex:none"><b style="font-size:16px">📝 ${esc(g.name)}</b></label><small style="display:block;margin:2px 0 4px">${g.ex?`já existe (${g.nEx} inscrito${g.nEx===1?'':'s'}): só entram os nomes novos`:'novo campeonato'}</small><label class="field"><span>Data e horário</span><input type="datetime-local" data-mgw="${gi}" value="${g.when?esc(rwDt(g.when)):''}"></label>${g.info?`<label class="field"><span>📌 Instruções</span><textarea data-mgx="${gi}" rows="2" style="width:100%;box-sizing:border-box;font-size:14px">${esc(g.info)}</textarea></label>`:''}${!g.when?'<div class="dn">⚠️ Não achei a data. Preencha para criar.</div>':g.noTime?'<div class="dn">⚠️ Não achei o horário (coloquei 9h). Confira.</div>':''}${g.rows.length?g.rows.map((r,ri)=>tMgRowH(r,gi+':'+ri,all)).join(''):'<p class="legend" style="text-align:left;margin:6px 0 0">Sem inscritos: será criado vazio, com as inscrições abertas.</p>'}</div>`).join(''):'';
+  const prev=mi.gs?mi.gs.map((g,gi)=>`<div class="panel" style="margin:8px 0"><label style="display:flex;align-items:center;gap:8px;width:auto;min-width:0"><input type="checkbox" data-mgi="${gi}"${g.inc?' checked':''} style="flex:none"><b style="font-size:16px">📝 ${esc(g.name)}</b></label><small style="display:block;margin:2px 0 4px">${g.ex?`já existe (${g.nEx} inscrito${g.nEx===1?'':'s'}): só entram os nomes novos`:'novo campeonato'}${g.dup?' · 👥 duplas':''}</small><label class="field"><span>Data e horário</span><input type="datetime-local" data-mgw="${gi}" value="${g.when?esc(rwDt(g.when)):''}"></label>${g.info?`<label class="field"><span>📌 Instruções</span><textarea data-mgx="${gi}" rows="2" style="width:100%;box-sizing:border-box;font-size:14px">${esc(g.info)}</textarea></label>`:''}${!g.when?'<div class="dn">⚠️ Não achei a data. Preencha para criar.</div>':g.noTime?'<div class="dn">⚠️ Não achei o horário (coloquei 9h). Confira.</div>':''}${g.rows.length?g.rows.map((r,ri)=>tMgRowH(r,gi+':'+ri,all)).join(''):'<p class="legend" style="text-align:left;margin:6px 0 0">Sem inscritos: será criado vazio, com as inscrições abertas.</p>'}</div>`).join(''):'';
   $('tourB').innerHTML=`<p class="legend" style="text-align:left;margin:0 0 8px">Cole a lista inteira como veio no grupo, com todos os dias e categorias. Cada categoria vira um campeonato com inscrições abertas e vagas ilimitadas. O app entende data e horário em qualquer ordem (ex.: “Sábado dia 28/11 às 14h” ou “14h – 28/11”).</p><textarea id="mgT" rows="9" style="width:100%;font-size:14px;box-sizing:border-box" placeholder="Sábado dia 28/11 às 14h categorias:&#10;Mirim:&#10;1- Bela&#10;2-&#10;&#10;Domingo 29/11 às 9h&#10;Adulto:&#10;1- Léo pg">${esc(mi.txt||'')}</textarea><button class="pri" id="mgR" style="margin:8px 0 0">Ler listas</button><div class="dn" id="mgE"></div>${mi.gs?`<div class="imh">${mi.gs.length} campeonato${mi.gs.length===1?'':'s'} encontrado${mi.gs.length===1?'':'s'} · confira e desmarque o que não deve entrar</div>${prev}<div class="dn" id="mgE2"></div><button class="pri" id="mgK" style="margin:10px 0 0"></button>`:''}<button class="sec" id="mgBk" style="margin-top:12px">← Campeonatos</button>`;
   $('mgBk').onclick=()=>{tv={v:'list'};tourRender()}; $('mgT').oninput=e=>{mi.txt=e.target.value};
   $('mgR').onclick=()=>{mi.txt=$('mgT').value; const r=tMgParse(mi.txt); if(!r.gs.length){$('mgE').textContent='Não achei categorias com inscritos. Cada categoria precisa de uma linha de título seguida de linhas “1- Nome”.';return} mi.orphan=r.orphan; mi.gs=tMgBuild(r.gs); tourRender()};
@@ -3099,9 +3219,10 @@ function tMImpR(){
 async function tMgCommit(gs){
   let cr=0,up=0,add=0,sp=0,cf=0; const empt=[];
   for(const g of gs){ let t=g.ex&&(S.tourns||[]).find(x=>x.id===g.ex);
-    if(!t||!tRegOpen(t)){ t={id:uid()+'t',name:g.name,fmt:'ko',bo:5,dbl:false,third:false,edit:'any',res:'any',wt:{all:1,ph:{}},at:Date.now(),by:myId,players:[],fx:[],reg:{open:true,max:0,when:g.when,...(g.info.trim()?{info:g.info.trim()}:{}),list:[]}};
+    if(!t||!tRegOpen(t)){ t={id:uid()+'t',name:g.name,fmt:'ko',bo:5,dbl:false,third:false,edit:'any',res:'any',wt:{all:1,ph:{}},at:Date.now(),by:myId,players:[],fx:[],...((tEmoAuto(g.name)||(g.dup?'👥':''))?{emo:tEmoAuto(g.name)||'👥'}:{}),reg:{open:true,max:0,when:g.when,...(g.dup?{dup:true}:{}),...(g.info.trim()?{info:g.info.trim()}:{}),list:[]}};
       await put('tournaments',t); await logA('Inscrições abertas: '+g.name+' ('+rwDay(g.when)+', '+rwHr(g.when)+')'); cr++ }
-    else{ up++; if(g.info.trim()&&!t.reg.info){await put('tournaments',{...t,reg:{...t.reg,info:g.info.trim()}}); t=(S.tourns||[]).find(x=>x.id===t.id)}
+    else{ up++; if(g.dup&&!t.reg.dup&&!t.reg.list.length){await put('tournaments',{...t,reg:{...t.reg,dup:true}}); t=(S.tourns||[]).find(x=>x.id===t.id)}
+      if(g.info.trim()&&!t.reg.info){await put('tournaments',{...t,reg:{...t.reg,info:g.info.trim()}}); t=(S.tourns||[]).find(x=>x.id===t.id)}
       if(!t.reg.when&&g.when){await put('tournaments',{...t,reg:{...t.reg,when:g.when}}); await logA(`Data do campeonato “${t.name}”: ${rwDay(g.when)}, ${rwHr(g.when)}`)} }
     t=(S.tourns||[]).find(x=>x.id===t.id);
     const ns=new Set(g.rows.filter(r=>r.pg&&r.dupN).map(r=>r.dupN)), hit=t.reg.list.filter(e=>ns.has(e.n)&&!cfOk(e));
@@ -3141,41 +3262,45 @@ const cfB=e=>{const c=cfOk(e), st='font-size:12px;padding:1px 7px;border-radius:
 function tRegR(t){
   const rg=tv.rg||(tv.rg={slot:null,q:'',adm:null}); $('tourT').textContent=t.name;
   const L=[...t.reg.list].sort((a,b)=>a.n-b.n), by={}; L.forEach(e=>{by[e.n]=e});
-  const max=+t.reg.max||0, top=max||((L.length?L[L.length-1].n:0)+1), full=!!max&&L.length>=max, pend=L.filter(e=>!e.pid);
-  let rows=''; for(let n=1;n<=top;n++){const e=by[n]; rows+=e?`<div class="rgr"><b>${n}</b><span>${esc(e.name)}${cfB(e)}${e.pid?'':' <button class="lnk" data-rcp="'+e.n+'" style="font-size:13px;padding:0;margin-left:4px">Jogador sem Perfil. Clique aqui.</button>'}</span><button class="tun" data-rx="${n}" title="Cancelar inscrição" aria-label="Cancelar inscrição">✕</button></div>`:`<button class="rgr rge" data-rs="${n}"><b>${n}</b><span>— vaga livre · toque para se inscrever</span></button>`}
-  const slotP=rg.slot?`<div class="panel" style="margin:8px 0"><b>✍️ Inscrição na vaga ${rg.slot}</b><input id="rgQ" placeholder="Digite seu nome…" value="${esc(rg.q||'')}" style="width:100%;margin:8px 0" autocomplete="off"><div id="rgM" style="max-height:50vh;overflow-y:auto;overscroll-behavior:contain"></div><div class="dn" id="rgE"></div><button class="sec" id="rgC" style="margin:4px 0 0">Cancelar</button></div>`:'';
+  const max=+t.reg.max||0, top=max||((L.length?L[L.length-1].n:0)+1), full=!!max&&L.length>=max, pend=L.filter(e=>tRegPK(t,e)>=0), dup=!!t.reg.dup;
+  let rows=''; for(let n=1;n<=top;n++){const e=by[n]; rows+=e?`<div class="rgr"><b>${n}</b><span>${esc(e.name)}${cfB(e)}${tRegPK(t,e)<0?'':' <button class="lnk" data-rcp="'+e.n+'" style="font-size:13px;padding:0;margin-left:4px">Jogador sem Perfil. Clique aqui.</button>'}${admin?tRegFx(t,e):''}</span><button class="tun" data-rx="${n}" title="Cancelar inscrição" aria-label="Cancelar inscrição">✕</button></div>`:`<button class="rgr rge" data-rs="${n}"><b>${n}</b><span>— vaga livre · toque para se inscrever</span></button>`}
+  const slotP=rg.slot?`<div class="panel" style="margin:8px 0"><b>✍️ Inscrição ${dup?'da dupla ':''}na vaga ${rg.slot}</b>${dup?`<div class="legend" style="text-align:left;margin:6px 0 0">${rg.p1?`Jogador 1: <b>${esc(rg.p1.name)}</b> · agora escolha o <b>parceiro</b> <button class="lnk" id="rgP1x" style="font-size:13px;padding:0">trocar</button>`:'Escolha o <b>jogador 1</b> da dupla.'}</div>`:''}<input id="rgQ" placeholder="${dup?(rg.p1?'Nome do parceiro…':'Nome do jogador 1…'):'Digite seu nome…'}" value="${esc(rg.q||'')}" style="width:100%;margin:8px 0" autocomplete="off"><div id="rgM" style="max-height:50vh;overflow-y:auto;overscroll-behavior:contain"></div><div class="dn" id="rgE"></div><button class="sec" id="rgC" style="margin:4px 0 0">Cancelar</button></div>`:'';
   const im=rg.imp, impBtn=admin?`<button class="sec" id="rgImp" style="margin:0 0 8px">${im?'✖ Fechar importação':'📋 Importar lista (WhatsApp)'}</button>`:'';
   const impP=(admin&&im)?`<div class="panel" style="margin:8px 0"><b>📋 Colar lista de inscritos</b><p class="legend" style="text-align:left;margin:4px 0 8px">Cole a lista como veio no WhatsApp (1- Nome, 2- Nome…). Linhas sem número, como o título, são ignoradas. Quem não tiver perfil entra como “sem perfil” e você liga depois.</p><textarea id="imT" rows="7" style="width:100%;font-size:14px;box-sizing:border-box" placeholder="Absoluto A, B e C&#10;1- Eduardo&#10;2- Lucas Monteiro pg&#10;3- Léo Macedo">${esc(im.txt||'')}</textarea><button class="pri" id="imR" style="margin:8px 0 0">Ler lista</button><div class="dn" id="imE"></div>${im.rows?tRegImpPrev(t,im.rows):''}</div>`:'';
   const inf=(t.reg.info||'').trim(), insP=(inf||admin)?`<div class="panel" style="margin:8px 0"><b>📌 INSTRUÇÕES</b>${admin&&rg.ei?`<textarea id="rgIt" rows="5" style="width:100%;box-sizing:border-box;font-size:14px;margin:8px 0 0" placeholder="Ex.: Pix para pagamento… Regras, local, horário de chegada…">${esc(t.reg.info||'')}</textarea><div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px"><button class="sec" id="rgIc" style="margin:0">Cancelar</button><button class="pri" id="rgIs" style="margin:0">Salvar</button></div>`:`<div style="white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;margin:6px 0 0;font-size:14px">${inf?esc(inf):'<span class="legend">Nenhuma instrução ainda.</span>'}</div>${admin?`<button class="sec" id="rgIe" style="margin:8px 0 0">✏️ Editar instruções</button>`:''}`}</div>`:'';
-  const ap=rg.adm&&pend.find(e=>e.n===rg.adm.n), vl=null;
-  const profP=ap?`<div class="panel" style="margin:8px 0"><b>👤 Perfil para “${esc(ap.name)}”</b><label class="field"><span>Nome do jogador</span><input id="rcN" maxlength="40" value="${esc(rg.adm.name!=null?rg.adm.name:ap.name)}"></label>${admin?(()=>{const tk=new Set(t.reg.list.map(e=>e.pid).filter(Boolean)), tkn=tRegTok(ap.name), pl=vis().filter(p=>!tk.has(p.id)).map(p=>({p,s:tRegScore(tkn,tRegTok(p.name))})).sort((a,b)=>b.s-a.s||a.p.name.localeCompare(b.p.name)); return `<div class="legend" style="text-align:left;margin:8px 0 2px">Ou ligar a um jogador que já existe</div><div style="display:flex;gap:6px"><select id="rcS" style="flex:1;min-width:0"><option value="">— escolher jogador —</option>${pl.map(o=>`<option value="${o.p.id}"${o.s>0&&o===pl[0]?' selected':''}>${o.s>0?'★ ':''}${esc(o.p.name)}</option>`).join('')}</select><button class="sec" id="rcL" style="margin:0;width:auto;padding:8px 12px">Ligar</button></div>`})():''}${admin?`<div class="legend" style="text-align:left;margin:6px 0 2px">Ranking inicial</div><div class="tbt" style="grid-template-columns:repeat(3,minmax(0,1fr))">${['A','B','C'].map(g=>`<button class="sec" data-rcg="${g}" style="margin:0${(rg.adm.g||'C')===g?';background:var(--ac);color:#fff':''}">${g} · ${START[g]} pts</button>`).join('')}</div>`:''}<div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px"><button class="sec" id="rcC" style="margin:0">Cancelar</button><button class="sec" id="rcK" style="margin:0">Criar</button></div><div class="dn" id="rcE"></div></div>`:'';
+  const apFind=()=>rg.adm?(rg.adm.fix?L.find(e=>e.n===rg.adm.n):pend.find(e=>e.n===rg.adm.n)):null, ap=apFind(), vl=null, fix=!!(ap&&rg.adm.fix), apK=ap?(fix?(rg.adm.k||0):Math.max(0,tRegPK(t,ap))):0, apn=ap?(dup?(fix&&ap.on&&ap.on[apK]?ap.on[apK]:tRegMem(ap)[apK].name):(fix&&ap.on?ap.on:ap.name)):'', kOf=(t0,e)=>fix?apK:Math.max(0,tRegPK(t0,e));
+  const profP=ap?`<div class="panel" style="margin:8px 0"><b>${fix?'✏️ Corrigir perfil de':'👤 Perfil para'} “${esc(apn)}”</b>${fix?'<p class="legend" style="text-align:left;margin:4px 0 0">Ligue a outro jogador, crie um perfil novo com o nome certo, ou desligue (a inscrição fica sem perfil).</p>':''}<label class="field"><span>Nome do jogador</span><input id="rcN" maxlength="40" value="${esc(rg.adm.name!=null?rg.adm.name:apn)}"></label>${admin?(()=>{const tk=new Set(tRegPids(t.reg.list)), tkn=tRegTok(apn), pl=vis().filter(p=>!tk.has(p.id)).map(p=>({p,s:tRegScore(tkn,tRegTok(p.name))})).sort((a,b)=>b.s-a.s||a.p.name.localeCompare(b.p.name)); return `<div class="legend" style="text-align:left;margin:8px 0 2px">Ou ligar a um jogador que já existe</div><div style="display:flex;gap:6px"><select id="rcS" style="flex:1;min-width:0"><option value="">— escolher jogador —</option>${pl.map(o=>`<option value="${o.p.id}"${!fix&&o.s>0&&o===pl[0]?' selected':''}>${o.s>0?'★ ':''}${esc(o.p.name)}</option>`).join('')}</select><button class="sec" id="rcL" style="margin:0;width:auto;padding:8px 12px">Ligar</button></div>`})():''}${admin?`<div class="legend" style="text-align:left;margin:6px 0 2px">Ranking inicial</div><div class="tbt" style="grid-template-columns:repeat(3,minmax(0,1fr))">${['A','B','C'].map(g=>`<button class="sec" data-rcg="${g}" style="margin:0${(rg.adm.g||'C')===g?';background:var(--ac);color:#fff':''}">${g} · ${START[g]} pts</button>`).join('')}</div>`:''}<div class="tbt" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px"><button class="sec" id="rcC" style="margin:0">Cancelar</button><button class="sec" id="rcK" style="margin:0">Criar</button></div>${fix?`<button class="sec" id="rcU" style="margin:8px 0 0">↩ Desligar do perfil (fica sem perfil, com o nome acima)</button>`:''}<div class="dn" id="rcE"></div></div>`:'';
   let adm=''; if(admin){
     if(t.reg.ico&&!rg.ic)rg.ic={ico:t.ico||'',emo:t.emo||'',emOp:false};
     adm=`<div class="tsh">Admin</div>`
     +`<label class="field"><span>Data e horário do campeonato</span><input id="rgWd" type="datetime-local" value="${t.reg.when?rwDt(t.reg.when):''}"></label><button class="sec" id="rgWs" style="margin:0 0 8px">Salvar data e horário</button>`
     +`<label class="field"><span>Vagas (0 = ilimitadas)</span><input id="rgMx" type="number" min="0" max="128" inputmode="numeric" value="${max}"></label><button class="sec" id="rgMs" style="margin:0 0 8px">Salvar vagas</button><div class="dn" id="rgAe"></div>`
     +`<button class="pri" id="rgEnd"${pend.length||L.length<2?' style="opacity:.55"':''}>🏁 Encerrar inscrições e montar o campeonato</button><button class="sec" id="rgDel">🗑️ Apagar este campeonato</button>`}
-  $('tourB').innerHTML=`<div class="msg" style="margin:0 0 8px;display:flex;align-items:center;justify-content:center;gap:12px">${t.reg.ico?(admin?`<button id="rgIcB" type="button" title="Trocar ícone" aria-label="Trocar ícone" style="flex:none;background:none;border:0;padding:0;cursor:pointer;position:relative">${tIco(t,56)}<span style="position:absolute;right:-4px;bottom:-4px;font-size:12px;background:var(--bg,#fff);border-radius:50%;width:20px;height:20px;line-height:20px;border:1px solid var(--bd,#ccc)">✏️</span></button>`:`<span style="flex:none">${tIco(t,56)}</span>`):''}<div style="min-width:0">${t.reg.when?`📅 <b>${esc(rwDay(t.reg.when))}, ${rwHr(t.reg.when)}</b><br>`:''}${max?`${L.length}/${max} vagas preenchidas`:`${L.length} inscrito${L.length===1?'':'s'} · vagas ilimitadas`}${full?' · <b>lista cheia</b>':''} · ✅ ${L.filter(cfOk).length} confirmado${L.filter(cfOk).length===1?'':'s'}<br><small>Toque numa vaga livre para se inscrever. Para compartilhar, use o botão 🔗 no topo.</small>${admin?`<br><button class="lnk" id="rgXp" style="font-size:12px;padding:2px 0">📤 Gerar lista deste campeonato (WhatsApp)</button><br><button class="lnk" id="rgIo" style="font-size:12px;padding:2px 0">🏆 Ícone: ${t.reg.ico?'ligado':'desligado'} (tocar para ${t.reg.ico?'desligar':'ligar'})</button>`:''}</div></div>${(admin&&t.reg.ico&&rg.icp&&rg.ic)?`<div class="panel" style="margin:0 0 8px;padding:8px"><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="sec" data-ic="img" style="margin:0;width:auto;padding:6px 12px">📷 Imagem</button><button type="button" class="sec" data-ic="emo" style="margin:0;width:auto;padding:6px 12px">😀 Emoji</button>${rg.ic.ico||rg.ic.emo?'<button type="button" class="sec" data-ic="rst" style="margin:0;width:auto;padding:6px 12px">↺ Padrão 🏆</button>':''}<button type="button" class="sec" id="rgIcX" style="margin:0;width:auto;padding:6px 12px">Fechar</button></div><input type="file" accept="image/*" id="icF" hidden>${icoEmoH(rg.ic)}</div>`:''}${tv.note?`<div class="msg" style="margin:8px 0">${tv.note}</div>`:''}${insP}${slotP}${profP}${impBtn}${impP}<div class="rgl">${rows}</div>${adm}<button class="sec" id="tLs" style="margin-top:12px">← Campeonatos</button>`;
+  $('tourB').innerHTML=`<div class="msg" style="margin:0 0 8px;display:flex;align-items:center;justify-content:center;gap:12px">${t.reg.ico?(admin?`<button id="rgIcB" type="button" title="Trocar ícone" aria-label="Trocar ícone" style="flex:none;background:none;border:0;padding:0;cursor:pointer;position:relative">${tIco(t,56)}<span style="position:absolute;right:-4px;bottom:-4px;font-size:12px;background:var(--bg,#fff);border-radius:50%;width:20px;height:20px;line-height:20px;border:1px solid var(--bd,#ccc)">✏️</span></button>`:`<span style="flex:none">${tIco(t,56)}</span>`):''}<div style="min-width:0">${dup?'👥 <b>Campeonato de duplas</b><br>':''}${t.reg.when?`📅 <b>${esc(rwDay(t.reg.when))}, ${rwHr(t.reg.when)}</b><br>`:''}${max?`${L.length}/${max} vagas preenchidas`:`${L.length} inscrito${L.length===1?'':'s'} · vagas ilimitadas`}${full?' · <b>lista cheia</b>':''} · ✅ ${L.filter(cfOk).length} confirmado${L.filter(cfOk).length===1?'':'s'}<br><small>${dup?'Toque numa vaga livre para inscrever uma dupla.':'Toque numa vaga livre para se inscrever.'} Para compartilhar, use o botão 🔗 no topo.</small>${admin?`<br><button class="lnk" id="rgXp" style="font-size:12px;padding:2px 0">📤 Gerar lista deste campeonato (WhatsApp)</button><br><button class="lnk" id="rgDup" style="font-size:12px;padding:2px 0">👥 Duplas: ${dup?'ligado':'desligado'} (tocar para ${dup?'desligar':'ligar'})</button><br><button class="lnk" id="rgIo" style="font-size:12px;padding:2px 0">🏆 Ícone: ${t.reg.ico?'ligado':'desligado'} (tocar para ${t.reg.ico?'desligar':'ligar'})</button>`:''}</div></div>${(admin&&t.reg.ico&&rg.icp&&rg.ic)?`<div class="panel" style="margin:0 0 8px;padding:8px"><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="sec" data-ic="img" style="margin:0;width:auto;padding:6px 12px">📷 Imagem</button><button type="button" class="sec" data-ic="emo" style="margin:0;width:auto;padding:6px 12px">😀 Emoji</button>${rg.ic.ico||rg.ic.emo?'<button type="button" class="sec" data-ic="rst" style="margin:0;width:auto;padding:6px 12px">↺ Padrão 🏆</button>':''}<button type="button" class="sec" id="rgIcX" style="margin:0;width:auto;padding:6px 12px">Fechar</button></div><input type="file" accept="image/*" id="icF" hidden>${icoEmoH(rg.ic)}</div>`:''}${tv.note?`<div class="msg" style="margin:8px 0">${tv.note}</div>`:''}${insP}${slotP}${profP}${impBtn}${impP}<div class="rgl">${rows}</div>${adm}<button class="sec" id="tLs" style="margin-top:12px">← Campeonatos</button>`;
   tv.note=null;
   $('tLs').onclick=()=>{tv={v:'list'};tourRender()};
-  $('tourB').querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{rg.slot=+b.dataset.rs;rg.q='';tourRender()});
+  $('tourB').querySelectorAll('[data-rs]').forEach(b=>b.onclick=()=>{rg.slot=+b.dataset.rs;rg.q='';rg.p1=null;tourRender()});
   $('tourB').querySelectorAll('[data-rx]').forEach(b=>b.onclick=async()=>{const t0=(S.tourns||[]).find(x=>x.id===t.id), n=+b.dataset.rx, e=t0&&t0.reg.list.find(x=>x.n===n); if(!e)return; await put('tournaments',{...t0,reg:{...t0.reg,list:t0.reg.list.filter(x=>x.n!==n)}}); await logA(`Inscrição cancelada em “${t.name}”: ${e.name} (vaga ${n})`); if(!admin)try{const cur0=S.settings.requests||[]; await put('settings',{...S.settings,requests:[{id:'rq'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),at:Date.now(),t:'insc',st:'open',by:myId,dev:deviceInfo(),tid:t.id,n:`${e.name} foi removido da inscrição de “${t.name}” (vaga ${n}).`},...cur0].slice(0,100)})}catch(er){} tv.note='Inscrição de '+esc(e.name)+' cancelada.'; tourRender()});
   if(rg.slot){
-    const bindM=()=>{const q=pxNorm((rg.q||'').trim()), taken=new Set(L.map(e=>e.pid).filter(Boolean)), pl=vis().filter(p=>!taken.has(p.id)&&(!q||pxNorm(p.name).includes(q))).sort((a,b)=>a.name.localeCompare(b.name)), ex=vis().some(p=>pxNorm(p.name)===q)||L.some(e=>pxNorm(e.name)===q);
+    const bindM=()=>{const q=pxNorm((rg.q||'').trim()), taken=new Set([...tRegPids(L),...(rg.p1&&rg.p1.pid?[rg.p1.pid]:[])]), pl=vis().filter(p=>!taken.has(p.id)&&(!q||pxNorm(p.name).includes(q))).sort((a,b)=>a.name.localeCompare(b.name)), ex=vis().some(p=>pxNorm(p.name)===q)||L.some(e=>pxNorm(e.name)===q)||(dup&&L.some(e=>tRegMem(e).some(m=>pxNorm(m.name)===q)));
       $('rgM').innerHTML=pl.map(p=>`<button class="sec" data-rp="${p.id}" style="margin:0 0 6px;text-align:left">${esc(p.name)}</button>`).join('')+(q&&!ex?`<button class="sec" id="rgFree" style="margin:0 0 6px">➕ Não tenho cadastro: usar “${esc((rg.q||'').trim())}”</button>`:'')+(!pl.length&&!q?'<p class="legend">Digite seu nome.</p>':'');
-      const add=async pl2=>{const e=await tRegAdd(t.id,rg.slot,pl2); if(e){$('rgE').textContent=e;return} const sl=rg.slot; rg.slot=null; rg.q=''; tv.note='✅ '+esc(pl2.name)+' inscrito na vaga '+sl+'.'; tourRender()};
+      const add=async pl2=>{ if(dup){ if(!rg.p1){rg.p1={pid:pl2.pid||'',name:pl2.name}; rg.q=''; tourRender(); return} pl2={m:[rg.p1,{pid:pl2.pid||'',name:pl2.name}]} }
+        const e=await tRegAdd(t.id,rg.slot,pl2); if(e){$('rgE').textContent=e;return} const sl=rg.slot, nmx=dup?pl2.m[0].name+' / '+pl2.m[1].name:pl2.name; rg.slot=null; rg.q=''; rg.p1=null; tv.note='✅ '+esc(nmx)+' inscrit'+(dup?'a':'o')+' na vaga '+sl+'.'; tourRender()};
       $('rgM').querySelectorAll('[data-rp]').forEach(b=>b.onclick=()=>{const p=S.raw.find(x=>x.id===b.dataset.rp); if(p)add({pid:p.id,name:p.name})});
       if($('rgFree'))$('rgFree').onclick=()=>add({name:(rg.q||'').trim()})};
-    $('rgQ').oninput=e=>{rg.q=e.target.value;bindM()}; $('rgC').onclick=()=>{rg.slot=null;tourRender()}; bindM()}
+    $('rgQ').oninput=e=>{rg.q=e.target.value;bindM()}; $('rgC').onclick=()=>{rg.slot=null;rg.p1=null;tourRender()}; if($('rgP1x'))$('rgP1x').onclick=()=>{rg.p1=null;rg.q='';tourRender()}; bindM()}
   $('tourB').querySelectorAll('[data-rok]').forEach(b=>b.onclick=async()=>{const t0=(S.tourns||[]).find(x=>x.id===t.id), n=+b.dataset.rok, e=t0&&t0.reg.list.find(x=>x.n===n); if(!e)return; const nv=!cfOk(e); await put('tournaments',{...t0,reg:{...t0.reg,list:t0.reg.list.map(x=>x.n===n?{...x,ok:nv}:x)}}); await logA(`Inscrição em “${t.name}”: ${e.name} (vaga ${n}) → ${nv?'Confirmado':'Ag. Confirmação'}`); tourRender()});
   $('tourB').querySelectorAll('[data-rcp]').forEach(b=>b.onclick=()=>{rg.adm={n:+b.dataset.rcp,g:'C'};tourRender()});
-    if(rg.adm){const ap=pend.find(e=>e.n===rg.adm.n); if(ap&&$('rcN')){
+  $('tourB').querySelectorAll('[data-rfx]').forEach(b=>b.onclick=()=>{const [n,k]=b.dataset.rfx.split(':').map(Number); rg.adm={n,k,g:'C',fix:true};tourRender()});
+    if(rg.adm){const ap=apFind(); if(ap&&$('rcN')){
       $('rcN').oninput=e=>rg.adm.name=e.target.value; $('rcC').onclick=()=>{rg.adm=null;tourRender()}; $('tourB').querySelectorAll('[data-rcg]').forEach(b=>b.onclick=()=>{rg.adm.name=$('rcN').value;rg.adm.g=b.dataset.rcg;tourRender()});
-      const link=async(pid,name)=>{const t0=(S.tourns||[]).find(x=>x.id===t.id); await put('tournaments',{...t0,reg:{...t0.reg,list:t0.reg.list.map(e=>e.n===ap.n?{...e,pid,name}:e)}}); const oth=await tRegLinkAll(ap.name,pid,name,t.id); rg.adm=null; tv.note='✅ '+esc(name)+' ligado ao perfil.'+(oth.length?' Também ligado em: '+oth.map(esc).join(', ')+'.':''); tourRender()};
+      const link=async(pid,name)=>{const t0=(S.tourns||[]).find(x=>x.id===t.id); await put('tournaments',{...t0,reg:{...t0.reg,list:t0.reg.list.map(e=>e.n===ap.n?tRegSetMem(t0,e,kOf(t0,e),pid,name):e)}}); const oth=t.reg.dup?[]:await tRegLinkAll(ap.name,pid,name,t.id); rg.adm=null; tv.note='✅ '+esc(name)+' ligado ao perfil.'+(oth.length?' Também ligado em: '+oth.map(esc).join(', ')+'.':''); tourRender()};
+      if($('rcU'))$('rcU').onclick=async()=>{const name=$('rcN').value.trim(); if(!name){$('rcE').textContent='Digite o nome.';return} const t0=(S.tourns||[]).find(x=>x.id===t.id); await put('tournaments',{...t0,reg:{...t0.reg,list:t0.reg.list.map(e=>e.n===ap.n?tRegSetMem(t0,e,apK,'',name):e)}}); await logA(`Perfil desligado em “${t.name}”: ${name} (vaga ${ap.n})`); rg.adm=null; tv.note='✅ '+esc(name)+' ficou sem perfil. Toque em “Jogador sem Perfil” para ligar ao certo.'; tourRender()};
       $('rcK').onclick=async()=>{const name=$('rcN').value.trim(); if(!name){$('rcE').textContent='Digite o nome.';return} if(S.raw.some(p=>p.name.toLowerCase()===name.toLowerCase())){$('rcE').textContent='Já existe um jogador com esse nome. Use “ligar a um jogador que já existe”.';return}
         const nid=uid(), g=admin?(rg.adm.g||'C'):'C'; await put('players',{id:nid,name,group:g}); await logA(`Jogador criado: ${name} (Ranking ${g}) pelas inscrições de “${t.name}”`); await link(nid,name); setTimeout(()=>goPlayer(nid),150)};
       }}
   if(admin){
+    $('rgDup').onclick=async()=>{const t0=(S.tourns||[]).find(x=>x.id===t.id); if(t0.reg.list.length){tv.note='⚠️ Para mudar entre individual e duplas, cancele antes todos os inscritos (as vagas mudam de formato).'; tourRender(); return} const r2={...t0.reg}; if(r2.dup)delete r2.dup; else r2.dup=true; await put('tournaments',{...t0,reg:r2}); await logA(`Campeonato “${t0.name}”: ${r2.dup?'agora é de duplas':'voltou a ser individual'}`); rg.slot=null; rg.p1=null; tourRender()};
     $('rgIo').onclick=async()=>{const t0=(S.tourns||[]).find(x=>x.id===t.id); await put('tournaments',{...t0,reg:{...t0.reg,ico:!t0.reg.ico}}); tourRender()};
     if($('rgIcB'))$('rgIcB').onclick=()=>{rg.icp=!rg.icp;tourRender()}; if($('rgIcX'))$('rgIcX').onclick=()=>{rg.icp=false;rg.ic.emOp=false;tourRender()};
     if($('icF')&&rg.ic)icoBind(rg.ic,async()=>{const t0=(S.tourns||[]).find(x=>x.id===t.id), o=rg.ic, u={...t0}; delete u.ico; delete u.emo; if(o.ico)u.ico=o.ico; else if(o.emo)u.emo=o.emo; await put('tournaments',u); tourRender()});
@@ -3189,19 +3314,25 @@ function tRegR(t){
       $('tourB').querySelectorAll('[data-ims]').forEach(c=>c.onchange=()=>{const r0=rg.imp.rows[+c.dataset.ims]; r0.pid=c.value; r0.st=c.value?'ok':'sem'; const x=c.parentNode.querySelector('.imx'); if(x)x.textContent=c.value?'✅ ligado ao perfil':'👤 vai sem perfil'});
       if($('imK'))$('imK').onclick=async()=>{ const ids=rg.imp.rows.filter(r=>r.inc&&r.pid).map(r=>r.pid); if(new Set(ids).size!==ids.length){$('imE').textContent='O mesmo jogador foi escolhido em duas linhas. Ajuste antes de importar.';return}
         $('imK').disabled=true; const msg=await tRegImpCommit(t.id,rg.imp.rows); rg.imp=null; tv.note=msg; tourRender() } }
-    if($('rcL')){ $('rcL').onclick=()=>{const pid=$('rcS').value; if(!pid){$('rcE').textContent='Escolha o jogador.';return} const pp=S.raw.find(x=>x.id===pid), ap0=pend.find(e=>e.n===rg.adm.n); if(!pp||!ap0)return; (async()=>{const t0=(S.tourns||[]).find(x=>x.id===t.id); await put('tournaments',{...t0,reg:{...t0.reg,list:t0.reg.list.map(e=>e.n===ap0.n?{...e,pid:pp.id,name:pp.name}:e)}}); await logA(`Inscrição ligada ao perfil em “${t.name}”: ${ap0.name} → ${pp.name}`); const oth=await tRegLinkAll(ap0.name,pp.id,pp.name,t.id); rg.adm=null; tv.note='✅ '+esc(pp.name)+' ligado ao perfil.'+(oth.length?' Também ligado em: '+oth.map(esc).join(', ')+'.':''); tourRender()})()} }
+    if($('rcL')){ $('rcL').onclick=()=>{const pid=$('rcS').value; if(!pid){$('rcE').textContent='Escolha o jogador.';return} const pp=S.raw.find(x=>x.id===pid), ap0=apFind(); if(!pp||!ap0)return; (async()=>{const t0=(S.tourns||[]).find(x=>x.id===t.id); await put('tournaments',{...t0,reg:{...t0.reg,list:t0.reg.list.map(e=>e.n===ap0.n?tRegSetMem(t0,e,kOf(t0,e),pp.id,pp.name):e)}}); await logA(`Inscrição ligada ao perfil em “${t.name}”: ${(t.reg.dup?tRegMem(ap0)[kOf(t,ap0)].name:ap0.name)} → ${pp.name}`); const oth=t.reg.dup?[]:await tRegLinkAll(ap0.name,pp.id,pp.name,t.id); rg.adm=null; tv.note='✅ '+esc(pp.name)+' ligado ao perfil.'+(oth.length?' Também ligado em: '+oth.map(esc).join(', ')+'.':''); tourRender()})()} }
     $('rgWs').onclick=async()=>{const w=new Date($('rgWd').value).getTime(); if(!$('rgWd').value||isNaN(w)){$('rgAe').textContent='Informe a data e o horário.';return} const t0=(S.tourns||[]).find(x=>x.id===t.id); await put('tournaments',{...t0,reg:{...t0.reg,when:w}}); await logA(`Data do campeonato “${t.name}”: ${rwDay(w)}, ${rwHr(w)}`); tv.note='✅ Data salva.'; tourRender()};
     $('rgMs').onclick=async()=>{const m=Math.max(0,Math.min(128,+$('rgMx').value||0)); if(m&&L.some(e=>e.n>m)){$('rgAe').textContent='Há inscritos acima da vaga '+m+'. Cancele-os antes ou aumente as vagas.';return} if(m&&m<L.length){$('rgAe').textContent='Há mais inscritos do que vagas.';return}
       const t0=(S.tourns||[]).find(x=>x.id===t.id); await put('tournaments',{...t0,reg:{...t0.reg,max:m}}); tv.note='✅ Vagas atualizadas.'; tourRender()};
     $('rgEnd').onclick=()=>{ if(pend.length){$('rgAe').textContent='Crie o perfil de: '+pend.map(e=>e.name).join(', ')+'.';return} if(L.length<2){$('rgAe').textContent='São necessários pelo menos 2 inscritos.';return}
-      tNewStart(); tNew.name=t.name; tNew.nameAuto=false; tNew.sel=new Set(L.map(e=>e.pid)); tNew.fromReg=t.id; tourRender()};
+      tNewStart(); tNew.name=t.name; tNew.nameAuto=false; tNew.fromReg=t.id;
+      if(dup){ tNew.dup=true; tNew.teams=L.map(e=>{const m=tRegMem(e); return {id:'tm'+t.id+'_'+e.n,name:m[0].name+' / '+m[1].name,m:[m[0].pid,m[1].pid]}}); tNew.sel=new Set(tNew.teams.map(x=>x.id)) } else tNew.sel=new Set(L.map(e=>e.pid)); tourRender()};
     $('rgDel').onclick=e=>sure(e.currentTarget,async()=>{await del('tournaments',t.id); await logA('Inscrições apagadas: '+t.name); tv={v:'list'}; tourRender()})}
 }
 
 /* ---------- novo campeonato ---------- */
 const tFmtNm=f=>({ko:'Mata-mata',rr:'Todos contra todos',gr:'Grupos + Ratings',de:'Eliminação Dupla',gf:'Grupo + Final'}[f]||'Campeonato');
 const tIco=(t,sz)=>{sz=sz||22; const st=`width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.58)}px`; return t&&typeof t.ico==='string'&&t.ico.startsWith('data:image/')?`<span class="tico" style="${st}"><img src="${t.ico}" alt=""></span>`:`<span class="tico" style="${st}">${esc((t&&t.emo)||'🏆')}</span>`};
-const IC_EMO=['🏆','🏓','🥇','🏅','🎖️','👑','🔥','⚡','⭐','🌟','🎯','💥','🚀','🦁','🐯','🦅','🐉','🐺','🦈','🍀','🎉','🏟️','💪','😎'];
+function tEmoFix(){ return (S.tourns||[]).filter(t=>t&&!t.arch&&tEmoAuto(t.name)&&(!(t.ico||t.emo)||(tRegOpen(t)&&!t.reg.ico))) }
+function tEmoAuto(name){ const n=pxNorm(String(name||'')), fem=/\b(feminin\w*|mulher\w*|dama\w*)\b/.test(n), kid=/\b(pre\s*mirim|mirim|juvenil|infantil|sub\s*\d+)\b/.test(n);
+  if(/\bduplas?\b/.test(n))return '👥'; if(/\bpre\s*mirim\b/.test(n))return fem?'👧':'👶'; if(kid)return fem?'👧':/\bmirim\b/.test(n)?'🧒':'👦'; if(fem)return '👩';
+  if(/\b(idos\w*|veterano\w*|senior\w*|master\w*|terceira idade)\b/.test(n))return '👴'; if(/\b(iniciante\w*|novato\w*|estreante\w*)\b/.test(n))return '🌱';
+  if(/\badulto\w*\b/.test(n))return '👨'; if(/\b(absoluto\w*|aberto|livre)\b/.test(n))return '🏅'; return '' }
+const IC_EMO=['🏆','🏓','🥇','🏅','🎖️','👑','🔥','⚡','⭐','🌟','🎯','💥','🚀','🦁','🐯','🦅','🐉','🐺','🦈','🍀','🎉','🏟️','💪','😎','👶','🧒','👦','👧','🧑','👩','👨','👴','👵','👥','🌱','🎓'];
 function icoEmoH(o){ return o.emOp?`<div class="icem">${IC_EMO.map(e=>`<button type="button" data-em="${e}">${e}</button>`).join('')}</div>`:'' }
 function icoPick(o){ return `<div class="field" style="margin:0"><span>Ícone</span><div class="icr">${tIco({ico:o.ico,emo:o.emo},56)}<div class="icb"><button type="button" class="sec" data-ic="img">📷 Imagem</button><button type="button" class="sec" data-ic="emo">😀 Emoji</button>${o.ico||o.emo?'<button type="button" class="sec" data-ic="rst">↺ Padrão 🏆</button>':''}</div></div><input type="file" accept="image/*" id="icF" hidden></div>` }
 function icoResize(file){ return new Promise((ok,no)=>{ const u=URL.createObjectURL(file), im=new Image(); im.onload=()=>{ try{ const m=Math.min(im.width,im.height), sx=(im.width-m)/2, sy=(im.height-m)/2; const mk=N=>{const c=document.createElement('canvas'); c.width=c.height=N; const x=c.getContext('2d'); x.imageSmoothingEnabled=true; x.imageSmoothingQuality='high'; x.drawImage(im,sx,sy,m,m,0,0,N,N); return c}; URL.revokeObjectURL(u);
@@ -3214,11 +3345,14 @@ function icoBind(o,redraw){ const B=$('tourB'), q=s=>B.querySelectorAll(s);
   q('[data-em]').forEach(b=>b.onclick=()=>{o.emo=b.dataset.em==='🏆'?'':b.dataset.em; o.ico=''; o.emOp=false; redraw()}) }
 function tNewStart(){
   const d=new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-  tNew={ico:'',emo:'',emOp:false,name:tFmtNm('gr'),nameAuto:true,fmt:'gr',bo:5,bog:3,bop:{},pf:false,G:null,gm:'fix',sm:'fixed',dbl:false,rule:'pts',third:false,edit:'admin',res:'any',rpin:'',rpin2:'',sel:new Set(vis().map(p=>p.id)),sw:null,err:''};
+  tNew={dup:false,ico:'',emo:'',emOp:false,name:tFmtNm('gr'),nameAuto:true,fmt:'gr',bo:5,bog:3,bop:{},pf:false,G:null,gm:'fix',sm:'fixed',dbl:false,rule:'pts',third:false,edit:'admin',res:'any',rpin:'',rpin2:'',sel:new Set(vis().map(p=>p.id)),sw:null,err:''};
   tv={v:'new'}; tourRender();
 }
+function tDupB(n){ const used=new Set(n.teams.flatMap(x=>x.m)), pl=vis().filter(p=>!used.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name)), o=v=>`<option value="">— escolher —</option>`+pl.map(p=>`<option value="${p.id}"${v===p.id?' selected':''}>${esc(p.name)}</option>`).join('');
+  return `<div class="panel" style="margin:8px 0"><b>➕ Nova dupla</b><div style="display:flex;gap:6px;margin:8px 0"><select id="dpA" style="flex:1;min-width:0">${o(n.da)}</select><select id="dpB" style="flex:1;min-width:0">${o(n.db)}</select></div><button class="sec" id="dpAdd" style="margin:0">Adicionar dupla</button><div class="dn" id="dpErr"></div></div>` }
 function tNewR(){
   const n=tNew; $('tourT').textContent='➕ Novo campeonato';
+  if(n.dup&&!n.teams)n.teams=[]; if(n._m===undefined)n._m=!!n.dup; if(n._m!==!!n.dup&&!n.fromReg){n._m=!!n.dup; n.sel=n.dup?new Set(n.teams.map(x=>x.id)):new Set(vis().map(p=>p.id))}
   const seg=(k,opts,cols,cls)=>`<div class="seg${cls?' '+cls:''}" style="grid-template-columns:repeat(${cols||opts.length},1fr)">${opts.map(([v,l])=>`<button data-k="${k}" data-v="${v}" class="${String(n[k])===String(v)?'on':''}">${l}</button>`).join('')}</div>`;
   const pl=vis().sort((a,b)=>b.rating-a.rating), cnt=n.sel.size, isG=n.fmt==='gr', isF=n.fmt==='gf', Ga=n.G||tAutoG(cnt);
   const PH=[['r16','Oitavas'],['qf','Quartas'],['sf','Semifinais'],['f','Final'],['p3','3º lugar']];
@@ -3229,7 +3363,7 @@ function tNewR(){
     pinX=n.res==='mgr'?`<div class="tg2" style="margin-top:2px"><input id="tRp1" type="password" inputmode="numeric" autocomplete="off" placeholder="Crie o PIN do gerente (mín. 4 dígitos)" value="${esc(n.rpin||'')}" style="padding:8px"><input id="tRp2" type="password" inputmode="numeric" autocomplete="off" placeholder="Repita o PIN" value="${esc(n.rpin2||'')}" style="padding:8px"></div><p class="legend" style="margin:4px 0 0">Ao tocar numa partida, pede o PIN. Vale o PIN do gerente ou o do administrador.</p>`:n.res==='admin'?`<p class="legend" style="margin:4px 0 0">Só quem entrar como administrador lança resultados.</p>`:'';
   const perPh=n.fmt==='rr'||n.fmt==='de'||isF?'':`<div class="field"><button class="lnk" id="tPf" style="font-size:13px">${n.pf?'▾':'▸'} Mudar o melhor de sets por fase do mata-mata</button>${n.pf?`<div class="tbp">${PH.map(([k,l])=>`<label>${l}<select data-bp="${k}"><option value="">Padrão (${n.bo})</option>${[3,5,7].map(v=>`<option value="${v}" ${n.bop[k]===v?'selected':''}>${v} sets</option>`).join('')}</select></label>`).join('')}</div><button class="sec" id="tQ5">Atalho: melhor de 3 até as oitavas e melhor de 5 a partir das quartas</button>`:''}</div>`;
   const gRule=`<div class="field"><span>Regra de pontuação${isG?' dos grupos':''}</span>${seg('rule',[['pts','Pontuação'],['sets','Mais sets']])}</div>`, gRuleL=`<p class="legend" style="margin:0 0 4px">${n.rule==='sets'?'Mais sets: a vitória vale a diferença de sets (3x0 = 3 pontos, 3x1 = 2). Derrota = 0. Placar obrigatório. Desempate: confronto direto.':'Pontuação: vitória = 1 ponto, derrota = 0. Desempate: confronto direto.'}</p>`;
-  $('tourB').innerHTML=`<div class="icrow"><label class="field" style="margin:0"><span>Nome do campeonato</span><input id="tNm" value="${esc(n.name)}" maxlength="60"></label>${icoPick(n)}</div>${icoEmoH(n)}
+  $('tourB').innerHTML=`<div class="icrow"><div><label class="field" style="margin:0"><span>Nome do campeonato</span><input id="tNm" value="${esc(n.name)}" maxlength="60"></label>${n.fromReg?'':`<div style="display:flex;gap:6px;margin-top:6px">${[[false,'Individual'],[true,'👥 Duplas']].map(([v,l])=>`<button type="button" class="sec" data-k="dup" data-v="${v}" style="margin:0;width:auto;padding:4px 10px;font-size:13px${!!n.dup===v?';background:var(--ac);color:#fff':''}">${l}</button>`).join('')}</div>`}</div>${icoPick(n)}</div>${icoEmoH(n)}
   <button class="sec" id="tRegGo" style="margin:0 0 10px">📝 Abrir inscrições</button>
   <div class="field"><span>Formato</span>${seg('fmt',[['gr','Grupos + Ratings'],['gf','Grupo + Final'],['ko','Mata-mata'],['de','Eliminação Dupla'],['rr','Todos contra todos']],4,'f4')}${isF?`<p class="legend" style="margin:6px 0 0">Um grupo único, todos contra todos (3 a 6 jogadores). Depois, o 1º enfrenta o 2º na final e o 3º enfrenta o 4º na disputa de 3º lugar. Pódio: campeão, vice e 3º.</p>`:''}${n.fmt==='de'?`<p class="legend" style="margin:6px 0 0">Quem perde uma vez cai para a chave dos perdedores e só sai do campeonato na segunda derrota. O campeão dos vencedores enfrenta o dos perdedores na grande final (se o dos perdedores vencer, há um jogo de desempate). Pódio: campeão, vice e 3º (quem perde a final dos perdedores).</p>`:''}${isG?`<p class="legend" style="margin:6px 0 0">Fase de grupos e depois um mata-mata por Rating (1º no Rating A, 2º no B…). O destino de cada colocação é definido na prévia.</p>`:''}</div>
   ${isG?`<div class="tg2 tg4 tg4grid"><div class="field"><span>Quantidade de Grupos</span><div class="tstep"><button class="sec" data-gs="-1" aria-label="Menos um grupo">−</button><b>${Ga} grupos</b><button class="sec" data-gs="1" aria-label="Mais um grupo">+</button></div><p class="legend" style="margin:4px 0 0">${cnt>=4?tSizes(cnt,Math.max(2,Math.min(Ga,Math.floor(cnt/2)))).join(' / '):'—'} jogadores${n.G?'':' · sugestão'}</p></div>
@@ -3244,20 +3378,25 @@ function tNewR(){
   ${n.res==='mgr'?`<div class="tg2" style="margin-top:2px"><input id="tRp1" type="password" inputmode="numeric" autocomplete="off" placeholder="Crie o PIN do gerente (mín. 4 dígitos)" value="${esc(n.rpin||'')}" style="padding:8px"><input id="tRp2" type="password" inputmode="numeric" autocomplete="off" placeholder="Repita o PIN" value="${esc(n.rpin2||'')}" style="padding:8px"></div><p class="legend" style="margin:4px 0 0">Ao tocar numa partida, pede o PIN. Vale o PIN do gerente ou o do administrador.</p>`:n.res==='admin'?`<p class="legend" style="margin:4px 0 0">Só quem entrar como administrador lança resultados.</p>`:''}
   ${perPh}
   ${n.fmt==='rr'||isG||isF?`<div class="tg2 tg4 tg4s"><div class="field"><span>${isG?'Ida e volta nos grupos':'Turnos'}</span>${seg('dbl',[[false,'Só ida'],[true,'Ida e volta']])}</div>${gRule}</div>${gRuleL}`:''}`}
-  <div class="field"><div class="tph"><span>Participantes <b id="tCnt">${n.sel.size}</b> de ${pl.length}</span><button class="sec tadd" id="tAddP" title="Adicionar um jogador novo" aria-label="Adicionar um jogador novo">+</button></div>
+  ${n.dup&&!n.fromReg?tDupB(n):''}
+  ${n.dup?`<div class="field"><div class="tph"><span>👥 Duplas <b id="tCnt">${n.sel.size}</b> de ${n.teams.length}</span></div><div class="tpk">${n.teams.map(x=>tTm(x.id)).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="pl t${p.tier}${n.sel.has(p.id)?'':' off'}" data-id="${p.id}"><span><span class="badge">${p.tier}</span>${esc(p.name)}<small style="display:block;color:var(--mut)">média ${p.rating}</small></span><b>${n.sel.has(p.id)?'✓':''}</b></button>`).join('')}</div></div>`:`<div class="field"><div class="tph"><span>Participantes <b id="tCnt">${n.sel.size}</b> de ${pl.length}</span><button class="sec tadd" id="tAddP" title="Adicionar um jogador novo" aria-label="Adicionar um jogador novo">+</button></div>
     <div class="tqf"><button class="sec" data-q="all">Todos</button><button class="sec" data-q="none">Nenhum</button>${['A','B','C'].map(q=>{const ids=pl.filter(p=>p.tier===q).map(p=>p.id), all=ids.length>0&&ids.every(id=>n.sel.has(id));return `<button class="sec${all?' on':''}" data-q="${q}" ${ids.length?'':'disabled'} title="Marcar/desmarcar todos da faixa ${q}">Faixa ${q} (${ids.length})</button>`}).join('')}</div>
-    <div class="tpk">${[...pl].sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="pl t${p.tier}${n.sel.has(p.id)?'':' off'}" data-id="${p.id}"><span><span class="badge">${p.tier}</span>${esc(p.name)}</span><b>${n.sel.has(p.id)?'✓':''}</b></button>`).join('')}</div></div>
+    <div class="tpk">${[...pl].sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<button class="pl t${p.tier}${n.sel.has(p.id)?'':' off'}" data-id="${p.id}"><span><span class="badge">${p.tier}</span>${esc(p.name)}</span><b>${n.sel.has(p.id)?'✓':''}</b></button>`).join('')}</div></div>`}
   <div class="dn" id="tErr">${esc(n.err||'')}</div>
   <button class="pri" id="tGo">Continuar → prévia</button><button class="sec" id="tBk">Cancelar</button>`;
   const keep=()=>{n.name=$('tNm').value};
   icoBind(n,()=>{keep();tNewR()});
   $('tNm').oninput=e=>{n.name=e.target.value;n.nameAuto=false}; if($('tRp1')){$('tRp1').oninput=e=>n.rpin=e.target.value; $('tRp2').oninput=e=>n.rpin2=e.target.value}
+  $('tourB').querySelectorAll('button[data-k="dup"]').forEach(b=>b.onclick=()=>{keep();n.dup=b.dataset.v==='true';tNewR()});
   $('tourB').querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{keep();const v=b.dataset.v,k=b.dataset.k;n[k]=(v==='true'?true:v==='false'?false:(k==='bo'||k==='bog'?+v:v)); if(k==='fmt'&&n.nameAuto)n.name=tFmtNm(n.fmt); tNewR()});
   $('tourB').querySelectorAll('.tpk .pl').forEach(b=>b.onclick=()=>{keep();n.sel.has(b.dataset.id)?n.sel.delete(b.dataset.id):n.sel.add(b.dataset.id);tNewR()});
   $('tourB').querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{keep();const q=b.dataset.q; if(q==='all')n.sel=new Set(pl.map(p=>p.id)); else if(q==='none')n.sel=new Set(); else{const ids=pl.filter(p=>p.tier===q).map(p=>p.id), all=ids.every(id=>n.sel.has(id)); ids.forEach(id=>all?n.sel.delete(id):n.sel.add(id))} tNewR()});
   $('tourB').querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>{keep();n.G=Math.max(2,Math.min(Math.max(2,Math.floor(cnt/2)),Ga+(+b.dataset.gs)));tNewR()});
   if($('tPf'))$('tPf').onclick=()=>{keep();n.pf=!n.pf;tNewR()};
-  $('tAddP').onclick=()=>{keep();tNewWait=true;$('addBtn').click()};
+  if($('dpAdd')){$('dpA').onchange=e=>n.da=e.target.value; $('dpB').onchange=e=>n.db=e.target.value;
+    $('dpAdd').onclick=()=>{keep(); const a=byId($('dpA').value), b=byId($('dpB').value); if(!a||!b){$('dpErr').textContent='Escolha os dois jogadores da dupla.';return} if(a.id===b.id){$('dpErr').textContent='Os dois jogadores precisam ser diferentes.';return}
+      const id='tm'+uid(); n.teams.push({id,name:a.name+' / '+b.name,m:[a.id,b.id]}); n.sel.add(id); n.da=n.db=''; tNewR()}}
+  if($('tAddP'))$('tAddP').onclick=()=>{keep();tNewWait=true;$('addBtn').click()};
   $('tourB').querySelectorAll('select[data-bp]').forEach(s=>s.onchange=()=>{keep();if(s.value)n.bop[s.dataset.bp]=+s.value; else delete n.bop[s.dataset.bp]});
   if($('tQ5'))$('tQ5').onclick=()=>{keep();n.bo=3;n.bop={qf:5,sf:5,f:5,p3:5};tNewR()};
   $('tBk').onclick=()=>{tv={v:'list'};tourRender()};
@@ -3296,7 +3435,7 @@ function tPrevR(){
   $('tMk').onclick=async()=>{
     if(n.fmt==='gr'){const e=tCheckGr(n); if(e){n.err=e;return tPrevR()}}
     const b=$('tMk'); b.disabled=true; b.textContent='Criando...';
-    const t={id:n.fromReg||uid()+'t',name:n.name,fmt:n.fmt,bo:n.bo,dbl:!!n.dbl,...(!tIsKo(n)?{rule:n.rule}:{}),third:n.fmt==='de'?false:!!n.third,edit:n.edit,res:n.res||'any',...(n.res==='mgr'?{rpin:await sha(n.rpin.trim())}:{}),wt:{all:n.wt||1,ph:{}},at:Date.now(),by:myId,players:n.players,fx:[],...(n.ico?{ico:n.ico}:{}),...(n.emo?{emo:n.emo}:{}),...(Object.keys(n.bop||{}).length?{bop:{...n.bop}}:{})};
+    const t={id:n.fromReg||uid()+'t',name:n.name,...(n.dup?{dup:true}:{}),fmt:n.fmt,bo:n.bo,dbl:!!n.dbl,...(!tIsKo(n)?{rule:n.rule}:{}),third:n.fmt==='de'?false:!!n.third,edit:n.edit,res:n.res||'any',...(n.res==='mgr'?{rpin:await sha(n.rpin.trim())}:{}),wt:{all:n.wt||1,ph:{}},at:Date.now(),by:myId,players:n.players,fx:[],...(n.ico?{ico:n.ico}:{}),...((n.emo||(n.ico?'':tEmoAuto(n.name)))?{emo:n.emo||tEmoAuto(n.name)}:{}),...(Object.keys(n.bop||{}).length?{bop:{...n.bop}}:{})};
     if(n.fmt==='gf'){const ids=n.players.map(p=>p.id), nP=ids.length, groups=[{id:tLet(0),ids}], dest=ids.map((_,i)=>i<2?'A':(i<4&&nP>=4)?'B':null), o=tBuildGr({groups,dbl:n.dbl,dest,third:false}); Object.assign(t,{fmt:'gr',gf:true,third:false,bog:n.bog,groups,dest,seedMode:'fixed',rt:o.rt,gmax:o.gmax,fx:o.fx})}
     else if(n.fmt==='gr'){const o=tBuildGr({groups:n.groups,dbl:n.dbl,dest:n.dest,third:n.third}); Object.assign(t,{sx:2,byeG:true,bog:n.bog,groups:n.groups,dest:n.dest,seedMode:n.sm,rt:o.rt,gmax:o.gmax,fx:o.fx})}
     else t.fx=tBuild({fmt:n.fmt,players:n.players,slots:n.slots,dbl:n.dbl,third:n.third});
@@ -3518,7 +3657,7 @@ async function tUndo(t,fid){
   if(gdep){tv.note='⚠️ Apague primeiro os resultados do mata-mata dos Ratings que dependem deste grupo.';return tourRender()}
   if(dep){tv.note='⚠️ Apague primeiro o resultado da fase seguinte.';return tourRender()}
   tGate(t,async()=>{
-    for(const m of r.ms)await del('matches',m.id);
+    for(const m of r.ms)await (t.dup?delMatch(m):del('matches',m.id));
     await logA(`Resultado desfeito no campeonato “${t.name}”`); tv.note='↩ Resultado desfeito.'; tourRender()});
 }
 
@@ -3560,11 +3699,16 @@ async function tSubmit(tid,fid,w,score){
   const t=S.tourns.find(x=>x.id===tid), f=t&&t.fx.find(x=>x.id===fid); if(!t||!f||!tResPerm(t))return;
   const r=tState(t)[fid]; if(!r||!r.a||!r.b||r.done||r.void){tCloseDlg();tv.note='⚠️ Esta partida já tem resultado.';tourRender();return}
   const l=w===r.a?r.b:r.a, PN={}; t.players.forEach(p=>PN[p.id]=p.name);
+  let DW=null,DL=null; if(t.dup){const a=t.players.find(p=>p.id===w), b=t.players.find(p=>p.id===l); DW=((a&&a.m)||[]).map(i=>byId(i)); DL=((b&&b.m)||[]).map(i=>byId(i)); if(DW.length!==2||DL.length!==2||[...DW,...DL].some(q=>!q)){tCloseDlg();tv.note='⚠️ Os dois jogadores de cada dupla precisam ter perfil.';tourRender();return}}
+  const B4=DW?[...DW,...DL].map(q=>({t:q.tier,r:q.rating})):null;
   const R0=tState(t), was=tPodium(t,R0), mid=uid(), at=Date.now(), nw0=byId(w), nl0=byId(l), t0=nw0&&nw0.tier, t1=nl0&&nl0.tier; tCloseDlg();
   if(!S.settings.achFrom)await put('settings',{...S.settings,achFrom:at});
-  await put('matches',{id:mid,winner:w,loser:l,wn:nameOf(w,PN[w]),ln:nameOf(l,PN[l]),score,at,cr:at,by:myId,dev:deviceInfo(),tid:t.id,fx:fid,ph:f.ph,tn:t.name});
+  if(DW){for(let i=0;i<2;i++)await put('matches',{id:i?mid+'d':mid,winner:DW[i].id,loser:DL[i].id,wn:DW[i].name,ln:DL[i].name,score,at,cr:at,by:myId,dev:deviceInfo(),tid:t.id,fx:fid,ph:f.ph,tn:t.name,tw:w,tl:l,dbl:{g:mid,i,w:DW.map(q=>q.id),l:DL.map(q=>q.id),wn:DW.map(q=>q.name),ln:DL.map(q=>q.name)}})}
+  else await put('matches',{id:mid,winner:w,loser:l,wn:nameOf(w,PN[w]),ln:nameOf(l,PN[l]),score,at,cr:at,by:myId,dev:deviceInfo(),tid:t.id,fx:fid,ph:f.ph,tn:t.name});
   const nw=byId(w), nl=byId(l), d=D[mid]||[0,0], unl=[]; [nw,nl].forEach((q,i)=>q&&Object.keys(q.ach||{}).filter(x=>q.ach[x].m===mid&&ACH.some(a=>a.k===x)).sort((a,c)=>achOrd(a)-achOrd(c)).forEach(x=>unl.push({p:q.name,id:q.id,k:x,s:i})));
-  let note=`✅ <b>${esc(nameOf(w,PN[w]))}</b> venceu${score?' por '+score:''}<br><span class="up">+${d[0]}</span> / <span class="dn">−${d[1]}</span> pontos no ranking`+(d[3]>1?` (peso ×${String(d[3]).replace('.',',')})`:'');
+  let DN=''; if(DW){const A4=[...DW,...DL].map(q=>byId(q.id)); A4.forEach((q,i)=>Object.keys(q.ach||{}).filter(x=>q.ach[x].m===mid&&ACH.some(a=>a.k===x)).sort((a,c)=>achOrd(a)-achOrd(c)).forEach(x=>unl.push({p:q.name,id:q.id,k:x,s:i<2?0:1})));
+    DN=A4.map((q,i)=>`<br><span class="${i<2?'up':'dn'}">${pnl(q.id,q.name)}: ${B4[i].r} → ${q.rating} (${i<2?'+'+(q.rating-B4[i].r):'−'+(B4[i].r-q.rating)})</span>`+(q.tier!==B4[i].t?` ${q.tier<B4[i].t?'⬆️':'⬇️'} Ranking ${q.tier}`:'')).join('')}
+  let note=`✅ <b>${esc(nameOf(w,PN[w]))}</b> venceu${score?' por '+score:''}`+(DW?DN:`<br><span class="up">+${d[0]}</span> / <span class="dn">−${d[1]}</span> pontos no ranking`+(d[3]>1?` (peso ×${String(d[3]).replace('.',',')})`:''));
   if(nw&&t0&&nw.tier!==t0)note+=`<br>${nw.tier<t0?'⬆️':'⬇️'} ${pnl(w,nw.name)} agora está no Ranking ${nw.tier}.`;
   if(nl&&t1&&nl.tier!==t1)note+=`<br>${nl.tier<t1?'⬆️':'⬇️'} ${pnl(l,nl.name)} agora está no Ranking ${nl.tier}.`;
   note+=unl.map(achLine).join('');
@@ -3714,13 +3858,13 @@ $('clubNew').onclick=()=>{
 function delPlayerUi(id){
   if(!admin){needAdmin(()=>delPlayerUi(id));return}
   const p=byId(id); if(!p)return;
-  const ms=S.matches.filter(m=>m.winner===id||m.loser===id);
+  const ms=withGroups(S.matches.filter(m=>inM(m,id)));
   $('dpT').textContent='🗑️ Excluir "'+p.name+'"?';
-  $('dpD').textContent=`Apaga o jogador e as ${ms.length} partida(s) em que ele jogou neste clube. Os pontos dos adversários são recalculados sem essas partidas. Não dá para desfazer. Para só esconder o jogador e manter o histórico, use "Arquivar".`;
+  $('dpD').textContent=`Apaga o jogador e as ${collapseD(ms).length} partida(s) em que ele jogou neste clube (partidas de duplas saem inteiras, para todos os 4 jogadores). Os pontos dos adversários são recalculados sem essas partidas. Não dá para desfazer. Para só esconder o jogador e manter o histórico, use "Arquivar".`;
   $('dpOk').onclick=async()=>{
     const b=$('dpOk'); b.disabled=true; b.textContent='Excluindo...';
     for(const m of ms)await del('matches',m.id);
-    await del('players',id); await logA(`Jogador excluído: ${p.name} (${ms.length} partida(s))`);
+    await del('players',id); await logA(`Jogador excluído: ${p.name} (${collapseD(ms).length} partida(s))`);
     b.disabled=false; b.textContent='Sim, excluir'; $('dpM').classList.remove('on'); if(histId===id)histId=null; renderPlayers();
   };
   open('dpM');
@@ -3764,6 +3908,7 @@ $('impGo').onclick=async()=>{
 /* ---- levar partidas já registradas para outro clube ---- */
 let mvSel=new Set();
 function mvInfo(m,cid){
+  if(m.dbl)return {ok:false,why:'partida de duplas não pode ser levada para outro clube'};
   const wn=nameOf(m.winner,m.wn), ln=nameOf(m.loser,m.ln), pw=findIn(cid,wn), pl=findIn(cid,ln);
   if(!pw||!pl)return {ok:false,why:(!pw?wn:ln)+' não existe no clube de destino'};
   const dup=G.matches.some(x=>(x.club||'main')===cid&&((m.link&&x.link===m.link)||(x.at===m.at&&x.winner===pw.id&&x.loser===pl.id)));
