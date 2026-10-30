@@ -1,10 +1,3 @@
-<!doctype html><html><head>
-<script>
-window.claude={use:async function(n){
- if(n==='db'){const P=window.parent;if(P&&P!==window&&P.__rankingDb)return P.__rankingDb;throw new Error('no db')}
- if(n==='downloads')return{save:async function(o){const b=o.data instanceof Blob?o.data:new Blob([o.data],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=o.filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}};
- throw new Error('unknown')}};
-</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="pt-BR" class="fx">
 <script>try{var d=document.documentElement;var v=localStorage.getItem("tm_visual");if(v==="simple")d.classList.remove("fx");else if(v!=="fx")d.classList.add("cl");var t=localStorage.getItem("tm_theme");if(t)d.setAttribute("data-theme",t)}catch(e){}</script>
@@ -155,7 +148,7 @@ html:not(.fx) .fxonly{display:none!important}
 .gbtn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:1px solid var(--bd);border-radius:12px;background:transparent;color:var(--tx);font:inherit;font-size:14px;cursor:pointer;margin:0;min-width:0;line-height:1.2}
 .gbtn .gi{font-size:inherit}
 #meBtn{grid-column:span 2;padding:3px 10px;font-size:13px;min-height:0;flex-direction:row}
-#meDrop{grid-column:1/-1;background:var(--card,#fff);border:1px solid var(--bd,rgba(0,0,0,.15));border-radius:12px;padding:12px;margin-top:-4px}#meDrop[hidden]{display:none}#meDrop #meB2{white-space:nowrap;font-size:12px}#meDrop .nm{display:inline-block;max-width:92px;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}#meDrop .meAct{display:flex;gap:8px}#meDrop .meAct button{flex:1;margin:0;padding:8px}#meBtn .gi{font-size:15px;line-height:1}.gbtn .gl{overflow-wrap:anywhere}
+#meDrop{grid-column:1/-1;background:var(--card,#fff);border:1px solid var(--bd,rgba(0,0,0,.15));border-radius:12px;padding:12px;margin-top:-4px}#meDrop[hidden]{display:none}#meDrop #meB2{white-space:nowrap;font-size:12px}#meDrop .meG{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:10px;font-size:12px;align-items:baseline;margin:0 0 12px}@media(max-width:400px){#meDrop .meG{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px}#meDrop .meE{display:none}#meDrop .meL{grid-column:1/-1;margin-top:6px}}#meDrop .meC{display:flex;justify-content:flex-end;align-items:baseline;gap:4px;min-width:0;white-space:nowrap}#meDrop .meC>*{flex:none}#meDrop .meC>.nm{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}#meDrop .meH{text-align:right;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--bd,rgba(0,0,0,.15))}#meDrop #meB2 .nm{display:block}#meDrop .meAct{display:flex;gap:8px}#meDrop .meAct button{flex:1;margin:0;padding:8px}#meBtn .gi{font-size:15px;line-height:1}.gbtn .gl{overflow-wrap:anywhere}
 @media (max-width:560px){.gbtn{padding:10px}}
 @media (orientation:landscape) and (max-height:520px){.gbtn{padding:7px;font-size:13px}}
 @property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
@@ -1302,14 +1295,14 @@ function renderMeStats(){ const me=meId(), p=byId(me); if(!p)return;
     ms.forEach(m=>{const w=m.winner===me, x=D[m.id]||[0,0], o=w?m.loser:m.winner, on=w?m.ln:m.wn; const q=O[o]=O[o]||{id:o,n:on,c:0,t:0}; q.c++; q.t=Math.max(q.t,m.at);
       if(w){v++;pts+=x[0]; if(!bw||x[0]>bw.p)bw={p:x[0],o:on,id:o,sc:m.score}} else {d++;pts-=x[1]; if(!bl||x[1]>bl.p)bl={p:x[1],o:on,id:o,sc:m.score}}});
     const fo=Object.values(O).sort((x,y)=>y.c-x.c||y.t-x.t)[0]; return {g:v+d,v,d,pts,fo,bw,bl}};
-  const T=st(d0), W=st(d0-6*864e5);
+  const T=st(d0), W=st(d0-6*864e5), M=st(d0-29*864e5);
   const nm=(id,n)=>`<span class="nm">${esc(nameOf(id,n))}</span>`;
-  const row=(lab,a,b)=>`<div style="color:var(--mut)">${lab}</div><div style="text-align:right">${a}</div><div style="text-align:right">${b}</div>`;
+  const row=(lab,a,b,c)=>`<div class="meL" style="color:var(--mut)">${lab}</div><div class="meC">${a}</div><div class="meC">${b}</div><div class="meC">${c}</div>`;
   const vd=x=>x.g?`<b class="up">${x.v}V</b> <b class="dn">${x.d}D</b>`:dash, vr=x=>x.g?`<b style="color:${col(x.pts)}">${sg2(x.pts)}</b>`:dash;
   const fo=x=>x.fo?`${nm(x.fo.id,x.fo.n)} <small style="color:var(--mut)">${x.fo.c}x</small>`:dash;
-  const bw=x=>x.bw?`${nm(x.bw.id,x.bw.o)} <b class="up">+${x.bw.p}</b>${x.bw.sc?' <small style="color:var(--mut)">'+esc(x.bw.sc)+'</small>':''}`:dash, bl=x=>x.bl?`${nm(x.bl.id,x.bl.o)} <b class="dn">−${x.bl.p}</b>${x.bl.sc?' <small style="color:var(--mut)">'+esc(x.bl.sc)+'</small>':''}`:dash;
-  $('meB2').innerHTML=`<div style="display:grid;grid-template-columns:auto max-content 1fr;gap:9px 14px;font-size:12px;align-items:baseline;margin:0 0 12px"><div></div><div style="text-align:right;font-weight:700">Hoje</div><div style="text-align:right;font-weight:700">Últ. 7 dias</div>`
-    +row('🏓 Jogos',vd(T),vd(W))+row('📈 Variação de pontos',vr(T),vr(W))+row('🤝 Adv. mais frequente',fo(T),fo(W))+row('🏆 Maior vitória',bw(T),bw(W))+row('💔 Maior derrota',bl(T),bl(W))+`</div>`;
+  const bw=x=>x.bw?`${nm(x.bw.id,x.bw.o)} <b class="up">+${x.bw.p}</b>`:dash, bl=x=>x.bl?`${nm(x.bl.id,x.bl.o)} <b class="dn">−${x.bl.p}</b>`:dash;
+  $('meB2').innerHTML=`<div class="meG"><div class="meE"></div><div class="meH">Hoje</div><div class="meH">Semana</div><div class="meH">Mês</div>`
+    +row('🏓 Jogos',vd(T),vd(W),vd(M))+row('📈 Variação',vr(T),vr(W),vr(M))+row('🤝 Mais frequente',fo(T),fo(W),fo(M))+row('🏆 Maior vitória',bw(T),bw(W),bw(M))+row('💔 Maior derrota',bl(T),bl(W),bl(M))+`</div>`;
   $('meProf').onclick=()=>{meOpen(false);goPlayer(me)};
   $('meSw').onclick=()=>{meOpen(false);meSet('');render();renderPlayers()} }
 function renderHomeStats(){ const el=$('homeStats'); if(!el)return; if(!S.raw.length){el.hidden=true;return}
@@ -1319,7 +1312,7 @@ function renderHomeStats(){ const el=$('homeStats'); if(!el)return; if(!S.raw.le
     return {g:collapseD(ms).length, up, dn, my:{g:collapseD(mm).length,v:mm.filter(m=>m.winner===me).length,d:mm.filter(m=>m.loser===me).length,p:P[me]||0}}};
   const T=st(d0), W=st(d0-6*864e5), sg2=v=>v>0?'+'+v:v<0?'−'+(-v):'0', col=v=>v>0?'var(--ok)':v<0?'var(--bad)':'var(--mut)';
   const who=(x,sign)=>x?`<span class="nm" style="white-space:normal">${esc(nameOf(x[0]))}</span> <b style="color:${col(x[1])}">${sg2(x[1])}</b>`:'<span style="color:var(--mut)">—</span>';
-  const row=(lab,a,b)=>`<div style="color:var(--mut)">${lab}</div><div style="text-align:right">${a}</div><div style="text-align:right">${b}</div>`;
+  const row=(lab,a,b,c)=>`<div class="meL" style="color:var(--mut)">${lab}</div><div class="meC">${a}</div><div class="meC">${b}</div><div class="meC">${c}</div>`;
   const mine=x=>x.g?`<b style="color:${col(x.p)}">${sg2(x.p)}</b> <small style="color:var(--mut)">${x.v}V ${x.d}D</small>`:'<span style="color:var(--mut)">—</span>';
   el.hidden=false;
   el.innerHTML=`<div style="font-weight:700;font-size:14px;margin:0 0 8px;text-align:center">📊 Estatísticas do clube</div><div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 12px;font-size:13px;align-items:baseline"><div></div><div style="text-align:right;font-weight:700">Hoje</div><div style="text-align:right;font-weight:700">Últ. 7 dias</div>`
@@ -2303,7 +2296,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.233'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.236'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -3165,8 +3158,9 @@ function tRegImpDup(row,x,names,nameN,seenNm,taken,chosen,pool,pidN){
   if(seenNm.has(nk)){row.inc=false;row.st='dup';row.note='dupla repetida na lista colada';return}
   if(hit){row.inc=false;row.st='dup';row.note=hit.name+' já está em outra dupla';row.dupN=pidN.get(hit.pid);return}
   seenNm.add(nk); m.forEach(q=>q.pid&&chosen.add(q.pid)); row.st=m.every(q=>q.pid)?'ok':'sem' }
+function tRegAlias(){ const m=new Map(); (S.tourns||[]).forEach(t=>{ if(!t.reg||!t.reg.list)return; t.reg.list.forEach(e=>{ if(e.pid&&e.on)m.set(pxNorm(e.on),e.pid) }) }); return m }
 function tRegImpRows(t,txt,pre){
-  const L=t.reg.list, dup=!!t.reg.dup, max=+t.reg.max||0, used=new Set(L.map(e=>e.n)), taken=new Set(tRegPids(L)), names=new Set(L.map(e=>pxNorm(e.name))), nameN=new Map(L.map(e=>[pxNorm(e.name),e.n])), pidN=new Map(L.flatMap(e=>[[e.pid,e.n],[e.pid2,e.n]]).filter(x=>x[0]));
+  const L=t.reg.list, dup=!!t.reg.dup, max=+t.reg.max||0, used=new Set(L.map(e=>e.n)), taken=new Set(tRegPids(L)), ALI=tRegAlias(), names=new Set(L.flatMap(e=>[pxNorm(e.name),...(e.on?[pxNorm(e.on)]:[])])), nameN=new Map(L.flatMap(e=>[[pxNorm(e.name),e.n],...(e.on?[[pxNorm(e.on),e.n]]:[])])), pidN=new Map(L.flatMap(e=>[[e.pid,e.n],[e.pid2,e.n]]).filter(x=>x[0]));
   const pool=vis(), res=new Set(), chosen=new Set(), seenNm=new Set(), rows=[];
   (pre||tRegParse(txt)).forEach(x=>{
     const row={n:0,name:x.name,pg:x.pg,pid:'',inc:true,note:'',st:'sem'}, nk=pxNorm(x.name);
@@ -3174,7 +3168,8 @@ function tRegImpRows(t,txt,pre){
     if(names.has(nk)){row.inc=false;row.st='dup';row.note='já está na lista de inscritos';row.dupN=nameN.get(nk)}
     else if(seenNm.has(nk)){row.inc=false;row.st='dup';row.note='nome repetido na lista colada'}
     seenNm.add(nk);
-    const tk=tRegTok(x.name), sc=pool.map(p=>({p,s:tRegScore(tk,tRegTok(p.name))})).filter(o=>o.s>0).sort((a,b)=>b.s-a.s||a.p.name.localeCompare(b.p.name));
+    const tk=tRegTok(x.name); let sc=pool.map(p=>({p,s:tRegScore(tk,tRegTok(p.name))})).filter(o=>o.s>0).sort((a,b)=>b.s-a.s||a.p.name.localeCompare(b.p.name));
+    {const al=ALI.get(nk), pp=al&&pool.find(p=>p.id===al); if(pp)sc=[{p:pp,s:3}]}
     row.cands=sc.filter(o=>!taken.has(o.p.id)).map(o=>o.p.id); const top=sc.filter(o=>o.s===(sc[0]&&sc[0].s));
     if(row.inc&&top.length===1&&taken.has(top[0].p.id)){row.inc=false;row.st='dup';row.note='já inscrito (perfil '+top[0].p.name+')';row.dupN=pidN.get(top[0].p.id)}
     if(row.inc){ if(top.length===1){ if(chosen.has(top[0].p.id)){row.inc=false;row.st='dup';row.note='esse jogador já aparece em outra linha'} else if(top[0].s<2){row.st='amb';row.note='só o começo do nome bate com “'+top[0].p.name+'” — confirme ao lado'} else{row.pid=top[0].p.id;row.st='ok';chosen.add(row.pid)} }
@@ -4536,6 +4531,3 @@ $('peBtn').onclick=function(){if(S.settings.peOff)return;peOpen()};
 </script>
 </body>
 </html>
-
-
-</body></html>
