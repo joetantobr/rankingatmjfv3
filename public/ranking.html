@@ -1,3 +1,10 @@
+<!doctype html><html><head>
+<script>
+window.claude={use:async function(n){
+ if(n==='db'){const P=window.parent;if(P&&P!==window&&P.__rankingDb)return P.__rankingDb;throw new Error('no db')}
+ if(n==='downloads')return{save:async function(o){const b=o.data instanceof Blob?o.data:new Blob([o.data],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=o.filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}};
+ throw new Error('unknown')}};
+</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="pt-BR" class="fx">
 <script>try{var d=document.documentElement;var v=localStorage.getItem("tm_visual");if(v==="simple")d.classList.remove("fx");else if(v!=="fx")d.classList.add("cl");var t=localStorage.getItem("tm_theme");if(t)d.setAttribute("data-theme",t)}catch(e){}</script>
@@ -4531,3 +4538,6 @@ $('peBtn').onclick=function(){if(S.settings.peOff)return;peOpen()};
 </script>
 </body>
 </html>
+
+
+</body></html>
