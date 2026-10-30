@@ -56,7 +56,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px 4px;text-align:left;
 .seg button{padding:12px 6px;border:2px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);font:inherit;cursor:pointer;line-height:1.25}
 #addM .seg button.on{border-color:var(--t);background:var(--t)}
 .sub{font-size:13px;font-weight:700;margin:14px 0 4px}
-.season{text-align:center;font-size:12px;color:var(--mut);margin:-10px 0 16px}.x1{background:none;border:0;color:var(--bad);cursor:pointer;font-size:16px}
+.season:empty{display:none!important}#meWrap #meBtn{width:auto;min-width:230px;max-width:86%;margin:0 auto;position:relative;justify-content:center;padding-left:34px;padding-right:34px}.season{text-align:center;font-size:12px;color:var(--mut);margin:-10px 0 16px}.x1{background:none;border:0;color:var(--bad);cursor:pointer;font-size:16px}
 /* Celular em pé (retrato): aproveita melhor a largura */
 @media (max-width:560px){
 main{padding:10px}h1{font-size:18px;margin:2px 0 10px}.season{margin:-6px 0 10px}
@@ -155,7 +155,7 @@ html:not(.fx) .fxonly{display:none!important}
 .gbtn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:1px solid var(--bd);border-radius:12px;background:transparent;color:var(--tx);font:inherit;font-size:14px;cursor:pointer;margin:0;min-width:0;line-height:1.2}
 .gbtn .gi{font-size:inherit}
 #meBtn{grid-column:span 2;padding:3px 10px;font-size:13px;min-height:0;flex-direction:row}
-#meDrop{grid-column:1/-1;background:var(--card,#fff);border:1px solid var(--bd,rgba(0,0,0,.15));border-radius:12px;padding:12px;margin-top:-4px}#meDrop[hidden]{display:none}#meDrop #meB2{white-space:nowrap;font-size:12px}#meDrop .meG{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:10px;font-size:12px;align-items:baseline;margin:0 0 12px}@media(max-width:400px){#meDrop .meG{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px}#meDrop .meE{display:none}#meDrop .meL{grid-column:1/-1;margin-top:6px}}#meDrop .meC{display:flex;justify-content:flex-end;align-items:baseline;gap:4px;min-width:0;white-space:nowrap}#meDrop .meC>*{flex:none}#meDrop .meC>.nm{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}#meDrop .meH{text-align:right;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--bd,rgba(0,0,0,.15))}#meDrop #meB2 .nm{display:block}#meDrop .meAct{display:flex;gap:8px}#meDrop .meAct button{flex:1;margin:0;padding:8px}#meBtn .gi{font-size:15px;line-height:1}.gbtn .gl{overflow-wrap:anywhere}
+#meDrop{grid-column:1/-1;background:var(--card,#fff);border:1px solid var(--bd,rgba(0,0,0,.15));border-radius:12px;padding:12px;margin-top:6px}#meDrop[hidden]{display:none}#meDrop #meB2{white-space:nowrap;font-size:12px}#meDrop .meG{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:10px;font-size:12px;align-items:baseline;margin:0 0 12px}@media(max-width:400px){#meDrop .meG{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px}#meDrop .meE{display:none}#meDrop .meL{grid-column:1/-1;margin-top:6px}}#meDrop .meC{display:flex;justify-content:flex-end;align-items:baseline;gap:4px;min-width:0;white-space:nowrap}#meDrop .meC>*{flex:none}#meDrop .meC>.nm{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}#meDrop .meH{text-align:right;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--bd,rgba(0,0,0,.15))}#meDrop #meB2 .nm{display:block}#meDrop .meAct{display:flex;gap:8px}#meDrop .meAct button{flex:1;margin:0;padding:8px}#meBtn .gi{font-size:15px;line-height:1}.gbtn .gl{overflow-wrap:anywhere}
 @media (max-width:560px){.gbtn{padding:10px}}
 @media (orientation:landscape) and (max-height:520px){.gbtn{padding:7px;font-size:13px}}
 @property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
@@ -590,6 +590,10 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
 <main>
   <h1 class="ttl"><span class="e">🏓</span><span class="tt">Ranking</span><button id="clubBtn" class="clubb"></button><span class="e e2">🏓</span></h1>
   <div class="season" id="seasonLbl"></div>
+  <div class="nrm" id="meWrap" style="margin:6px 0 14px">
+    <button class="gbtn g-play" id="meBtn"><span class="gi">👤</span><span class="gl" id="meLbl">Meu Perfil</span><span id="meArr" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px">▼</span></button>
+    <div id="meDrop" hidden><div id="meB2"></div><div class="meAct"><button class="sec" id="meProf">👤 Perfil completo</button><button class="sec" id="meSw">🚪 Sair</button></div></div>
+  </div>
   <div class="rbar" id="rulesBar" hidden></div>
   <div id="champBar" class="rbar" hidden></div><div id="champHome" hidden></div>
   <div class="cadt nrm"><span class="ar">⬇️</span> REGISTRAR UMA PARTIDA<span id="cadD"></span> <span class="ar">⬇️</span></div>
@@ -606,8 +610,6 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
   </div>
   <div class="msg nrm" id="msg" hidden></div>
   <div class="btns nrm">
-    <button class="gbtn g-play" id="meBtn"><span class="gi">🙋</span><span class="gl" id="meLbl">Meu Perfil</span><span id="meArr" style="margin-left:auto;font-size:11px">▼</span></button>
-    <div id="meDrop" hidden><div id="meB2"></div><div class="meAct"><button class="sec" id="meProf">👤 Perfil completo</button><button class="sec" id="meSw">🚪 Sair</button></div></div>
     <button class="gbtn g-rank" id="rankBtn"><span class="gi">🏆</span><span class="gl">Ver ranking</span></button>
     <button class="gbtn g-play" id="playBtn"><span class="gi">👥</span><span class="gl">Jogadores</span></button>
     <button class="gbtn g-match" id="matchBtn"><span class="gi gi2"><span>🏓</span><span class="mir">🏓</span></span><span class="gl">Visualizar partidas</span></button>
@@ -1324,9 +1326,9 @@ function renderHomeStats(){ const el=$('homeStats'); if(!el)return; if(!S.raw.le
   el.hidden=false;
   el.innerHTML=`<div style="font-weight:700;font-size:14px;margin:0 0 8px;text-align:center">📊 Estatísticas do clube</div><div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 12px;font-size:13px;align-items:baseline"><div></div><div style="text-align:right;font-weight:700">Hoje</div><div style="text-align:right;font-weight:700">Últ. 7 dias</div>`
     +row('🏓 Jogos',`<b>${T.g}</b>`,`<b>${W.g}</b>`)
-    +(me?row('🙋 Você',mine(T.my),mine(W.my)):'')
+    +(me?row('👤 Você',mine(T.my),mine(W.my)):'')
     +row('📈 Maior alta',who(T.up),who(W.up))+row('📉 Maior queda',who(T.dn),who(W.dn))+`</div>`
-    +`<div style="text-align:center;margin-top:8px"><button type="button" class="lnk" id="homeMe" style="font-size:12px;padding:0">${me?'🙋 Você: '+esc(nameOf(me))+' · trocar':'🙋 Quem é você? Toque para marcar neste aparelho'}</button></div>`;
+    +`<div style="text-align:center;margin-top:8px"><button type="button" class="lnk" id="homeMe" style="font-size:12px;padding:0">${me?'👤 Você: '+esc(nameOf(me))+' · trocar':'👤 Quem é você? Toque para marcar neste aparelho'}</button></div>`;
   $('homeMe').onclick=()=>{pickIdx=9;$('pickT').textContent='Quem é você?';$('pq').value='';renderPick();open('pickM')} }
 function meId(){try{const v=localStorage.getItem('tm_me_'+cur); return v&&byId(v)?v:''}catch(e){return ''}}
 function syncMeAdmin(){ try{ const m=meId(), ok=!!(m&&isAdmP(m)&&S.settings&&S.settings.pin);
@@ -1343,7 +1345,7 @@ function bpF(){const m=meId(); return m?{bp:m,bn:nameOf(m)}:{}}
 function byTxt(m){return m&&m.bn?m.bn+(whoTxt(m.by)?' (conta: '+whoTxt(m.by)+')':''):((m&&whoTxt(m.by))||'')}
 function meSeen(save){ const id=meId(); if(!id)return null; const p=byId(id), k='tm_seen_'+cur; let old=null; try{old=JSON.parse(localStorage.getItem(k)||'null')}catch(e){}
   const now={id,t:p.tier,a:Object.keys(p.ach||{}).length,r:p.rating}; if(save||!old||old.id!==id){try{localStorage.setItem(k,JSON.stringify(now))}catch(e){}; return null} return {old,now} }
-function meNotice(){ const o=meSeen(false); if(!o)return; const {old,now}=o, L=[]; if(old.t!==now.t)L.push(now.t<old.t?`⬆️ Você subiu para o <b>Ranking ${now.t}</b>`:`⬇️ Você desceu para o <b>Ranking ${now.t}</b>`); const na=now.a-old.a; if(na>0)L.push(`🏅 ${na} conquista${na===1?'':'s'} nova${na===1?'':'s'}`); try{localStorage.setItem('tm_seen_'+cur,JSON.stringify(now))}catch(e){} if(L.length)msg('🙋 Desde a sua última visita: '+L.join(' · ')) }
+function meNotice(){ const o=meSeen(false); if(!o)return; const {old,now}=o, L=[]; if(old.t!==now.t)L.push(now.t<old.t?`⬆️ Você subiu para o <b>Ranking ${now.t}</b>`:`⬇️ Você desceu para o <b>Ranking ${now.t}</b>`); const na=now.a-old.a; if(na>0)L.push(`🏅 ${na} conquista${na===1?'':'s'} nova${na===1?'':'s'}`); try{localStorage.setItem('tm_seen_'+cur,JSON.stringify(now))}catch(e){} if(L.length)msg('👤 Desde a sua última visita: '+L.join(' · ')) }
 async function logA(t){await put('settings',{...S.settings,log:[{at:Date.now(),t,by:myId,...bpF(),dev:deviceInfo(),adm:!!admin},...(S.settings.log||[])].slice(0,300)})}
 function focusPin(){const el=$('pin'); if(el){try{el.focus({preventScroll:true});el.select()}catch(e){}}}
 function needAdmin(fn){ if(admin){fn();return} pend=fn; renderAdm(); open('admM'); focusPin(); setTimeout(focusPin,120) }
@@ -1451,7 +1453,7 @@ function render(){
   {const off=!!S.settings.peOff, b=$('peBtn'); if(b)b.hidden=off; if(window.__instLayout)window.__instLayout(); if(off&&typeof peHost!=='undefined'&&peHost){peHost.hidden=true; peHost.dispatchEvent(new Event('pehide'))}}
   {const b=$('admBtn'); if(b)b.textContent=admin?'🔓 Admin ON':'🔒 Admin OFF'; const c=$('cfgBtn'), n=admin?nRq(S.settings):0; if(c)c.innerHTML='⚙️<span class="fl"> Configurações</span>'+(n?` <b style="color:#d11" title="Solicitações pendentes">❗(${n})</b>`:'')}
   $('clubBtn').textContent=clubName(cur)+' ▾'; document.title='Ranking '+clubName(cur); fitTitle();
-  {const n=admin?nRq(S.settings):0; const ex=n?`<b style="color:#d11;text-transform:none" title="Solicitações pendentes">❗❗❗</b>`:''; $('seasonLbl').innerHTML=n?ex+' '+esc(sN(curS()))+' '+ex:esc(sN(curS()))}
+  {const n=admin?nRq(S.settings):0; const ex=n?`<b style="color:#d11;text-transform:none" title="Solicitações pendentes">❗❗❗</b>`:''; $('seasonLbl').innerHTML=n?ex:''}
   {const fo=inPeriod((S.settings.fire||[]).filter(p=>p.to==null),Date.now()), bo=(S.settings.bonus||[]).find(p=>p.to==null), pr=[];
    if(fo)pr.push('🔥 SEMANA ON FIRE · vitórias ×'+fo.f); if(bo)pr.push('🎯 Bônus de vitória por faixa ativo');
    $('rulesBar').innerHTML=pr.map(esc).join('<br>'); $('rulesBar').hidden=!pr.length}
@@ -1903,7 +1905,7 @@ function mfUi(){ const M=mfNames(), ch=$('mfCh'), g=$('mfSg'), q=pxNorm($('mfN')
   if(!q)g.innerHTML=''; else { const m=[...M.entries()].filter(([id,n])=>!mP.includes(id)&&pxNorm(n).includes(q)).sort((a,b)=>a[1].localeCompare(b[1])).slice(0,8);
     g.innerHTML=m.length?m.map(([id,n])=>`<button class="pfs" data-id="${id}">${esc(n)}</button>`).join(''):'<span class="legend">Nenhum jogador com esse nome.</span>';
     g.querySelectorAll('.pfs').forEach(b=>b.onclick=()=>{mP.push(b.dataset.id);$('mfN').value='';renderMatches()}) }
-  { const mb=$('mfMe'), me=meId(); mb.hidden=!me; if(me){const on=mP.length===1&&mP[0]===me; mb.textContent=on?'✕ Só as minhas (limpar)':'🙋 Só as minhas'; mb.style.background=on?'var(--ac)':''; mb.style.color=on?'#fff':''; mb.onclick=()=>{mP=on?[]:[me]; renderMatches()}} }
+  { const mb=$('mfMe'), me=meId(); mb.hidden=!me; if(me){const on=mP.length===1&&mP[0]===me; mb.textContent=on?'✕ Só as minhas (limpar)':'👤 Só as minhas'; mb.style.background=on?'var(--ac)':''; mb.style.color=on?'#fff':''; mb.onclick=()=>{mP=on?[]:[me]; renderMatches()}} }
   { const op=$('mfOp'); op.hidden=mP.length<2; op.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.o===mOp);b.onclick=()=>{mOp=b.dataset.o;renderMatches()}}) }
   $('mfBd').textContent=mP.length?'(ativo)':''; $('mfC').hidden=!mP.length }
 $('mfN').oninput=$('mfN').onfocus=mfUi; $('mfC').onclick=()=>{mP=[];$('mfN').value='';renderMatches()};
@@ -2083,7 +2085,7 @@ function renderPlayers(){
   if(admin&&(mgFor!==p.id&&(mgFor=p.id,mgSelId=''),true))h+=`<div class="sub">Admin: ranking inicial</div><div class="seg" id="pg" style="margin-bottom:10px">${['C','B','A'].map(x=>`<button class="t${x}${p.group===x?' on':''}" data-g="${x}">${x} · ${START[x]}</button>`).join('')}</div><div class="sub">Admin: juntar cadastro duplicado</div><div class="wrow" style="margin-bottom:10px"><select id="mgP"><option value="">Escolha o duplicado…</option>${S.raw.filter(x=>x.id!==p.id).sort(byNameArch).map(x=>`<option value="${x.id}"${x.id===mgSelId?' selected':''}>${esc(x.name)}</option>`).join('')}</select><button class="sec" id="mgB" style="margin:0">🔗 Juntar</button></div><div class="legend">As partidas do duplicado passam para ${esc(p.name)} e o duplicado é apagado.</div><div class="wrow" style="margin-bottom:10px"><input id="rn" value="${esc(p.name)}" maxlength="40"><button class="sec" id="rnB" style="margin:0">Salvar nome</button></div><button class="sec" id="dpB" style="margin:0 0 10px;border-color:var(--bad);color:var(--bad)">🗑️ Excluir jogador (apaga também as partidas dele)</button>`;
   h+=`<button class="sec" id="arB" style="margin:0 0 10px">${admin&&p.hidden?'♻️ Reativar jogador':'🗄️ Arquivar jogador (sai do Ranking e das Conquistas)'}</button>`;
   h+=`</div>`;
-  h=`<div style="margin:0 0 8px;text-align:center"><button class="sec" id="meB" type="button" style="margin:0;width:auto;padding:6px 14px;font-size:13px${meId()===p.id?';background:var(--ac);color:#fff':''}">${meId()===p.id?'✓ Esse é você (tocar para desmarcar)':'🙋 Esse sou eu'}</button></div>`+h; $('playD').innerHTML=h; $('meB').onclick=()=>{const was=meId()===p.id; meChoose(was?'':p.id,()=>{meSet(was?'':p.id); renderPlayers(); render()})}; $('playD').querySelectorAll('[data-tgn]').forEach(x=>x.onclick=()=>{$('playM').classList.remove('on');tGoMatch(x.dataset.tgn,x.dataset.fid)}); setTimeout(fitPop,0); chBind(); $('mB').onclick=()=>pxOpen('m'); $('cB').onclick=()=>pxOpen('c'); if(op('pxM'))pxFill(); $('pS').onchange=()=>{chSel=null;pSel=$('pS').value;pAllM=false;renderPlayers()};
+  h=`<div style="margin:0 0 8px;text-align:center"><button class="sec" id="meB" type="button" style="margin:0;width:auto;padding:6px 14px;font-size:13px${meId()===p.id?';background:var(--ac);color:#fff':''}">${meId()===p.id?'✓ Esse é você (tocar para desmarcar)':'👤 Esse sou eu'}</button></div>`+h; $('playD').innerHTML=h; $('meB').onclick=()=>{const was=meId()===p.id; meChoose(was?'':p.id,()=>{meSet(was?'':p.id); renderPlayers(); render()})}; $('playD').querySelectorAll('[data-tgn]').forEach(x=>x.onclick=()=>{$('playM').classList.remove('on');tGoMatch(x.dataset.tgn,x.dataset.fid)}); setTimeout(fitPop,0); chBind(); $('mB').onclick=()=>pxOpen('m'); $('cB').onclick=()=>pxOpen('c'); if(op('pxM'))pxFill(); $('pS').onchange=()=>{chSel=null;pSel=$('pS').value;pAllM=false;renderPlayers()};
   { const lk=APP_URL+'#j='+p.id;
     const PF=[['hand','Mão dominante',['Destro','Canhoto']],['grip','Empunhadura',['Clássica','Caneta']],['rubber','Borracha',['Lisa','Pino Curto','Pino Longo']]], raw0=S.raw.find(x=>x.id===p.id)||{};
     $('pflds').innerHTML=PF.map(([k,t,o])=>`<div class="pfld"><span>${t}</span><div class="seg" data-f="${k}">${o.map(v=>`<button class="${raw0[k]===v?'on':''}" data-v="${v}">${v}</button>`).join('')}</div></div>`).join('');
@@ -2303,7 +2305,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.236'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.240'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -3353,7 +3355,7 @@ function tRegR(t){
   $('tourB').querySelectorAll('[data-rx]').forEach(b=>b.onclick=async()=>{const t0=(S.tourns||[]).find(x=>x.id===t.id), n=+b.dataset.rx, e=t0&&t0.reg.list.find(x=>x.n===n); if(!e)return; await put('tournaments',{...t0,reg:{...t0.reg,list:t0.reg.list.filter(x=>x.n!==n)}}); await logA(`Inscrição cancelada em “${t.name}”: ${e.name} (vaga ${n})`); if(!admin)try{const cur0=S.settings.requests||[]; await put('settings',{...S.settings,requests:[{id:'rq'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),at:Date.now(),t:'insc',st:'open',by:myId,dev:deviceInfo(),...bpF(),tid:t.id,n:`${e.name} foi removido da inscrição de “${t.name}” (vaga ${n}).`},...cur0].slice(0,100)})}catch(er){} tv.note='Inscrição de '+esc(e.name)+' cancelada.'; tourRender()});
   if(rg.slot){
     const bindM=()=>{const q=pxNorm((rg.q||'').trim()), taken=new Set([...tRegPids(L),...(rg.p1&&rg.p1.pid?[rg.p1.pid]:[])]), pl=vis().filter(p=>!taken.has(p.id)&&(!q||pxNorm(p.name).includes(q))).sort((a,b)=>a.name.localeCompare(b.name)), ex=vis().some(p=>pxNorm(p.name)===q)||L.some(e=>pxNorm(e.name)===q)||(dup&&L.some(e=>tRegMem(e).some(m=>pxNorm(m.name)===q)));
-      $('rgM').innerHTML=(()=>{const me=!q&&meId(), mp=me&&!taken.has(me)?byId(me):null; return mp?`<button class="pri" id="rgMe" style="margin:0 0 8px">🙋 Sou eu: ${esc(mp.name)}</button>`:''})()+pl.map(p=>`<button class="sec" data-rp="${p.id}" style="margin:0 0 6px;text-align:left">${esc(p.name)}</button>`).join('')+(q&&!ex?`<button class="sec" id="rgFree" style="margin:0 0 6px">➕ Não tenho cadastro: usar “${esc((rg.q||'').trim())}”</button>`:'')+(!pl.length&&!q?'<p class="legend">Digite seu nome.</p>':'');
+      $('rgM').innerHTML=(()=>{const me=!q&&meId(), mp=me&&!taken.has(me)?byId(me):null; return mp?`<button class="pri" id="rgMe" style="margin:0 0 8px">👤 Sou eu: ${esc(mp.name)}</button>`:''})()+pl.map(p=>`<button class="sec" data-rp="${p.id}" style="margin:0 0 6px;text-align:left">${esc(p.name)}</button>`).join('')+(q&&!ex?`<button class="sec" id="rgFree" style="margin:0 0 6px">➕ Não tenho cadastro: usar “${esc((rg.q||'').trim())}”</button>`:'')+(!pl.length&&!q?'<p class="legend">Digite seu nome.</p>':'');
       const add=async pl2=>{ if(dup){ if(!rg.p1){rg.p1={pid:pl2.pid||'',name:pl2.name}; rg.q=''; tourRender(); return} pl2={m:[rg.p1,{pid:pl2.pid||'',name:pl2.name}]} }
         const e=await tRegAdd(t.id,rg.slot,pl2); if(e){$('rgE').textContent=e;return} const sl=rg.slot, nmx=dup?pl2.m[0].name+' / '+pl2.m[1].name:pl2.name; rg.slot=null; rg.q=''; rg.p1=null; tv.note='✅ '+esc(nmx)+' inscrit'+(dup?'a':'o')+' na vaga '+sl+'.'; tourRender()};
       if($('rgMe'))$('rgMe').onclick=()=>{const p=byId(meId()); if(p)add({pid:p.id,name:p.name})};
