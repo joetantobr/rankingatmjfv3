@@ -637,8 +637,8 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
   <div class="field" id="aGrpF"><span>Ranking inicial (define só a pontuação de partida)</span>
     <div class="seg" id="aGrp">
       <button class="tC" data-g="C"><b>Ranking C</b><br><small>1200 pts</small></button>
-      <button class="tB" data-g="B"><b>Ranking B</b><br><small>1500 pts</small></button>
-      <button class="tA" data-g="A"><b>Ranking A</b><br><small>1800 pts</small></button>
+      <button class="tB" data-g="B"><b>Ranking B</b><br><small>1350 pts</small></button>
+      <button class="tA" data-g="A"><b>Ranking A</b><br><small>1500 pts</small></button>
     </div></div>
   <div id="aErr" class="dn"></div>
   <button class="pri" id="aSave">Adicionar</button><button class="sec" data-close>Cancelar</button>
@@ -653,7 +653,7 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
 <div class="modal" id="rankM"><div class="sheet">
   <h3>Ranking geral</h3>
   <div class="seg" id="rkTab" style="grid-template-columns:repeat(3,1fr)"><button data-m="pts" class="on">🏓 Pontos</button><button data-m="ach">🏅 Conquistas</button><button data-m="var">📈 Variação</button></div>
-  <p class="legend" id="rkLeg"><span class="badge tA">A</span>1800+ <span class="badge tB">B</span>1500+ <span class="badge tC">C</span>1200+ <span id="rkPcQ" style="display:flex;gap:6px;align-items:center;margin-top:8px"></span></p>
+  <p class="legend" id="rkLeg"><span class="badge tA">A</span>1500+ <span class="badge tB">B</span>1350+ <span class="badge tC">C</span>1200+ <span id="rkPcQ" style="display:flex;gap:6px;align-items:center;margin-top:8px"></span></p>
   <div id="rkCat"></div><div id="rankL"></div><p class="legend" id="rankNote"></p><div id="rankHi"></div>
   <button class="sec" id="shareB">📤 Compartilhar ranking (WhatsApp)</button>
   <button class="sec" data-exp hidden id="jpgRank">🖼️ Exportar ranking com estatísticas (JPG)</button>
@@ -964,8 +964,8 @@ input[type=text]{font:16px var(--ui);padding:11px;border-radius:10px;border:1.5p
 
 </template>
 <script>
-const START={A:1800,B:1500,C:1200};
-const DEF={id:'main',maxScore:4,margin:50,inactiveDays:0,pin:'',seasonStart:0,seasons:[],bonusCfg:{CC:1.5,CB:1.5,CA:2,BC:1,BB:1,BA:1,AC:1,AB:1,AA:1},bonus:[],fire:[],fireF:1.5};
+const START={A:1500,B:1350,C:1200};
+const DEF={id:'main',maxScore:4,margin:40,inactiveDays:0,pin:'',seasonStart:0,seasons:[],bonusCfg:{CC:1.5,CB:1.5,CA:2,BC:1,BB:1,BA:1,AC:1,AB:1,AA:1},bonus:[],fire:[],fireF:1.5};
 const APP_URL='https://rankingatmjfv3.lovable.app';
 var AX={}, DX={};
 const pnl=(id,n)=>(id&&S.raw.some(x=>x.id===id))?`<span class="pnk" role="link" tabindex="0" data-pid="${id}">${esc(n)}</span>${orgTag(id)}`:esc(n); /* nome de jogador clicável → perfil */
@@ -1052,7 +1052,7 @@ function winMult(w,l,at){ /* bônus só para a VITÓRIA: faixa (por período lig
 function calc(w,l,at,tw){const E=1/(1+Math.pow(10,(l.rating-w.rating)/400)), mu=winMult(w,l,at==null?Date.now():at), q=tw>0?tw:1;
   return [Math.max(1,Math.round(K(w)*(1-E)*mu*q)),Math.max(1,Math.round(K(l)*(1-E)*q)),mu,q]}
 /* ---- duplas: uma partida vira 2 registros ligados (W1 x L1 e W2 x L2); os pontos saem da média da dupla ---- */
-const tierOfR=r=>r>=1800?'A':r>=1500?'B':'C';
+const tierOfR=r=>r>=START.A?'A':r>=START.B?'B':'C';
 function dblPts(W,L,at){ const rW=(W[0].rating+W[1].rating)/2, rL=(L[0].rating+L[1].rating)/2, E=1/(1+Math.pow(10,(rL-rW)/400)), tl=tierOfR(rL), mu=W.map(w=>winMult(w,{tier:tl},at==null?Date.now():at));
   return {a:W.map((w,i)=>Math.max(1,Math.round(K(w)*(1-E)*mu[i]))), b:L.map(l=>Math.max(1,Math.round(K(l)*(1-E)))), mu, rW, rL, wr:W.map(w=>w.rating), lr:L.map(l=>l.rating)} }
 function dblCalc(m,M,DG){ const d=m.dbl, W=d.w.map(i=>M[i]), L=d.l.map(i=>M[i]); if(W.some(x=>!x)||L.some(x=>!x))return null; const c=DG[d.g]||(DG[d.g]=dblPts(W,L,m.at)); return [c.a[d.i],c.b[d.i],c.mu[d.i],1] }
@@ -1066,8 +1066,8 @@ async function delMatch(m){ for(const x of (dGroup(m)||[m]))await del('matches',
 const inM=(m,id)=>m.winner===id||m.loser===id||(!!m.dbl&&(m.dbl.w.includes(id)||m.dbl.l.includes(id)));
 const twOf=(m,TW)=>{const c=m.tid&&TW[m.tid]; return c?((c.ph||{})[m.ph]||c.all||1):1}; /* peso do campeonato (admin) */
 function setTier(p){const m=+S.settings.margin||0;
-  if(p.tier==='C'&&p.rating>=1500)p.tier='B'; if(p.tier==='B'&&p.rating>=1800)p.tier='A';
-  if(p.tier==='A'&&p.rating<1800-m)p.tier='B'; if(p.tier==='B'&&p.rating<1500-m)p.tier='C'}
+  if(p.tier==='C'&&p.rating>=START.B)p.tier='B'; if(p.tier==='B'&&p.rating>=START.A)p.tier='A';
+  if(p.tier==='A'&&p.rating<START.A-m)p.tier='B'; if(p.tier==='B'&&p.rating<START.B-m)p.tier='C'}
 const r0p=p=>p.start!=null?p.start:START[p.group];
 function compute(){
   const M={}; S.raw.forEach(p=>M[p.id]={...p,rating:r0p(p),tier:p.group,wins:0,losses:0,tw:0,tl:0,st0:p.group,r0:r0p(p),hist:[r0p(p)],last:0,str:0,ach:{}}); /* conquistas sempre recalculadas do histórico: se a partida for corrigida/apagada, a conquista some */
@@ -1542,7 +1542,7 @@ function fx(){return document.documentElement.classList.contains('fx')}
 function cl(){return document.documentElement.classList.contains('cl')}
 function isDark(){const t=document.documentElement.getAttribute('data-theme'); if(t)return t==='dark'; return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
 function fire(p){return p&&p.str>=3?`<span class="fl fxonly" title="${p.str} vitórias seguidas">🔥${p.str}</span>`:''}
-function xpInfo(p){const r=p.rating,t=p.tier; if(t==='A')return {pct:100,next:null,need:0}; const lo=t==='B'?1500:1200,hi=t==='B'?1800:1500; return {pct:Math.max(0,Math.min(100,Math.round((r-lo)/(hi-lo)*100))),next:t==='B'?'A':'B',need:Math.max(0,hi-r)}}
+function xpInfo(p){const r=p.rating,t=p.tier; if(t==='A')return {pct:100,next:null,need:0}; const lo=t==='B'?START.B:START.C,hi=t==='B'?START.A:START.B; return {pct:Math.max(0,Math.min(100,Math.round((r-lo)/(hi-lo)*100))),next:t==='B'?'A':'B',need:Math.max(0,hi-r)}}
 const xpBar=p=>{const x=xpInfo(p); return `<div class="xp fxonly" title="${x.next?'faltam '+x.need+' pts para o Ranking '+x.next:'Ranking máximo'}" style="--t:${TCOL[x.next||'A']}"><i style="width:${x.pct}%"></i></div>`};
 const xpBarV=p=>{const x=xpInfo(p); return `<div class="xpv fxonly" title="${x.next?'XP: faltam '+x.need+' pts para o Ranking '+x.next:'Ranking máximo'}" style="--t:${TCOL[x.next||'A']}"><i style="height:${x.pct}%"></i></div>`};
 const xpFull=p=>{const x=xpInfo(p); return `<div class="fxonly" style="margin-top:8px"><div class="xpl">⚡ ${x.next?`<b>${x.pct}%</b> · faltam <b>${x.need}</b> pts para o Ranking ${x.next}`:'👑 Ranking máximo'}${p.str>=2?` · 🔥 ${p.str} vitórias seguidas`:''}</div>${xpBar(p)}</div>`};
@@ -1692,7 +1692,7 @@ const HELP={
   <p>O ranking usa o <b>Rating Elo</b>, o mesmo sistema do xadrez. Ele não conta só vitórias e derrotas: <b>conta contra quem você jogou</b>.</p>
   <div class="bx"><b class="t">A ideia em uma frase</b>Ganhar de quem é melhor que você dá <b>muitos pontos</b>. Ganhar de quem é mais fraco dá <b>poucos</b>. Com a derrota é o contrário.</div>
   <h4>1️⃣ Todo mundo começa com uma pontuação</h4>
-  <p>Quem entra na <b>faixa C</b> começa com <b>1200</b> pontos, na <b>B</b> com <b>1500</b> e na <b>A</b> com <b>1800</b>. O administrador pode definir outra pontuação inicial.</p>
+  <p>Quem entra na <b>faixa C</b> começa com <b>1200</b> pontos, na <b>B</b> com <b>1350</b> e na <b>A</b> com <b>1500</b>. O administrador pode definir outra pontuação inicial.</p>
   <h4>2️⃣ O sistema "espera" um resultado</h4>
   <p>Antes da partida, o Elo calcula quem é o favorito pela diferença de pontos. Quanto maior a diferença, mais ele espera a vitória do mais forte.</p>
   <h4>3️⃣ Os pontos mudam conforme a surpresa</h4>
@@ -1712,11 +1712,11 @@ const HELP={
  faixa:()=>`<h4>🎖️ As faixas A, B e C</h4>
   <p>As faixas mostram o nível do jogador. Sobem e descem conforme a pontuação:</p>
   <table class="ex"><tr><th>Faixa</th><th>Pontuação</th></tr>
-   <tr><td><span class="tag" style="background:#d99100">A</span></td><td>1800 ou mais</td></tr>
-   <tr><td><span class="tag" style="background:#1c7ed6">B</span></td><td>1500 a 1799</td></tr>
-   <tr><td><span class="tag" style="background:#2f9e44">C</span></td><td>abaixo de 1500</td></tr></table>
-  <div class="bx"><b class="t">Subir é imediato</b>Chegou em 1500? Vai para a B. Chegou em 1800? Vai para a A.</div>
-  <div class="bx"><b class="t">Descer tem uma folga</b>Para não ficar "caindo e subindo" por um ponto, o jogador só desce depois de passar uma <b>margem</b> abaixo do limite (o administrador define; o padrão é ${DEF.margin} pontos). Com 50, um jogador A só cai para a B abaixo de 1750.</div>
+   <tr><td><span class="tag" style="background:#d99100">A</span></td><td>1500 ou mais</td></tr>
+   <tr><td><span class="tag" style="background:#1c7ed6">B</span></td><td>1350 a 1499</td></tr>
+   <tr><td><span class="tag" style="background:#2f9e44">C</span></td><td>abaixo de 1350</td></tr></table>
+  <div class="bx"><b class="t">Subir é imediato</b>Chegou em 1350? Vai para a B. Chegou em 1500? Vai para a A.</div>
+  <div class="bx"><b class="t">Descer tem uma folga</b>Para não ficar "caindo e subindo" por um ponto, o jogador só desce depois de passar uma <b>margem</b> abaixo do limite (o administrador define; o padrão é ${DEF.margin} pontos). Com ${DEF.margin}, um jogador A só cai para a B abaixo de ${START.A-DEF.margin}.</div>
   <div class="bx"><b class="t">Barra de progresso</b>No ranking, a barrinha de cada jogador mostra quanto falta para a próxima faixa.</div>
   <h4>🏁 Temporadas</h4>
   <p>O administrador pode encerrar uma <b>temporada</b>. Os <b>pontos continuam</b> (ninguém volta ao zero), mas as <b>vitórias e derrotas</b> e os destaques começam uma contagem nova. As temporadas anteriores ficam guardadas para consulta.</p>`,
@@ -2163,7 +2163,7 @@ function renderAdm(){
     <div class="agroup"><h4>Notificações</h4>${arow('Pop-ups de conquistas',S.settings.achOn?'Ligados · aparece o pop-up no topo da tela quando alguém conquista (todos os dispositivos)':'Desativados · sem pop-up no topo; as conquistas continuam aparecendo após registrar a partida',`<button class="cb ${S.settings.achOn?'':'bad'}" id="achNT">${S.settings.achOn?'🔔 Ligados':'🔕 Desativados'}</button>`)}</div>
     <div class="agroup"><h4>Acesso</h4>${arow('Lançamentos',st.locked?'Trancados · ninguém cadastra partidas avulsas na tela principal (campeonatos continuam lançando)':'Liberados · qualquer pessoa pode cadastrar partidas',`<button class="cb ${st.locked?'bad':''}" id="lkT">${st.locked?'🔒 Trancados':'🔓 Liberados'}</button>`)}${arow('Conquistas',st.achOff?'Desativadas · somem do app para todos (botão, avisos e perfil); continuam sendo ganhas em segundo plano':'Ativadas · botão, avisos e perfil mostram as conquistas',`<button class="cb ${st.achOff?'bad':''}" id="achT2">${st.achOff?'🏅 Desativadas':'🏅 Ativadas'}</button>`)}${arow('Botão Adicionar jogador',st.addOff?'Escondido · some da tela inicial; continua em Jogadores e ao selecionar jogador':'Visível na tela inicial · também há em Jogadores e ao selecionar jogador',`<button class="cb ${st.addOff?'bad':''}" id="addT">${st.addOff?'➕ Escondido':'➕ Visível'}</button>`)}${arow('Placar Eletrônico',st.peOff?'Desativado · o botão some da tela inicial para todos':'Ativado · botão visível na tela inicial para todos',`<button class="cb ${st.peOff?'bad':''}" id="peT">${st.peOff?'📟 Desativado':'📟 Ativado'}</button>`)}${arow('Duplas (extra)',st.duoOn?'Ativado · aparece o botão Dupla ao escolher o Jogador 1 e o 2 · a partida vale pontos no ranking normal':'Desativado · o botão Dupla fica escondido',`<button class="cb ${st.duoOn?'':'bad'}" id="duoT">${st.duoOn?'👥 Ativado':'👥 Desativado'}</button>`)}${arow('PIN do administrador','Alterar o PIN deste clube','<button class="cb" id="pinChg">🔑 Alterar</button>')}
       <div id="pinForm" hidden style="padding:6px 0 8px"><div style="display:grid;gap:6px"><input id="pinCur" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN atual" style="width:100%"><input id="pinNew" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Novo PIN (mínimo 4 dígitos)" style="width:100%"><input id="pinNew2" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Repetir o novo PIN" style="width:100%"></div><div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="cb pri2" id="pinSv">Salvar PIN</button><span id="pinMsg" class="legend" style="margin:0"></span></div></div></div>
-    <div class="agroup"><h4>Regras do ranking</h4>${arow('Margem de faixa','Folga para cair de faixa. Ex.: 50 = só cai do A abaixo de 1750',`<input id="mg" class="cin" type="number" min="0" inputmode="numeric" value="${+st.margin||0}">`)}${arow('Inatividade (dias)','Sai do ranking após esse tempo sem jogar · 0 = nunca',`<input id="ia" class="cin" type="number" min="0" inputmode="numeric" value="${+st.inactiveDays||0}">`)}</div>`;
+    <div class="agroup"><h4>Regras do ranking</h4>${arow('Margem de faixa','Folga para cair de faixa. Ex.: 40 = só cai do A abaixo de 1460',`<input id="mg" class="cin" type="number" min="0" inputmode="numeric" value="${+st.margin||0}">`)}${arow('Inatividade (dias)','Sai do ranking após esse tempo sem jogar · 0 = nunca',`<input id="ia" class="cin" type="number" min="0" inputmode="numeric" value="${+st.inactiveDays||0}">`)}</div>`;
   if(T==='pts'){const bo=openP(st.bonus), fo=openP(st.fire), cfg={...DEF.bonusCfg,...(st.bonusCfg||{})}, tr=['C','B','A'];
     body=`<div class="agroup"><h4>🎯 Bônus de vitória por faixa</h4>${arow('Bônus por faixa','Só a vitória é multiplicada · a derrota segue normal',`<button class="cb ${bo?'pri2':''}" id="bnT">${bo?'ON':'OFF'}</button>`)}
       <div style="padding:6px 0;overflow-x:auto"><table class="mx"><tr><th>Vencedor ↓ · Perdedor →</th>${tr.map(t=>`<th class="n">${t}</th>`).join('')}</tr>${tr.map(w=>`<tr><td><b>${w}</b> vence</td>${tr.map(l=>`<td class="n"><input class="cin mxi" data-k="${w}${l}" type="number" step="0.1" min="1" max="10" inputmode="decimal" value="${cfg[w+l]}" style="width:60px"></td>`).join('')}</tr>`).join('')}</table></div>
@@ -2336,7 +2336,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.252'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.253'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -4077,7 +4077,7 @@ function resetUi(kind){
   $('rstT').textContent=all?'🗑️ Resetar tudo':'🔄 Zerar pontuações';
   $('rstD').textContent=all
     ?'Neste clube, apaga TODOS os jogadores, partidas, temporadas e o registro de alterações. O PIN de admin e as configurações de margem e inatividade são mantidos. Baixe um backup antes. Não dá para desfazer.'
-    :'Neste clube, apaga todas as partidas, as temporadas encerradas e os ajustes manuais de pontos. Os jogadores continuam e voltam à pontuação do ranking inicial deles (A 1800, B 1500, C 1200). O PIN de admin é mantido. Baixe um backup antes. Não dá para desfazer.';
+    :'Neste clube, apaga todas as partidas, as temporadas encerradas e os ajustes manuais de pontos. Os jogadores continuam e voltam à pontuação do ranking inicial deles (A 1500, B 1350, C 1200). O PIN de admin é mantido. Baixe um backup antes. Não dá para desfazer.';
   $('rstI').value=''; $('rstE').textContent='';
   $('rstOk').onclick=async()=>{
     if($('rstI').value.trim().toUpperCase()!=='ZERAR'){$('rstE').textContent='Digite ZERAR para confirmar.';return}
