@@ -155,7 +155,15 @@ html:not(.fx) .fxonly{display:none!important}
 .gbtn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:1px solid var(--bd);border-radius:12px;background:transparent;color:var(--tx);font:inherit;font-size:14px;cursor:pointer;margin:0;min-width:0;line-height:1.2}
 .gbtn .gi{font-size:inherit}
 #meBtn{grid-column:span 2;padding:3px 10px;font-size:13px;min-height:0;flex-direction:row}
-#meDrop{grid-column:1/-1;background:var(--card,#fff);border:1px solid var(--bd,rgba(0,0,0,.15));border-radius:12px;padding:12px;margin-top:6px}#meDrop[hidden]{display:none}#meDrop #meB2{white-space:nowrap;font-size:12px}#meDrop .meG{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:10px;font-size:12px;align-items:baseline;margin:0 0 12px}@media(max-width:400px){#meDrop .meG{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px}#meDrop .meE{display:none}#meDrop .meL{grid-column:1/-1;margin-top:6px}}#meDrop .meC{display:flex;justify-content:flex-end;align-items:baseline;gap:4px;min-width:0;white-space:nowrap}#meDrop .meC>*{flex:none}#meDrop .meC>.nm{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}#meDrop .meH{text-align:right;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--bd,rgba(0,0,0,.15))}#meDrop #meB2 .nm{display:block}#meDrop .meAct{display:flex;gap:8px}#meDrop .meAct button{flex:1;margin:0;padding:8px}#meBtn .gi{font-size:15px;line-height:1}.gbtn .gl{overflow-wrap:anywhere}
+#meDrop{grid-column:1/-1;background:var(--card,#fff);border:1px solid var(--bd,rgba(0,0,0,.15));border-radius:12px;padding:12px;margin-top:6px}#meDrop[hidden]{display:none}
+#meTut{position:fixed;inset:0;z-index:60;touch-action:manipulation}#meTut .mtS{position:absolute;border-radius:14px;box-shadow:0 0 0 9999px rgba(8,10,18,.72);border:2px solid #fff;cursor:pointer}
+#meTut svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}#meTut svg path{fill:none;stroke:#fff;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+#meTut .mtA{stroke-dasharray:var(--L);stroke-dashoffset:var(--L);animation:mtDraw 3.2s ease-in-out infinite}
+@keyframes mtDraw{0%{stroke-dashoffset:var(--L)}35%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:calc(var(--L)*-1)}}
+#meTut .mtB{position:absolute;background:var(--card,#fff);color:var(--tx,#1b1f24);border-radius:14px;padding:12px 14px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.45);font-size:14px;line-height:1.35}#meTut .mtB b{display:block;font-size:16px;margin-bottom:3px}
+#meTut .mtB button{margin-top:10px;padding:7px 16px;border-radius:99px;border:0;background:var(--ac,#e8590c);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+html.fx.cl #meTut .mtS{box-shadow:0 0 0 9999px rgba(8,10,18,.72)!important}html.fx.cl #meTut .mtB{box-shadow:0 8px 28px rgba(0,0,0,.45)!important}html.fx.cl #meTut .mtA{animation:mtDraw 3.2s ease-in-out infinite!important}
+@media (prefers-reduced-motion:reduce){#meTut .mtA{animation:none!important;stroke-dashoffset:0}}#meDrop #meB2{white-space:nowrap;font-size:12px}#meDrop .meG{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:10px;font-size:12px;align-items:baseline;margin:0 0 12px}@media(max-width:400px){#meDrop .meG{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px}#meDrop .meE{display:none}#meDrop .meL{grid-column:1/-1;margin-top:6px}}#meDrop .meC{display:flex;justify-content:flex-end;align-items:baseline;gap:4px;min-width:0;white-space:nowrap}#meDrop .meC>*{flex:none}#meDrop .meC>.nm{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}#meDrop .meH{text-align:right;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--bd,rgba(0,0,0,.15))}#meDrop #meB2 .nm{display:block}#meDrop .meAct{display:flex;gap:8px}#meDrop .meAct button{flex:1;margin:0;padding:8px}#meBtn .gi{font-size:15px;line-height:1}.gbtn .gl{overflow-wrap:anywhere}
 @media (max-width:560px){.gbtn{padding:10px}}
 @media (orientation:landscape) and (max-height:520px){.gbtn{padding:7px;font-size:13px}}
 @property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
@@ -965,6 +973,8 @@ input[type=text]{font:16px var(--ui);padding:11px;border-radius:10px;border:1.5p
 </template>
 <script>
 const START={A:1800,B:1500,C:1200}; /* faixas configuráveis por clube: settings.tB / settings.tA (scope() atualiza) */
+/* limites de pontos das conquistas acompanham a distância entre as faixas B e A (300 = valores originais; 150 = ~60%); múltiplos de 25, mínimo 50 */
+const aLim=b=>Math.max(50,Math.round(b*(0.2+0.8*(START.A-START.B)/300)/25)*25);
 const DEF={id:'main',maxScore:4,margin:50,tB:1500,tA:1800,inactiveDays:0,pin:'',seasonStart:0,seasons:[],bonusCfg:{CC:1.5,CB:1.5,CA:2,BC:1,BB:1,BA:1,AC:1,AB:1,AA:1},bonus:[],fire:[],fireF:1.5};
 const APP_URL='https://rankingatmjfv3.lovable.app';
 var AX={}, DX={};
@@ -1108,17 +1118,17 @@ const ACH=[
  {k:'semMedo',lv:0,n:'Sem Medo',i:'🦁',d:'Enfrentar um jogador de ranking acima do seu'},
  {k:'colec',lv:1,n:'Colecionador',i:'🌍',d:'Jogar contra 10 adversários diferentes'},
  {k:'g50',lv:1,n:'Veterano',i:'🎖️',d:'Jogar 50 partidas'},
- {k:'subida',lv:1,n:'Subida Forte',i:'🧗',d:'Ficar 150 pontos acima da sua pontuação inicial'},
+ {k:'subida',lv:1,n:'Subida Forte',i:'🧗',get d(){return 'Ficar '+aLim(150)+' pontos acima da sua pontuação inicial'}},
  {k:'trio',lv:2,n:'Trio de Lavadas',i:'🧱',d:'Vencer 3 partidas seguidas sem o adversário marcar nenhum set'},
- {k:'zebraD',lv:2,n:'Zebra em Dobro',i:'🐎',d:'Vencer 2 vezes alguém com 200 pontos ou mais acima de você'},
+ {k:'zebraD',lv:2,n:'Zebra em Dobro',i:'🐎',get d(){return 'Vencer 2 vezes alguém com '+aLim(200)+' pontos ou mais acima de você'}},
  {k:'cacador',lv:3,n:'Caçador de Gigantes',i:'🏹',d:'Somar 10 vitórias contra jogadores do Ranking A'},
  {k:'w100',lv:3,n:'Lenda do Clube',i:'🏆',d:'Somar 100 vitórias'},
  {k:'rival',lv:1,n:'Arqui-Rival',i:'⚔️',d:'Jogar 5 partidas contra o mesmo adversário'},
  {k:'evo',lv:1,n:'Evolução',i:'🧬',d:'Subir de Ranking (C→B ou B→A)'},
- {k:'zebra',lv:1,n:'Zebra!',i:'🦓',d:'Vencer alguém com 200 pontos ou mais acima de você'},
- {k:'noMercy',lv:0,n:'Sem Piedade',i:'😤',d:'Vencer um jogador 300 pontos ou mais abaixo de você no Ranking'},
+ {k:'zebra',lv:1,n:'Zebra!',i:'🦓',get d(){return 'Vencer alguém com '+aLim(200)+' pontos ou mais acima de você'}},
+ {k:'noMercy',lv:0,n:'Sem Piedade',i:'😤',get d(){return 'Vencer um jogador '+aLim(300)+' pontos ou mais abaixo de você no Ranking'}},
  {k:'beatA',lv:2,n:'Matador de Gigantes',i:'🗡️',d:'Vencer um jogador do Ranking A'},
- {k:'zebraT',lv:2,n:'Zebra Total!',i:'🦓',d:'Vencer alguém com 400 pontos ou mais acima de você'},
+ {k:'zebraT',lv:2,n:'Zebra Total!',i:'🦓',get d(){return 'Vencer alguém com '+aLim(400)+' pontos ou mais acima de você'}},
  {k:'senseiB',lv:2,n:'Sensei Bonzinho',i:'🥋',d:'Vencer pelo menos um set do Mestre André Luiz'},
  {k:'d10',lv:2,n:'Sem Parar',i:'🤯',d:'Jogar 10 partidas no mesmo dia'},
  {k:'s10',lv:2,n:'Imparável',i:'⚡',d:'10 vitórias seguidas'},
@@ -1133,7 +1143,7 @@ const ACH=[
  {k:'tklass',lv:2,n:'Rumo ao Mata-Mata',i:'🚀',d:'Classificar-se para o Mata-Mata do Rating A em um campeonato com grupos'},
  {k:'tpod',lv:1,n:'No Pódio',i:'🥉',d:'Terminar entre os 3 primeiros de um campeonato'},
  {k:'t5',lv:1,n:'Presença Certa',i:'📅',d:'Participar de 5 campeonatos'},
- {k:'tzebra',lv:2,n:'Zebra de Campeonato',i:'🦓',d:'Vencer, em campeonato, alguém com 200 pontos ou mais acima de você'},
+ {k:'tzebra',lv:2,n:'Zebra de Campeonato',i:'🦓',get d(){return 'Vencer, em campeonato, alguém com '+aLim(200)+' pontos ou mais acima de você'}},
  {k:'tfin',lv:2,n:'Finalista',i:'🥈',d:'Disputar a final de um campeonato'},
  {k:'tcamp',lv:3,n:'Campeão!',i:'🏆',d:'Ser campeão de um campeonato'},
  {k:'dfirst',lv:0,n:'Primeira Dupla',i:'🤝',d:'Jogar a primeira partida de duplas'},
@@ -1141,7 +1151,7 @@ const ACH=[
  {k:'dpart5',lv:1,n:'Dupla Dinâmica',i:'🔄',d:'Vencer jogando ao lado de 5 parceiros diferentes'},
  {k:'dpair',lv:1,n:'Dupla de Ferro',i:'⛓️',d:'Vencer 5 partidas de duplas com o mesmo parceiro'},
  {k:'dvinga',lv:1,n:'Vingança em Dupla',i:'🤺',d:'Vencer uma dupla que já tinha vencido a sua'},
- {k:'dcarry',lv:2,n:'Carregou a Dupla',i:'🦸',d:'Vencer em dupla com um parceiro 200 pontos ou mais abaixo de você, ou contra uma dupla com média 150 pontos ou mais acima da sua'}
+ {k:'dcarry',lv:2,n:'Carregou a Dupla',i:'🦸',get d(){return 'Vencer em dupla com um parceiro '+aLim(200)+' pontos ou mais abaixo de você, ou contra uma dupla com média '+aLim(150)+' pontos ou mais acima da sua'}}
 ];
 const TACH_FROM=1792283900000, TK=['tpart','tvit','tgrp','tpod','t5','tzebra','tfin','tcamp','tm5','tklass']; /* conquistas de campeonato valem só para campeonatos criados a partir da v0.4.2.11 */
 function tAchieve(M,cut){
@@ -1151,7 +1161,7 @@ function tAchieve(M,cut){
     const first={}, pairs=[]; const ft0=t.fx.filter(f=>f.ph==='g');
     t.fx.forEach(f=>{const r=R[f.id]; if(!r||!r.m||!r.done||r.wo)return; const m=r.m;
       [m.winner,m.loser].forEach(id=>{if(!first[id]||m.at<first[id].at)first[id]=m; U(id,'tpart',m,t); (pm[id]=pm[id]||[]).push({m,t})});
-      U(m.winner,'tvit',m,t); const x=AX[m.id]; if(x&&x.g>=200)U(m.winner,'tzebra',m,t)});
+      U(m.winner,'tvit',m,t); const x=AX[m.id]; if(x&&x.g>=aLim(200))U(m.winner,'tzebra',m,t)});
     Object.entries(first).forEach(([id,m])=>(part[id]=part[id]||[]).push({m,t}));
     const last=fs=>fs.map(f=>R[f.id]&&R[f.id].m).filter(Boolean).sort((a,b)=>b.at-a.at)[0], fin=fs=>fs.every(f=>R[f.id]&&R[f.id].fin);
     const tabs=t.fmt==='gr'?t.groups.map(g=>[tTable(t,R,g.id),t.fx.filter(f=>f.ph==='g'&&f.gid===g.id)]):t.fmt==='rr'?[[tTable(t,R),t.fx]]:[];
@@ -1177,7 +1187,7 @@ function achieveD(AS,m,M,c,cut){ /* conquistas de duplas: uma vez por partida (g
   const U=(p,k)=>{if(!p.ach[k])p.ach[k]={at:m.at,m:g}}, inc=(mp,k)=>(mp[k]=(mp[k]||0)+1);
   [...W,...L].forEach(p=>{if(inc(AS.dg,p.id)===1)U(p,'dfirst')});
   W.forEach((p,i)=>{ if(inc(AS.dwn,p.id)===1)U(p,'dfirstWin'); const st=AS.dp[p.id]=AS.dp[p.id]||new Set(); st.add(W[1-i].id); if(st.size>=5)U(p,'dpart5');
-    if(c.wr[1-i]<=c.wr[i]-200||c.rL-c.rW>=150)U(p,'dcarry') });
+    if(c.wr[1-i]<=c.wr[i]-aLim(200)||c.rL-c.rW>=aLim(150))U(p,'dcarry') });
   if(inc(AS.dpp,kw)>=5)W.forEach(p=>U(p,'dpair'));
   if(lostBefore)W.forEach(p=>U(p,'dvinga'));
 }
@@ -1188,7 +1198,7 @@ function achieve(AS,m,w,l,wt0,lt0,gap,lead,cut){ /* só conta partidas a partir 
   const d=new Date(m.at), day=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();
   const gw=c(AS.gm,w.id), gl=c(AS.gm,l.id), ww=c(AS.wn,w.id), sw=c(AS.sr,w.id); AS.sr[l.id]=0;
   if(gw===1)U(w,'first'); if(gl===1)U(l,'first'); if(ww===1)U(w,'firstWin');
-  if(lt0==='B')U(w,'beatB'); if(lt0==='A')U(w,'beatA'); if(gap>=200)U(w,'zebra'); if(gap>=400)U(w,'zebraT'); if(gap<=-300)U(w,'noMercy'); if(isAndre(l))U(w,'sensei'); if(lead&&lead===l.id)U(w,'beatLeader');
+  if(lt0==='B')U(w,'beatB'); if(lt0==='A')U(w,'beatA'); if(gap>=aLim(200))U(w,'zebra'); if(gap>=aLim(400))U(w,'zebraT'); if(gap<=-aLim(300))U(w,'noMercy'); if(isAndre(l))U(w,'sensei'); if(lead&&lead===l.id)U(w,'beatLeader');
   const sc=(m.score||'').split('x').map(Number);
   if(isAndre(l))U(w,'senseiB'); else if(isAndre(w)&&sc.length===2&&!sc.some(isNaN)&&sc[1]>=1)U(l,'senseiB');
   if(sc.length===2&&!sc.some(isNaN)){if(sc[1]===0&&sc[0]>=3)U(w,'sweep'); if(sc[0]-sc[1]===1&&sc[1]>=2)U(w,'close')}
@@ -1203,12 +1213,12 @@ function achieve(AS,m,w,l,wt0,lt0,gap,lead,cut){ /* só conta partidas a partir 
   [w,l].forEach(q=>{if(AS.dc[q.id+'|'+day]>=3)U(q,'d3')});
   if(c(AS.dw,w.id+'>'+l.id+'|'+day)>=2)U(w,'dobra');
   if(ok)[w,l].forEach(q=>{if(c(AS.sp,q.id)>=5)U(q,'placar5')});
-  if(w.rating-w.hist[0]>=50)U(w,'altaA'); if(w.rating-w.hist[0]>=150)U(w,'subida');
+  if(w.rating-w.hist[0]>=50)U(w,'altaA'); if(w.rating-w.hist[0]>=aLim(150))U(w,'subida');
   [[w,l],[l,w]].forEach(([q,o])=>{if(AS.opp[q.id]&&AS.opp[q.id].size>=3)U(q,'amigo3')});
   if(T3[lt0]>T3[wt0])U(w,'semMedo'); if(T3[wt0]>T3[lt0])U(l,'semMedo');
   [[w,l],[l,w]].forEach(([q,o])=>{if(AS.opp[q.id]&&AS.opp[q.id].size>=10)U(q,'colec')});
   AS.lv[l.id]=0; AS.lv[w.id]=(ok&&sc[1]===0&&sc[0]>=3)?(AS.lv[w.id]||0)+1:0; if(AS.lv[w.id]>=3)U(w,'trio');
-  if(gap>=200&&c(AS.zb,w.id)>=2)U(w,'zebraD');
+  if(gap>=aLim(200)&&c(AS.zb,w.id)>=2)U(w,'zebraD');
   if(lt0==='A'&&c(AS.ba,w.id)>=10)U(w,'cacador');
   if(w.tier<wt0){U(w,'evo'); if(w.tier==='A')U(w,'elite')}
 }
@@ -1301,6 +1311,22 @@ function recentHtml(st){
   loadNames([...(st.log||[]).slice(0,50).map(x=>x.by),...rec.map(m=>m.by)]).then(c=>{if(c&&admin&&op('admM')&&admTab==='adv')renderAdm()});
   return `<div class="agroup"><h4>📱 Lançamentos de partidas</h4>${rec.length?`<details><summary>Ver os últimos ${rec.length} lançamentos</summary><table><tr><th>Cadastrada em</th><th>Partida</th><th>Quem · aparelho</th></tr>${rec.map(m=>`<tr><td style="white-space:nowrap">${fmt(m.cr||m.at)}</td><td>${m.dbl?'👥 '+esc(mTxt(m)):pnl(m.winner,nameOf(m.winner,m.wn))+' x '+pnl(m.loser,nameOf(m.loser,m.ln))}${m.score?' ('+esc(m.score)+')':''}</td><td>${(m.by||m.dev)?esc(byTxt(m)||'—')+' · '+esc(devTxt(m.dev)):'<span style="color:var(--mut)">sem registro</span>'}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma partida ainda.</p>'}<p class="legend" style="margin:4px 0 8px">Cada partida guarda a conta de quem lançou, o aparelho e o navegador. Partidas antigas não têm esse registro.</p></div>`;
 }
+/* tutorial: seta desenhada apontando para "Meu Perfil" quando nenhum perfil está selecionado (1x por sessão do navegador) */
+function meTutEnd(open){ const e=$('meTut'); if(e)e.remove(); window.__meTutDone=true; try{sessionStorage.setItem('tm_mtut','1')}catch(x){} window.removeEventListener('resize',meTutPos); if(open&&$('meBtn'))$('meBtn').click() }
+function meTutPos(){ const e=$('meTut'), b=$('meBtn'); if(!e||!b)return; const r=b.getBoundingClientRect(), W=innerWidth, H=innerHeight, pad=6;
+  const sp=e.querySelector('.mtS'); sp.style.left=(r.left-pad)+'px'; sp.style.top=(r.top-pad)+'px'; sp.style.width=(r.width+pad*2)+'px'; sp.style.height=(r.height+pad*2)+'px';
+  const bw=Math.min(300,W-32), bx=(W-bw)/2, by=r.bottom+pad+84, bb=e.querySelector('.mtB'); bb.style.width=bw+'px'; bb.style.left=bx+'px'; bb.style.top=by+'px';
+  const sx=W/2+(r.left+r.width/2-W/2)*0.3, sy=by-6, tx=r.left+r.width/2, ty=r.bottom+pad+4, c1x=sx-70, c1y=sy-18, c2x=tx+60, c2y=ty+48;
+  let d='M'+sx+' '+sy+' C'+c1x+' '+c1y+' '+c2x+' '+c2y+' '+tx+' '+ty; const ang=Math.atan2(ty-c2y,tx-c2x), hl=16;
+  [ -0.5, 0.5 ].forEach(o=>{d+=' M'+(tx-hl*Math.cos(ang+o))+' '+(ty-hl*Math.sin(ang+o))+' L'+tx+' '+ty});
+  const pa=e.querySelector('.mtA'); pa.setAttribute('d',d); pa.style.setProperty('--L',Math.ceil(pa.getTotalLength())+40) }
+function meTutShow(){ if(window.__meTutDone||meId()||$('meTut'))return; if(document.querySelector('.modal.on')||document.querySelector('#welcome:not([hidden])'))return; const b=$('meBtn'); if(!b||b.offsetParent===null)return;
+  try{if(sessionStorage.getItem('tm_mtut'))return}catch(x){}
+  window.scrollTo(0,0); const e=document.createElement('div'); e.id='meTut';
+  e.innerHTML='<div class="mtS"></div><svg><path class="mtA" d=""/></svg><div class="mtB"><b>Escolha o seu perfil 👤</b>Veja suas estatísticas, suas conquistas e o seu destaque no ranking.<br><button type="button">Entendi</button></div>';
+  document.body.appendChild(e); meTutPos(); window.addEventListener('resize',meTutPos);
+  e.querySelector('.mtS').onclick=ev=>{ev.stopPropagation();meTutEnd(true)}; e.querySelector('button').onclick=ev=>{ev.stopPropagation();meTutEnd(false)}; e.onclick=()=>meTutEnd(false) }
+function meTutSoon(){ if(window.__meTutQ||window.__meTutDone)return; window.__meTutQ=true; setTimeout(()=>{window.__meTutQ=false; meTutShow()},1400) }
 function meOpen(f){ const me=meId(), d=$('meDrop'); if(!me||!d)return; const o=f===undefined?d.hidden:f; if(o)renderMeStats(); d.hidden=!o; window.__meOn=o; const a=$('meArr'); if(a)a.textContent=o?'▲':'▼' }
 function renderMeStats(){ const me=meId(), p=byId(me); if(!p)return; 
   const n=new Date(), d0=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(), sg2=v=>v>0?'+'+v:v<0?'−'+(-v):'0', col=v=>v>0?'var(--ok)':v<0?'var(--bad)':'var(--mut)', dash='<span style="color:var(--mut)">—</span>';
@@ -1462,7 +1488,7 @@ function tierLbl(){ document.querySelectorAll('[data-tp]').forEach(e=>e.textCont
 function render(){
   syncMeAdmin(); tierLbl();
   renderChamp(); if(!duoOn())dpart=[null,null];
-  {const b=$('meBtn'), mid=meId(); if($('meLbl'))$('meLbl').textContent=mid?nameOf(mid):'Meu Perfil'; if(!mid&&$('meDrop'))$('meDrop').hidden=true; else if(mid&&window.__meOn&&$('meDrop')){renderMeStats();$('meDrop').hidden=false} if($('meArr'))$('meArr').textContent=(mid&&window.__meOn)?'▲':'▼'; if(b)b.onclick=()=>{const me=meId(); if(me)meOpen(); else{pickIdx=9;$('pickT').textContent='Quem é você?';$('pq').value='';renderPick();open('pickM')}}}
+  {const b=$('meBtn'), mid=meId(); if($('meLbl'))$('meLbl').textContent=mid?nameOf(mid):'Meu Perfil'; if(!mid)meTutSoon(); if(!mid&&$('meDrop'))$('meDrop').hidden=true; else if(mid&&window.__meOn&&$('meDrop')){renderMeStats();$('meDrop').hidden=false} if($('meArr'))$('meArr').textContent=(mid&&window.__meOn)?'▲':'▼'; if(b)b.onclick=()=>{const me=meId(); if(me)meOpen(); else{pickIdx=9;$('pickT').textContent='Quem é você?';$('pq').value='';renderPick();open('pickM')}}}
   if(window.__ready&&!window.__meChk&&S.raw.length){window.__meChk=true; try{meNotice()}catch(e){}}
   {const b=$('achBtn'); if(b)b.hidden=!achShow()}
   {const b=$('addBtn'); if(b)b.hidden=!!S.settings.addOff}
@@ -1607,12 +1633,12 @@ function achProg(p,a){ /* partidas que contam (ou já contam) para a conquista *
   const dayOf=e=>{const d=new Date(e.m.at);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()};
   let rows=[], g=0, note='';
   const G={first:1,g10:10,g25:25,g50:50}, W={firstWin:1,w5:5,w10:10,w50:50,w100:100}, DY={d3:3,d5:5,d10:10}, SR={s3:3,s5:5,s10:10}, OP={amigo3:3,social:5,colec:10};
-  const F={close:e=>e.win&&e.ok&&e.a-e.b===1&&e.b>=2, sweep:e=>e.win&&e.ok&&e.b===0&&e.a>=3, beatB:e=>e.win&&e.x.lt0==='B', beatA:e=>e.win&&e.x.lt0==='A', zebra:e=>e.win&&e.x.g>=200, zebraT:e=>e.win&&e.x.g>=400, noMercy:e=>e.win&&e.x.g<=-300,
+  const F={close:e=>e.win&&e.ok&&e.a-e.b===1&&e.b>=2, sweep:e=>e.win&&e.ok&&e.b===0&&e.a>=3, beatB:e=>e.win&&e.x.lt0==='B', beatA:e=>e.win&&e.x.lt0==='A', zebra:e=>e.win&&e.x.g>=aLim(200), zebraT:e=>e.win&&e.x.g>=aLim(400), noMercy:e=>e.win&&e.x.g<=-aLim(300),
     sensei:e=>e.win&&oa(e), senseiB:e=>oa(e)&&(e.win||(e.ok&&e.b>=1)), beatLeader:e=>e.win&&e.x.bl, revenge:e=>e.rev, evo:e=>e.win&&e.x.wt1<e.x.wt0, elite:e=>e.win&&e.x.wt1==='A'&&e.x.wt0!=='A',
     semMedo:e=>T3[e.win?e.x.lt0:e.x.wt0]>T3[e.win?e.x.wt0:e.x.lt0]};
   const DK=['dfirst','dfirstWin','dpart5','dpair','dvinga','dcarry'];
   if(DK.includes(k)){ const seenG=new Set(), DL=[]; [...S.matches].sort((x,y)=>x.at-y.at).forEach(m=>{ if(!m.dbl||seenG.has(m.dbl.g)||!inM(m,p.id))return; seenG.add(m.dbl.g); const d=m.dbl, win=d.w.includes(p.id), my=win?d.w:d.l, op=win?d.l:d.w, on=win?d.ln:d.wn, pn_=win?d.wn:d.ln, pi=my.findIndex(z=>z!==p.id), sc=(m.score||'').split('x').map(Number), ok=sc.length===2&&!sc.some(isNaN), c=DX[d.g]||{};
-      DL.push({m:{id:d.g,at:m.at},win,dd:true,pp:my[pi],ppn:pn_[pi],ops:op.map((i,j)=>[i,on[j]]),ok,a:ok?(win?sc[0]:sc[1]):0,b:ok?(win?sc[1]:sc[0]):0,kw:[...d.w].sort().join('|'),kl:[...d.l].sort().join('|'),carry:win&&c.wr&&(((win&&d.w[0]===p.id)?(c.wr[1]<=c.wr[0]-200):(c.wr[0]<=c.wr[1]-200))||c.rL-c.rW>=150)}) });
+      DL.push({m:{id:d.g,at:m.at},win,dd:true,pp:my[pi],ppn:pn_[pi],ops:op.map((i,j)=>[i,on[j]]),ok,a:ok?(win?sc[0]:sc[1]):0,b:ok?(win?sc[1]:sc[0]):0,kw:[...d.w].sort().join('|'),kl:[...d.l].sort().join('|'),carry:win&&c.wr&&(((win&&d.w[0]===p.id)?(c.wr[1]<=c.wr[0]-aLim(200)):(c.wr[0]<=c.wr[1]-aLim(200)))||c.rL-c.rW>=aLim(150))}) });
     const DE=DL.filter(e=>e.m.at>=cut);
     if(k==='dfirst'){g=1;rows=DE} else if(k==='dfirstWin'){g=1;rows=DE.filter(e=>e.win)}
     else if(k==='dpart5'){g=5; const sn=new Set(); rows=DE.filter(e=>e.win&&!sn.has(e.pp)&&sn.add(e.pp))}
@@ -1623,7 +1649,7 @@ function achProg(p,a){ /* partidas que contam (ou já contam) para a conquista *
     if(!g&&un)rows=rows.filter(e=>e.m.id===un.m);
     return {rows,g,note,n:g?Math.min(rows.length,g):rows.length} }
   if(TK.includes(k)){const TE=E.filter(e=>{const tt=e.m.tid&&(S.tourns||[]).find(z=>z.id===e.m.tid); return tt&&tt.at>=TACH_FROM});
-    if(k==='tpart')rows=TE; else if(k==='tvit')rows=TE.filter(e=>e.win); else if(k==='tzebra')rows=TE.filter(e=>e.win&&e.x.g>=200); else if(k==='tm5'){g=5; rows=TE}
+    if(k==='tpart')rows=TE; else if(k==='tvit')rows=TE.filter(e=>e.win); else if(k==='tzebra')rows=TE.filter(e=>e.win&&e.x.g>=aLim(200)); else if(k==='tm5'){g=5; rows=TE}
     else if(k==='t5'){g=5; const seen=new Set(); rows=TE.filter(e=>!seen.has(e.m.tid)&&seen.add(e.m.tid))}
     else {const tt=un&&un.t&&(S.tourns||[]).find(z=>z.id===un.t); note=tt?'Campeonato: '+esc(tt.name):'Vale para campeonatos criados a partir de 17/10/2026.'}}
   else if(G[k]){g=G[k];rows=E} else if(W[k]){g=W[k];rows=E.filter(e=>e.win)}
@@ -1633,9 +1659,9 @@ function achProg(p,a){ /* partidas que contam (ou já contam) para a conquista *
   else if(k==='rival'){g=5; const by={}; E.forEach(e=>(by[e.o]=by[e.o]||[]).push(e)); rows=Object.values(by).sort((x,y)=>y.length-x.length)[0]||[]}
   else if(k==='dobra'){g=2; const by={}; E.filter(e=>e.win).forEach(e=>{const kk=e.o+'|'+dayOf(e);(by[kk]=by[kk]||[]).push(e)}); rows=Object.values(by).sort((x,y)=>y.length-x.length)[0]||[]}
   else if(k==='placar5'){g=5; rows=E.filter(e=>e.ok)}
-  else if(k==='zebraD'){g=2; rows=E.filter(e=>e.win&&e.x.g>=200)}
+  else if(k==='zebraD'){g=2; rows=E.filter(e=>e.win&&e.x.g>=aLim(200))}
   else if(k==='cacador'){g=10; rows=E.filter(e=>e.win&&e.x.lt0==='A')}
-  else if(k==='altaA'||k==='subida'){const t=k==='altaA'?50:150, df=Math.round(p.rating-(p.adj||0)-p.hist[0]); note=`Pontos acima da pontuação inicial: ${Math.max(df,0)} de ${t}.`}
+  else if(k==='altaA'||k==='subida'){const t=k==='altaA'?50:aLim(150), df=Math.round(p.rating-(p.adj||0)-p.hist[0]); note=`Pontos acima da pontuação inicial: ${Math.max(df,0)} de ${t}.`}
   else if(F[k])rows=E.filter(F[k]);
   if(g&&un){const i=rows.findIndex(e=>e.m.id===un.m); rows=rows.slice(0,Math.max(i+1,Math.min(rows.length,g)))}
   if(!g&&un&&F[k])rows=rows.filter(e=>e.m.id===un.m);
@@ -2340,7 +2366,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.254'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.257'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
