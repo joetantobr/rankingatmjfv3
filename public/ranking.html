@@ -1480,7 +1480,7 @@ const champPodH=(t,R,pod,PN)=>{ const med=['🥇','🥈','🥉'], row=pd=>pd.map
   return `<div class="chax">${row(pod)}</div>` };
 function renderChamp(){ const L=champList(), multi=L.length>1, c=champT(), on=!!c&&!champBy; const was=document.body.classList.contains('champ'); document.body.classList.toggle('champ',on); if(window.__meOn&&meId())setTimeout(renderMeStats,0); $('champHome').hidden=!on; const bar=$('champBar'); bar.hidden=!(c&&champBy);
   if(!c){$('champHome').innerHTML=''; return}
-  if(champBy){bar.innerHTML=`🎯 Modo Campeonato ativo: <b>${multi?L.length+' campeonatos':esc(c.t.name)}</b> · <button class="lnk" id="chBack">Voltar ao modo campeonato</button>`; $('chBack').onclick=()=>{champBy=false;render()}; return}
+  if(champBy){bar.innerHTML=`🎯 Modo Campeonato ativo: <b>${multi?L.length+' campeonatos':esc(c.t.name)}</b> · <button class="lnk" id="chBack">Voltar ao modo campeonato</button>`; $('chBack').onclick=()=>{champBy=false;if(window.__champPop)__champPop();render()}; return}
   const gEnd=gEndOf(c.t,c.R), gSt=gStOf(c.t,c.R), chSt=chStOf(c.t,c.R,gEnd), t=c.t, pr=c.pr, pct=pr.tot?Math.round(pr.dn*100/pr.tot):0, isG=t.fmt==='gr', isRR=t.fmt==='rr', hasCh=tIsKo(t)||(isG&&!t.gf), nrdy=(()=>{try{return tNext(t,c.R).length}catch(e){return 0}})();
   const ms=S.matches.filter(m=>m.tid===t.id&&!(t.dup&&m.dbl&&m.dbl.i)).sort((a,b)=>b.at-a.at).slice(0,8), SCh=tSched(t,c.R), PN={}; t.players.forEach(p=>PN[p.id]=p.name);
   const nxs=SCh?tNext(t,c.R).filter(f=>SCh.g[f.id]&&SCH_TB(SCh,f)).slice(0,8):[]; /* próximos jogos por horário (até 8), inclusive mais de um do mesmo jogador */
@@ -1499,7 +1499,7 @@ function renderChamp(){ const L=champList(), multi=L.length>1, c=champT(), on=!!
   $('champHome').querySelectorAll('[data-nf]').forEach(b=>b.onclick=()=>tGoMatch(t.id,b.dataset.nf));
   { const nt=$('nxT'); if(nt)nt.onclick=()=>{ const l=$('nxL'), h=!l.hidden; l.hidden=h; nt.setAttribute('aria-expanded',h?'false':'true'); nt.querySelector('.nxA').textContent=h?'▼':'▲'; try{localStorage.setItem('tm_nxHide',h?'1':'0')}catch(e){} } }
   $('champHome').querySelectorAll('.chr[data-m]').forEach(b=>b.onclick=()=>{const m=S.matches.find(x=>x.id===b.dataset.m); if(m)tGoFromMatch(m)});
-  $('chCad').onclick=()=>{champBy=true;render()}; champFit() }
+  $('chCad').onclick=()=>{champBy=true;if(window.__champPush)__champPush();render()}; champFit() }
 
 function champStrip(L,c){ return `<div class="chstrip">${L.map((x,i)=>`<button class="chc${x.t.id===c.t.id?' on':''}" data-cs="${x.t.id}">${x.t.ico||x.t.emo?tIco(x.t,18):`<span style="color:${cdCol(i)}">●</span>`} ${esc(x.t.name)}</button>`).join('')}</div>` }
 function champFreeHtml(L){ if(!mesaCan()||!S.settings.mesas)return ''; const C=mesCfg(), ids=L.filter(x=>!x.done).map(x=>x.t.id), fr=Object.keys(C.map).filter(k=>+k<=C.n&&C.map[k]&&!ids.includes(C.map[k])).map(Number).sort((a,b)=>a-b); if(!fr.length)return '';
@@ -2412,7 +2412,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.279'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.280'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2770,7 +2770,10 @@ $('admM').addEventListener('click',e=>{const b=e.target.closest('#admLk'); if(b)
     if(c>n){while(n<c){try{history.pushState({rk:1},'')}catch(e){}n++}}
     else if(c<n){const d=n-c; n=c; quiet=true; try{history.go(-d)}catch(e){quiet=false}}};
   const mo=new MutationObserver(sync); ms.forEach(m=>mo.observe(m,{attributes:true,attributeFilter:['class']}));
-  window.addEventListener('popstate',()=>{if(quiet){quiet=false;return} if(n>0){n--; stepBack()}});
+  let cb=0; /* Modo Campeonato → ranking normal conta como uma tela no histórico */
+  window.__champPush=()=>{ if(!cb){cb=1; try{history.pushState({rk:2},'')}catch(e){}} };
+  window.__champPop=()=>{ if(cb&&n===0){cb=0; quiet=true; try{history.go(-1)}catch(e){quiet=false}} else cb=0 };
+  window.addEventListener('popstate',()=>{if(quiet){quiet=false;return} if(n>0){n--; stepBack(); sync()} else if(cb){cb=0; champBy=false; render()}});
   document.addEventListener('keydown',e=>{if(e.key!=='Escape'||e.defaultPrevented)return; if(openL().length){e.preventDefault(); stepBack()}});
   window.__stepBack=stepBack;
 })();
