@@ -1271,7 +1271,8 @@ async function del(col,id){
 })();
 
 /* ---- helpers de UI ---- */
-window.addEventListener('load',()=>{window.__ready=true; try{render()}catch(e){}});
+try{history.scrollRestoration='manual'}catch(e){}
+window.addEventListener('load',()=>{window.__ready=true; try{render()}catch(e){}; try{window.scrollTo(0,0)}catch(e){}; try{meTutSoon(2500)}catch(e){}}); /* tutorial do Meu Perfil: na primeira abertura do dia, se não houver perfil marcado */
 function open(id){$(id).classList.add('on'); if(id==='playM')playTop()} 
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.modal').classList.remove('on'));
 document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m){if(m.dataset.dirty&&['addM','emM','rqM','impM','mvM','adjM','rstM'].includes(m.id)){const sh=m.querySelector('.sheet');if(sh&&sh.animate)sh.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:200});return}m.classList.remove('on')}}));
@@ -1316,7 +1317,8 @@ function recentHtml(st){
   return `<div class="agroup"><h4>📱 Lançamentos de partidas</h4>${rec.length?`<details><summary>Ver os últimos ${rec.length} lançamentos</summary><table><tr><th>Cadastrada em</th><th>Partida</th><th>Quem · aparelho</th></tr>${rec.map(m=>`<tr><td style="white-space:nowrap">${fmt(m.cr||m.at)}</td><td>${m.dbl?'👥 '+esc(mTxt(m)):pnl(m.winner,nameOf(m.winner,m.wn))+' x '+pnl(m.loser,nameOf(m.loser,m.ln))}${m.score?' ('+esc(m.score)+')':''}</td><td>${(m.by||m.dev)?esc(byTxt(m)||'—')+' · '+esc(devTxt(m.dev)):'<span style="color:var(--mut)">sem registro</span>'}</td></tr>`).join('')}</table></details>`:'<p class="legend" style="margin:8px 0">Nenhuma partida ainda.</p>'}<p class="legend" style="margin:4px 0 8px">Cada partida guarda a conta de quem lançou, o aparelho e o navegador. Partidas antigas não têm esse registro.</p></div>`;
 }
 /* tutorial: seta desenhada apontando para "Meu Perfil"; aparece depois de registrar uma partida sem perfil selecionado (1x por sessão do navegador) */
-function meTutEnd(open){ const e=$('meTut'); if(e)e.remove(); window.__meTutDone=true; try{sessionStorage.setItem('tm_mtut','1')}catch(x){} window.removeEventListener('resize',meTutPos); if(open&&$('meBtn'))$('meBtn').click() }
+const meTutDay=w=>{ const d=new Date(), k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); try{ if(w){localStorage.setItem('tm_mtutD',k);return true} return localStorage.getItem('tm_mtutD')===k }catch(x){return false} };
+function meTutEnd(open){ const e=$('meTut'); if(e)e.remove(); window.__meTutDone=true; meTutDay(true); window.removeEventListener('resize',meTutPos); if(open&&$('meBtn'))$('meBtn').click() }
 function meTutPos(){ const e=$('meTut'), b=$('meBtn'); if(!e||!b)return; const r=b.getBoundingClientRect(), W=innerWidth, H=innerHeight, pad=6;
   const sp=e.querySelector('.mtS'); sp.style.left=(r.left-pad)+'px'; sp.style.top=(r.top-pad)+'px'; sp.style.width=(r.width+pad*2)+'px'; sp.style.height=(r.height+pad*2)+'px';
   const bw=Math.min(300,W-32), bx=(W-bw)/2, by=r.bottom+pad+84, bb=e.querySelector('.mtB'); bb.style.width=bw+'px'; bb.style.left=bx+'px'; bb.style.top=by+'px';
@@ -1325,12 +1327,13 @@ function meTutPos(){ const e=$('meTut'), b=$('meBtn'); if(!e||!b)return; const r
   [ -0.5, 0.5 ].forEach(o=>{d+=' M'+(tx-hl*Math.cos(ang+o))+' '+(ty-hl*Math.sin(ang+o))+' L'+tx+' '+ty});
   const pa=e.querySelector('.mtA'); pa.setAttribute('d',d); pa.style.setProperty('--L',Math.ceil(pa.getTotalLength())+40) }
 function meTutShow(){ if(window.__meTutDone||meId()||$('meTut'))return; if(document.querySelector('.modal.on')||document.querySelector('#welcome:not([hidden])'))return; const b=$('meBtn'); if(!b||b.offsetParent===null)return;
-  try{if(sessionStorage.getItem('tm_mtut'))return}catch(x){}
+  try{if(localStorage.getItem('tm_me_'+cur))return}catch(x){}
+  if(meTutDay())return; meTutDay(true);
   window.scrollTo(0,0); const e=document.createElement('div'); e.id='meTut';
   e.innerHTML='<div class="mtS"></div><svg><path class="mtA" d=""/></svg><div class="mtB"><b>Escolha o seu perfil 👤</b>Veja suas estatísticas, suas conquistas e o seu destaque no ranking.<br><button type="button">Entendi</button></div>';
   document.body.appendChild(e); meTutPos(); window.addEventListener('resize',meTutPos);
   e.querySelector('.mtS').onclick=ev=>{ev.stopPropagation();meTutEnd(true)}; e.querySelector('button').onclick=ev=>{ev.stopPropagation();meTutEnd(false)}; e.onclick=()=>meTutEnd(false) }
-function meTutSoon(ms,n){ if(window.__meTutQ||window.__meTutDone)return; window.__meTutQ=true; setTimeout(()=>{window.__meTutQ=false; if(window.__meTutDone||meId()||$('meTut'))return; if(document.querySelector('.modal.on')||$('welcome')||window.achBusy||(typeof achBusy!=='undefined'&&achBusy)){ if((n||0)<12)meTutSoon(1500,(n||0)+1); return } meTutShow()},ms||1400) }
+function meTutSoon(ms,n){ if(window.__meTutQ||window.__meTutDone)return; window.__meTutQ=true; setTimeout(()=>{window.__meTutQ=false; if(window.__meTutDone||meId()||$('meTut'))return; if(!P.length||document.querySelector('.modal.on')||$('welcome')||window.achBusy||(typeof achBusy!=='undefined'&&achBusy)){ if((n||0)<12)meTutSoon(1500,(n||0)+1); return } meTutShow()},ms||1400) }
 function meOpen(f){ const me=meId(), d=$('meDrop'); if(!me||!d)return; const o=f===undefined?d.hidden:f; if(o)renderMeStats(); d.hidden=!o; window.__meOn=o; const a=$('meArr'); if(a)a.textContent=o?'▲':'▼' }
 function champMeHtml(me){
   const A=[], pn=(t,id)=>{const q=t.players.find(x=>x.id===id); return nameOf(id,q&&q.name)}, sg=v=>v>0?'+'+v:v<0?'−'+(-v):'0';
@@ -1891,7 +1894,6 @@ async function win(wi){
   try{fx()&&!cl()&&navigator.vibrate&&navigator.vibrate([30,40,30])}catch(e){}
   if(nw.tier<t0)setTimeout(()=>{splash('⬆ Rank up',w.name,'agora no Ranking '+nw.tier,TCOL[nw.tier]);sfx('rank')},800);
   if(unl.length)setTimeout(()=>achNotify(unl),nw.tier<t0?3600:900);
-  if(!meId())meTutSoon(nw.tier<t0?5200:unl.length?3000:2200); /* tutorial do Meu Perfil: só depois de registrar uma partida sem perfil selecionado */
   return true;
 }
 $('w1').onclick=()=>win(0); $('w2').onclick=()=>win(1);
@@ -2412,7 +2414,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.280'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.282'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
