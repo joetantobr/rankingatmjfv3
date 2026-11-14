@@ -1357,7 +1357,7 @@ function champMeHtml(me){
     else if(!won&&!lf&&!(lost.length&&!dbl)){ const pend=mine.some(f=>!R[f.id].done&&!R[f.id].bye&&!R[f.id].void&&!R[f.id].skip);
       h+=`<div class="mcR">${pend?'⏳ Aguardando adversário ou horário':'⏳ Aguardando definição dos próximos jogos'}</div>`; }
     const last=dn.map(f=>Object.assign({},R[f.id],{_f:f})).filter(r=>r.m).sort((a,b)=>(b.m.at||0)-(a.m.at||0)).slice(0,6);
-    if(last.length)h+=`<div class="mcR" style="margin-top:6px"><small>Últimos jogos</small><div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(${Math.min(3,last.length)},auto);grid-auto-flow:column;gap:2px 10px">${last.map(r=>{const w=r.w===id, op=r.a===id?r.b:r.a; const gl=r._f.ph==='g'?(r._f.gid?'Grupo '+tGN(r._f.gid):'Grupo'):tPhN(r._f.ph,t); return `<div style="line-height:1.25">${w?'✅':'❌'} vs ${esc(pn(t,op))}<br><small style="margin-left:22px">${esc(r.m.score||'')} · ${esc(gl)}</small></div>`}).join('')}</div></div>`;
+    if(last.length)h+=`<div class="mcR" style="margin-top:6px"><small>Últimos jogos</small><div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(${Math.min(3,last.length)},auto);grid-auto-flow:column;gap:2px 6px">${last.map(r=>{const w=r.w===id, op=r.a===id?r.b:r.a; const gl=r._f.ph==='g'?(r._f.gid?'Grupo '+tGN(r._f.gid):'Grupo'):tPhN(r._f.ph,t); return `<div style="font-size:12px;line-height:1.3">${w?'✅':'❌'} vs ${esc(pn(t,op))} <small>${esc(r.m.score||'')} · ${esc(gl)}</small></div>`}).join('')}</div></div>`;
     A.push(`<div class="mcT"><div class="mcH"><span>${tIco(t,18)} ${esc(t.name)}${en.name&&t.dup?' <small style="font-weight:400;color:var(--mut)">('+esc(en.name)+')</small>':''}</span>${champList().length>1?`<button class="sec" data-ct="${t.id}">Ver</button>`:''}</div>${h}</div>`)});
   const reg=(S.tourns||[]).filter(t=>t&&!t.arch&&tRegOpen(t)&&(t.reg.list||[]).some(e=>e.pid===me||e.pid2===me));
   reg.forEach(t=>{ const e=t.reg.list.find(e=>e.pid===me||e.pid2===me); A.push(`<div class="mcT"><div class="mcH"><span>📝 ${esc(t.name)}</span></div><div class="mcR">Inscrição aberta · vaga ${esc(String(e.n||''))} ${cfOk(e)?'<b class="up">✅ Confirmado</b>':'<b>⏳ Ag. confirmação</b>'}</div>${t.reg.when?`<div class="mcR"><small>🕒 ${esc(String(t.reg.when).replace('T',' '))}</small></div>`:''}</div>`)});
@@ -2414,7 +2414,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.286'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.9.287'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
