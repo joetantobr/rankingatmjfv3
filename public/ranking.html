@@ -2446,7 +2446,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.9.313'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.10'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -3265,7 +3265,7 @@ function tSumulaPdf(t){
       A.text(M+CW-44,M,'MESA',11,true,'r'); A.rect(M+CW-38,M-3,38,26,1.8); if(S2.mesa)A.text(M+CW-19,M+1,S2.mesa,16,true,'c'); A.line(M,M+62,M+CW,M+62,1.6)});
     if(S2.ids){const cols=[.34,.10,.10,.12,.12,.22].map(p=>p*CW), hdr=['JOGADORES DO GRUPO','V','D','SETS','PTS','POSIÇÃO FINAL'], y0=y, rh=22;
       dr(A=>{let x=M; A.rect(M,y0,CW,15,0,'0.93'); cols.forEach((w,i)=>{A.rect(x,y0,w,15,1.4); A.text(i?x+w/2:x+5,y0+3.5,hdr[i],8,true,i?'c':'l',w-8); x+=w});
-        S2.ids.forEach((id,r)=>{let xx=M; const yy=y0+15+r*rh; cols.forEach((w,i)=>{A.rect(xx,yy,w,rh,1.4); xx+=w}); A.text(M+6,yy+4,nm(id),14,true,'l',cols[0]-10)})});
+        S2.ids.forEach((id,r)=>{let xx=M; const yy=y0+15+r*rh; cols.forEach((w,i)=>{A.rect(xx,yy,w,rh,1.4); xx+=w}); A.text(M+6,yy+4,nm(id),14,true,'l',cols[0]-10); const q=S2.tbl&&S2.tbl[id]; if(q){let x2=M+cols[0]; [q.v,q.d,q.s,q.p,q.pos].forEach((v,i)=>{A.text(x2+cols[i+1]/2,yy+4,String(v),13,true,'c',cols[i+1]-6); x2+=cols[i+1]})}})});
       y=y0+15+S2.ids.length*rh+8}
     const iy=y; dr(A=>{A.text(M,iy,S2.info,8.5,false,'l',CW)}); y+=16;
     const bh=11+2*18, jw=CW*.15, nw=CW*.27, tw=CW*.12;
@@ -3284,7 +3284,8 @@ function tSumulaPdf(t){
     const fs=t.fx.filter(f=>f.ph==='g'&&(f.gid||'')===gid&&act(f));
     const ord=SC?[...fs].sort((a,b)=>((SC.g[a.id]||{}).at||0)-((SC.g[b.id]||{}).at||0)||a.rd-b.rd):tOrderG(fs).out;
     const ids=[...new Set(fs.flatMap(f=>[f.a,f.b]))], G=SC&&SC.G[gid], bo=tBoOf(t,{ph:'g'}), mesas=[...new Set(ord.map(f=>SC&&SC.g[f.id]?SC.g[f.id].tb:null).filter(x=>x!=null))];
-    section({title:gid===''?'Todos contra todos':'Grupo '+tGN(gid), mesa:mesas.length===1?String(mesas[0]):'', ids,
+    const closed=fs.length>0&&fs.every(f=>R[f.id]&&R[f.id].fin), tbl=closed?Object.fromEntries(tTable(t,R,gid||undefined).map((x,i)=>[x.id,{v:x.v,d:x.d,s:x.sp+'-'+x.sc,p:x.pts,pos:(i+1)+'º'}])):null;
+    section({tbl,title:gid===''?'Todos contra todos':'Grupo '+tGN(gid), mesa:mesas.length===1?String(mesas[0]):'', ids,
       info:'Início: '+(G&&!tNt(t)?tFmtT(G.start):'_____')+'     '+fixTxt(bo),
       games:ord.map((f,i)=>{const c=SC&&SC.g[f.id]; return {label:'Jogo '+(i+1),at:timeOf(c),mesa:c&&mesas.length>1?c.tb:'',nS:bo,res:resOf(f),a:{n:nm(f.a)},b:{n:nm(f.b)}}})});
   });
