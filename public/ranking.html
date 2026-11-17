@@ -141,6 +141,10 @@ h1.ttl .e2{display:inline-block;transform:scaleX(-1)}@keyframes pingE2{0%,100%{t
 .atabs button{position:relative}.rdot{position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:#e53935;color:#fff;font-size:10px;font-weight:700;line-height:16px;text-align:center;box-sizing:border-box}
 .agroup{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:2px 12px;margin-bottom:10px}
 .agroup h4{margin:10px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+.rtb{display:flex;gap:6px;margin:0 0 6px}.rtb button{min-width:38px;padding:5px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;font-size:14px;cursor:pointer}.rpv{margin:6px 0 0;padding:8px 10px;border:1px dashed var(--bd);border-radius:10px;font-size:14px;line-height:1.35;text-align:left;min-height:1.2em}.rpv:empty{display:none}
+.board{margin:0 0 14px;padding:10px 12px;border:1px solid var(--bd);border-left:5px solid #e0a100;border-radius:12px;background:var(--card);font-size:14px;line-height:1.35;text-align:left}.board b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:4px}
+#meBdg{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;background:#d63031;color:#fff;font-size:11px;font-weight:800;letter-spacing:0;animation:bdgp 1.6s ease-in-out infinite}@keyframes bdgp{50%{transform:scale(1.08)}}@media (prefers-reduced-motion:reduce){#meBdg{animation:none}}
+.meMsg{white-space:normal;margin:0 0 10px;font-size:14px}.meMsg h5{margin:0 0 6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}.meMsg .mm{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;margin:0 0 6px;line-height:1.35}.meMsg .mm.new{border-color:#d63031;background:rgba(214,48,49,.07)}.meMsg .mm small{display:block;color:var(--mut);font-size:11px;margin-bottom:2px}.meMsg .mm.new small b{color:#d63031}
 .arow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}.arow:last-child{border-bottom:0}
 .arow .al{font-size:14px;line-height:1.25;min-width:0}.arow .al small{display:block;color:var(--mut);font-size:12px;font-weight:400}
 .cin{padding:6px 8px;font-size:14px;border-radius:8px;width:84px;text-align:right}.cin.w{width:170px;text-align:left}
@@ -490,7 +494,8 @@ html.fx.cl .p3 .achbig{background:var(--g1);border:1px solid var(--g1);color:#f6
 @media (prefers-reduced-motion:reduce){.p3 .achbig,.p3 .mi{animation:none!important}}
 
 /* campeonatos */
-.g-tour{font-weight:700}
+.g-tour{font-weight:700}.g-ann{font-weight:700}html.fx .g-ann{--gc:#e84393;--gcs:rgba(232,67,147,.28)}
+.annC{display:block;width:100%;text-align:left;padding:10px 12px;margin:0 0 8px;border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);font:inherit;cursor:pointer}.annC b{display:block;font-size:15px}.annC small{display:block;color:var(--mut);font-size:12px;margin-top:2px}.annD{font-size:15px;line-height:1.45;text-align:left}.annD h2{margin:0 0 2px;font-size:20px}.annLk{width:100%;box-sizing:border-box;font:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--mut)}
 html.fx .g-tour{--gc:#2e9bff;--gcs:rgba(46,155,255,.28)}
 .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .tcx{position:absolute;bottom:5px;right:5px;min-width:22px;height:22px;box-sizing:border-box;border-radius:11px;border:1.5px solid var(--mut);color:var(--mut);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;font-weight:700;padding:0 2px;z-index:2}.tcx.arm{border-color:#dc2626;background:#dc2626;color:#fff;font-size:11px;padding:0 8px}
@@ -568,7 +573,7 @@ button.brb.rdy{border:2px solid var(--ac);cursor:pointer}.brb.fut{opacity:.7}.br
 .tsc>div button.on{background:var(--ac);border-color:var(--ac);color:var(--acx)}
 #trM{z-index:10}
 #admM{z-index:11}
-#emM,#seasM,#adjM,#rstM,#dpM,#impM,#mvM,#trM,#tpM{z-index:12}
+#emM,#seasM,#adjM,#msgM,#annM,#rstM,#dpM,#impM,#mvM,#trM,#tpM{z-index:12}
 .pfch,.pfsg{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}.pfc,.pfs{margin:0;padding:5px 10px;border-radius:99px;font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx)}.pfc{background:var(--g1,var(--ac));border-color:var(--g1,var(--ac));color:#fff;font-weight:700}
 .chi{margin:0 0 6px;padding:7px 10px;border:1px solid var(--bd);border-left:4px solid var(--ok);border-radius:8px;background:var(--card);font-size:13px;line-height:1.5}.chi.l{border-left-color:var(--bad)}.chi small{font-size:12px;color:var(--mut)}.chi .tbd{margin:0}
 #playM.pdet .sheet>.ahead{display:block;height:44px;margin:0 0 4px}#playM.pdet .sheet>.ahead .ar{position:absolute;top:10px;right:14px;z-index:4}#playM.pdet .sheet>.ahead .al,#playM.pdet .sheet>.ahead h3{display:none}#playM .pbig{font-weight:800!important}
@@ -604,9 +609,10 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
   <h1 class="ttl"><span class="e">🏓</span><span class="tt">Ranking</span><button id="clubBtn" class="clubb"></button><span class="e e2">🏓</span></h1>
   <div class="season" id="seasonLbl"></div>
   <div id="meWrap" style="margin:6px 0 14px">
-    <button class="gbtn g-play" id="meBtn"><span class="gi">👤</span><span class="gl" id="meLbl">Meu Perfil</span><span id="meArr" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px">▼</span></button>
+    <button class="gbtn g-play" id="meBtn"><span class="gi">👤</span><span class="gl" id="meLbl">Meu Perfil</span><span id="meBdg" hidden>💬 Nova mensagem</span><span id="meArr" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px">▼</span></button>
     <div id="meDrop" hidden><div id="meB2"></div><div class="meAct"><button class="sec" id="meProf">👤 Perfil completo</button><button class="sec" id="meSw">🚪 Sair</button></div></div>
   </div>
+  <div class="board" id="boardBox" hidden></div>
   <div class="rbar" id="rulesBar" hidden></div>
   <div id="champBar" class="rbar" hidden></div><div id="champHome" hidden></div>
   <div class="cadt nrm"><span class="ar">⬇️</span> REGISTRAR UMA PARTIDA<span id="cadD"></span> <span class="ar">⬇️</span></div>
@@ -630,6 +636,7 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
     <button class="gbtn g-add" id="addBtn"><span class="gi">➕</span><span class="gl">Adicionar jogador</span></button>
     <button class="gbtn g-ach" id="achBtn"><span class="gi">🏅</span><span class="gl">Conquistas</span></button>
     <button class="gbtn g-tour" id="tourBtn"><span class="gi">🏟️</span><span class="gl">Campeonatos</span></button>
+    <button class="gbtn g-ann" id="annBtn" hidden><span class="gi">📢</span><span class="gl">Avisos</span></button>
     <div id="peRow" style="display:contents">
       <button class="gbtn g-pe" id="peBtn"><span class="gi">📟</span><span class="gl">Placar Eletrônico</span></button>
       <button class="gbtn g-inst" id="instBtn" hidden><span class="gi">📲</span><span class="gl">Instalar app</span></button>
@@ -742,10 +749,20 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
 <div class="modal" id="tpM" style="z-index:12;align-items:center;padding:16px;box-sizing:border-box"><div class="sheet tpS"><div class="ahead"><h3 style="font-size:15px">🏆 Campeonato</h3><button class="x2" id="tpX" aria-label="Fechar">✕</button></div><div id="tpB"></div></div></div>
 <div class="modal" id="pxM"><div class="sheet wide"><div class="ahead"><h3 id="pxT"></h3><button class="x2" id="pxX" aria-label="Fechar">✕</button></div><div id="pxB"></div></div></div>
 <div class="modal" id="mesM"><div class="sheet"><div class="ahead"><h3>🏓 Multi-Campeonatos</h3><button class="x2" id="mesX" aria-label="Fechar">✕</button></div><div id="mesB"></div></div></div>
+<div class="modal" id="annM"><div class="sheet wide"><div class="ahead"><h3 id="annT">📢 Avisos</h3><button class="x2" id="annX" aria-label="Fechar">✕</button></div><div id="annB"></div></div></div>
 <div class="modal" id="achM"><div class="sheet wide"><div class="ahead"><h3 id="achT"></h3><button class="x2" id="achX" aria-label="Fechar">✕</button></div><div id="achP"></div><div id="achG"></div></div></div>
 
 <div class="modal" id="rstM"><div class="sheet"><h3 id="rstT"></h3><p class="legend" id="rstD"></p><label class="field"><span>Digite <b id="rstW">ZERAR</b> para confirmar</span><input id="rstI" autocomplete="off"></label><div id="rstE" class="dn"></div><button class="pri" id="rstOk" style="background:var(--bad)">Confirmar</button><button class="sec" data-close>Cancelar</button></div></div>
 
+<div class="modal" id="msgM"><div class="sheet">
+  <h3>💬 Mensagem para um jogador</h3>
+  <p class="legend">A mensagem aparece no Meu Perfil do jogador, com o aviso "Nova mensagem" até ele tocar em Ok. Links (https://…) viram links clicáveis; para um texto com link use o botão 🔗.</p>
+  <select id="msgP" style="width:100%;margin-bottom:10px"></select>
+  <div class="rtb"><button type="button" data-r="b" title="Negrito"><b>B</b></button><button type="button" data-r="i" title="Itálico"><i>I</i></button><button type="button" data-r="g" title="Letra maior">A+</button><button type="button" data-r="p" title="Letra menor"><small>A−</small></button><button type="button" data-r="l" title="Inserir link">🔗</button></div><textarea id="msgT" rows="4" maxlength="700" placeholder="Escreva a mensagem (até 700 caracteres)" style="width:100%;box-sizing:border-box;margin-bottom:10px;font:inherit;padding:8px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx)"></textarea>
+  <div class="rpv" id="msgPv" style="margin:-4px 0 10px"></div><button class="pri" id="msgOk" style="margin:0 0 10px">Enviar mensagem</button>
+  <div id="msgL"></div>
+  <button class="sec" data-close>Voltar</button>
+</div></div>
 <div class="modal" id="adjM"><div class="sheet">
   <h3>✏️ Alterar pontuação</h3>
   <p class="legend">Escolha o jogador e digite a nova pontuação. O ajuste vale daqui em diante; o histórico de partidas não muda.</p>
@@ -987,7 +1004,7 @@ const APP_URL='https://rankingatmjfv3.lovable.app';
 var AX={}, DX={};
 const pnl=(id,n)=>(id&&S.raw.some(x=>x.id===id))?`<span class="pnk" role="link" tabindex="0" data-pid="${id}">${esc(n)}</span>${orgTag(id)}`:esc(n); /* nome de jogador clicável → perfil */
 let fullPt=null,fullOn=false,fullKey='',spOpen=new Set(); let dpart=[null,null]; let G={raw:[],matches:[],sets:[],clubs:[],tourns:[]}, cur=(()=>{try{return localStorage.getItem('tm_club')||'main'}catch(e){return 'main'}})(), clubsInit=false, multi=new Set(), multiOpen=false, mFrom='', mUntil='', plkOpen=false, justAdded=null, lastPair='', SND=(()=>{try{return localStorage.getItem('tm_snd')!=='off'}catch(e){return true}})(), pendingJ=(()=>{try{const m=(location.hash+location.search).match(/[?#&]j=([A-Za-z0-9_-]+)/);return m?m[1]:''}catch(e){return ''}})(), S={raw:[],matches:[],settings:{...DEF}}, P=[], MV=[], D={}, sel=[null,null], sc=[null,null], pickIdx=0, histId=null, newGrp='C', db=null, dl=null, admin=false, pend=null, busy=false;
-let pendingV=(()=>{try{const h=location.hash+location.search, m=h.match(/[?#&](ranking|partidas|jogadores|conquistas|admin|ajuda|campeonatos|campeonato|inscricoes|placar)(?![A-Za-z])/); if(!m)return null; const g=k=>{const x=h.match(new RegExp('[?#&]'+k+'=([A-Za-z0-9_-]+)'));return x?x[1]:''}; return {v:m[1],c:g('c'),n:g('n'),k:g('k'),t:g('campeonato')}}catch(e){return null}})();
+let pendingV=(()=>{try{const h=location.hash+location.search, m=h.match(/[?#&](ranking|partidas|jogadores|conquistas|admin|ajuda|campeonatos|campeonato|inscricoes|placar|avisos|aviso)(?![A-Za-z])/); if(!m)return null; const g=k=>{const x=h.match(new RegExp('[?#&]'+k+'=([A-Za-z0-9_-]+)'));return x?x[1]:''}; return {v:m[1],c:g('c'),n:g('n'),k:g('k'),t:g('campeonato'),a:g('aviso')}}catch(e){return null}})();
 const $=id=>document.getElementById(id), op=id=>$(id).classList.contains('on');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -1365,7 +1382,20 @@ function champMeHtml(me){
   const reg=(S.tourns||[]).filter(t=>t&&!t.arch&&tRegOpen(t)&&(t.reg.list||[]).some(e=>e.pid===me||e.pid2===me));
   reg.forEach(t=>{ const e=t.reg.list.find(e=>e.pid===me||e.pid2===me); A.push(`<div class="mcT"><div class="mcH"><span>📝 ${esc(t.name)}</span></div><div class="mcR">Inscrição aberta · vaga ${esc(String(e.n||''))} ${cfOk(e)?'<b class="up">✅ Confirmado</b>':'<b>⏳ Ag. confirmação</b>'}</div>${t.reg.when?`<div class="mcR"><small>🕒 ${esc(String(t.reg.when).replace('T',' '))}</small></div>`:''}</div>`)});
   return `<div class="mcC">${A.length?A.join(''):'<div class="mcE">Você não está inscrito em nenhum campeonato ativo.</div>'}</div>` }
-function renderMeStats(){ const me=meId(), p=byId(me); if(!p)return; 
+function renderMeStats(){ renderMeStats0(); try{meMsgApply()}catch(e){} }
+function rich(t){ let h=esc(String(t||'')), L=[]; const tok=a=>{L.push(a);return '\u0001'+(L.length-1)+'\u0001'};
+  h=h.replace(/\[([^\]\n]+?)\]\((https?:\/\/[^\s)<>"]+)\)/g,(m,x,u)=>tok(`<a href="${u}" target="_blank" rel="noopener noreferrer">${x}</a>`));
+  h=h.replace(/\b((?:https?:\/\/(?=[^\s<>"\[\]*.,;:!?)])|www\.)[^\s<>"\[\]*]+)/g,(m,u)=>{let tr='';while(/[.,;:!?)]$/.test(u)){tr=u.slice(-1)+tr;u=u.slice(0,-1)} return tok(`<a href="${/^www\./.test(u)?'https://'+u:u}" target="_blank" rel="noopener noreferrer">${u}</a>`)+tr});
+  h=h.replace(/\*\*([\s\S]+?)\*\*/g,'<strong>$1</strong>').replace(/\*([^*\n]+?)\*/g,'<em>$1</em>').replace(/\[g\]([\s\S]+?)\[\/g\]/g,'<span style="font-size:1.4em;line-height:1.2">$1</span>').replace(/\[p\]([\s\S]+?)\[\/p\]/g,'<span style="font-size:.8em">$1</span>');
+  return h.replace(/\n/g,'<br>').replace(/\u0001(\d+)\u0001/g,(m,n)=>L[+n]) }
+const richTb='<div class="rtb"><button type="button" data-r="b" title="Negrito"><b>B</b></button><button type="button" data-r="i" title="Itálico"><i>I</i></button><button type="button" data-r="g" title="Letra maior">A+</button><button type="button" data-r="p" title="Letra menor"><small>A−</small></button><button type="button" data-r="l" title="Inserir link">🔗</button></div>';
+function richBind(ta,pv){ const T=$(ta), V=$(pv); if(!T)return; const upd=()=>{if(V)V.innerHTML=rich(T.value)}; T.oninput=upd; upd();
+  const bar=T.previousElementSibling; if(!bar||!bar.classList.contains('rtb'))return;
+  bar.querySelectorAll('button').forEach(b=>{b.onmousedown=e=>e.preventDefault(); b.onclick=()=>{const k=b.dataset.r, [o,c]=k==='b'?['**','**']:k==='i'?['*','*']:k==='g'?['[g]','[/g]']:k==='l'?['[','](https://)']:['[p]','[/p]']; const a=T.selectionStart,z=T.selectionEnd, sel=T.value.slice(a,z)||(k==='l'?'toque aqui':'texto'); T.value=T.value.slice(0,a)+o+sel+c+T.value.slice(z); T.focus(); T.setSelectionRange(a+o.length,a+o.length+sel.length); upd()}}) }
+function meMsgApply(){ const me=meId(), p=S.raw.find(x=>x.id===me), el=$('meB2'); if(!p||!el)return; const L=(p.msgs||[]).slice(0,5); if(!L.length)return;
+  el.insertAdjacentHTML('afterbegin',`<div class="meMsg"><h5>💬 Mensagens do administrador</h5>${L.map(m=>`<div class="mm ${m.seen?'':'new'}"><small>${fmt(m.at)}${m.seen?'':' · <b>NOVA</b>'}</small>${rich(m.t)}${m.seen?'':`<div style="margin-top:8px"><button class="pri mmOk" data-mk="${m.id}" style="margin:0;padding:8px 18px;width:auto">✅ Ok</button></div>`}</div>`).join('')}</div>`);
+  el.querySelectorAll('.mmOk').forEach(b=>b.onclick=()=>{const q=S.raw.find(x=>x.id===me); if(!q)return; put('players',{...q,msgs:(q.msgs||[]).map(m=>m.id===b.dataset.mk?{...m,seen:true,seenAt:Date.now()}:m)})}) }
+function renderMeStats0(){ const me=meId(), p=byId(me); if(!p)return; 
   if(document.body.classList.contains('champ')){ try{ $('meB2').innerHTML=champMeHtml(me) }catch(e){ $('meB2').innerHTML='<div class="mcC"><div class="mcE">Não foi possível carregar.</div></div>' }
     $('meB2').querySelectorAll('[data-nf]').forEach(b=>b.onclick=()=>{meOpen(false);tGoMatch(b.dataset.tid,b.dataset.nf)});
     $('meB2').querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{champSel=b.dataset.ct;meOpen(false);render()});
@@ -1539,10 +1569,13 @@ function tierLbl(){ document.querySelectorAll('[data-tp]').forEach(e=>e.textCont
 function render(){
   syncMeAdmin(); tierLbl();
   renderChamp(); if(!duoOn())dpart=[null,null];
+  {const bx=$('boardBox'), bd=S.settings.board, on=bd&&bd.on&&String(bd.t||'').trim(); if(bx){bx.hidden=!on; if(on)bx.innerHTML='<b>📌 Quadro de avisos</b>'+rich(bd.t)}
+   const bg=$('meBdg'), mp=meId()&&S.raw.find(x=>x.id===meId()); if(bg)bg.hidden=!(mp&&(mp.msgs||[]).some(m=>!m.seen))}
   {const b=$('meBtn'), mid=meId(); if($('meLbl'))$('meLbl').textContent=mid?nameOf(mid):'Meu Perfil'; if(!mid&&$('meDrop'))$('meDrop').hidden=true; else if(mid&&window.__meOn&&$('meDrop')){renderMeStats();$('meDrop').hidden=false} if($('meArr'))$('meArr').textContent=(mid&&window.__meOn)?'▲':'▼'; if(b)b.onclick=()=>{const me=meId(); if(me)meOpen(); else{pickIdx=9;$('pickT').textContent='Quem é você?';$('pq').value='';renderPick();open('pickM')}}}
   if(window.__ready&&!window.__meChk&&S.raw.length){window.__meChk=true; try{meNotice()}catch(e){}}
   {const b=$('achBtn'); if(b)b.hidden=!achShow()}
   {const b=$('addBtn'); if(b)b.hidden=!!S.settings.addOff}
+  {const b=$('annBtn'); if(b)b.hidden=!S.settings.annOn}
   menuFit();
   {const off=!!S.settings.peOff, b=$('peBtn'); if(b)b.hidden=off; if(window.__instLayout)window.__instLayout(); if(off&&typeof peHost!=='undefined'&&peHost){peHost.hidden=true; peHost.dispatchEvent(new Event('pehide'))}}
   {const b=$('admBtn'); if(b)b.textContent=admin?'🔓 Admin ON':'🔒 Admin OFF'; const c=$('cfgBtn'), n=admin?nRq(S.settings):0; if(c)c.innerHTML='⚙️<span class="fl"> Configurações</span>'+(n?` <b style="color:#d11" title="Solicitações pendentes">❗(${n})</b>`:'')}
@@ -1572,7 +1605,7 @@ function render(){
     $('h2h').innerHTML=`<div class="h2h-title">Estatística do Encontro</div><div class="h2h-line">Desde sempre: ${pnl(a.id,a.name)} <b>${c(S.matches)}</b> ${pnl(b.id,b.name)}</div><div class="h2h-line">${esc(sN(curS()))}: ${pnl(a.id,a.name)} <b>${c(MV)}</b> ${pnl(b.id,b.name)}</div><div class="h2h-cap">Pontuação no Ranking</div><div class="h2h-points">${pnl(a.id,a.name)} vence: +${x}${m1>1?' (×'+m1+')':''} / ${pnl(b.id,b.name)} −${y}</div><div class="h2h-line">${pnl(b.id,b.name)} vence: +${u}${m2>1?' (×'+m2+')':''} / ${pnl(a.id,a.name)} −${v}</div>`;
   }
   if(op('seasM'))renderSeason(); if(op('pickM'))renderPick(); if(op('rankM'))renderRank(); if(op('matchM'))renderMatches();
-  if(op('playM')&&!typing())renderPlayers(); if(op('achM'))renderAch(); if(op('mesM'))mesRender(); if(op('achAllM'))renderAchAll(); if(op('admM')&&!typing())renderAdm();
+  if(op('playM')&&!typing())renderPlayers(); if(op('achM'))renderAch(); if(op('annM')&&annV.v!=='edit')annRender(); if(op('mesM'))mesRender(); if(op('achAllM'))renderAchAll(); if(op('admM')&&!typing())renderAdm();
 }
 
 /* ---- escolher jogadores ---- */
@@ -2268,6 +2301,9 @@ function renderAdm(){
   }
   const T=admTab; let body='';
   if(T==='geral')body=`<div class="agroup"><h4>Clube</h4>${arow('Nome do clube','',`<span style="display:flex;gap:6px"><input id="cnI" class="cin w" maxlength="40" value="${esc(clubName(cur))}"><button class="cb" id="cnB">Salvar</button></span>`)}</div>
+    <div class="agroup"><h4>📌 Quadro de avisos</h4>${arow('Mostrar na tela inicial',(S.settings.board&&S.settings.board.on)?'Ligado · aparece entre o Meu Perfil e o Registrar uma Partida (só se tiver texto)':'Desligado · não aparece para ninguém',`<button class="cb ${(S.settings.board&&S.settings.board.on)?'pri2':''}" id="bdT">${(S.settings.board&&S.settings.board.on)?'ON':'OFF'}</button>`)}
+      <div style="padding:6px 0 8px">${richTb}<textarea id="bdI" rows="4" maxlength="800" placeholder="Escreva o aviso que vai aparecer no quadro" style="width:100%;box-sizing:border-box;font:inherit;padding:8px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx)">${esc((S.settings.board&&S.settings.board.t)||'')}</textarea><div class="rpv" id="bdPv"></div><div style="text-align:right;margin-top:6px"><button class="cb" id="bdS">Salvar texto</button></div></div></div>
+    <div class="agroup"><h4>📢 Botão AVISOS</h4>${arow('Mostrar o botão Avisos na tela inicial',S.settings.annOn?'Ligado · todos veem a lista de avisos. Cada aviso tem um link próprio para colar no Quadro de avisos.':'Desligado · o botão fica escondido (os links dos avisos continuam funcionando)',`<button class="cb ${S.settings.annOn?'pri2':''}" id="annT">${S.settings.annOn?'ON':'OFF'}</button>`)}</div>
     <div class="agroup"><h4>Notificações</h4>${arow('Pop-ups de conquistas',S.settings.achOn?'Ligados · aparece o pop-up no topo da tela quando alguém conquista (todos os dispositivos)':'Desativados · sem pop-up no topo; as conquistas continuam aparecendo após registrar a partida',`<button class="cb ${S.settings.achOn?'':'bad'}" id="achNT">${S.settings.achOn?'🔔 Ligados':'🔕 Desativados'}</button>`)}</div>
     <div class="agroup"><h4>Acesso</h4>${arow('Lançamentos',st.locked?'Trancados · ninguém cadastra partidas avulsas na tela principal (campeonatos continuam lançando)':'Liberados · qualquer pessoa pode cadastrar partidas',`<button class="cb ${st.locked?'bad':''}" id="lkT">${st.locked?'🔒 Trancados':'🔓 Liberados'}</button>`)}${arow('Conquistas',st.achOff?'Desativadas · somem do app para todos (botão, avisos e perfil); continuam sendo ganhas em segundo plano':'Ativadas · botão, avisos e perfil mostram as conquistas',`<button class="cb ${st.achOff?'bad':''}" id="achT2">${st.achOff?'🏅 Desativadas':'🏅 Ativadas'}</button>`)}${arow('Botão Adicionar jogador',st.addOff?'Escondido · some da tela inicial; continua em Jogadores e ao selecionar jogador':'Visível na tela inicial · também há em Jogadores e ao selecionar jogador',`<button class="cb ${st.addOff?'bad':''}" id="addT">${st.addOff?'➕ Escondido':'➕ Visível'}</button>`)}${arow('Placar Eletrônico',st.peOff?'Desativado · o botão some da tela inicial para todos':'Ativado · botão visível na tela inicial para todos',`<button class="cb ${st.peOff?'bad':''}" id="peT">${st.peOff?'📟 Desativado':'📟 Ativado'}</button>`)}${arow('Duplas (extra)',st.duoOn?'Ativado · aparece o botão Dupla ao escolher o Jogador 1 e o 2 · a partida vale pontos no ranking normal':'Desativado · o botão Dupla fica escondido',`<button class="cb ${st.duoOn?'':'bad'}" id="duoT">${st.duoOn?'👥 Ativado':'👥 Desativado'}</button>`)}${arow('PIN do administrador','Alterar o PIN deste clube','<button class="cb" id="pinChg">🔑 Alterar</button>')}
       <div id="pinForm" hidden style="padding:6px 0 8px"><div style="display:grid;gap:6px"><input id="pinCur" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN atual" style="width:100%"><input id="pinNew" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Novo PIN (mínimo 4 dígitos)" style="width:100%"><input id="pinNew2" class="cin w" type="password" inputmode="numeric" autocomplete="off" placeholder="Repetir o novo PIN" style="width:100%"></div><div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="cb pri2" id="pinSv">Salvar PIN</button><span id="pinMsg" class="legend" style="margin:0"></span></div></div></div>
@@ -2278,7 +2314,7 @@ function renderAdm(){
       <p class="legend" style="margin:0 0 8px">${bo?'Ligado desde '+fmt(bo.from)+'. Mudar os valores vale só para as próximas partidas.':'Desligado. Ao ligar, vale só para as partidas a partir desse momento (o passado não muda).'}</p></div>
     <div class="agroup"><h4>🔥 Semana ON FIRE</h4>${arow('Semana ON FIRE','Toda vitória × fator, multiplicado em cima do bônus de faixa',`<button class="cb ${fo?'pri2':''}" id="fiT">${fo?'ON':'OFF'}</button>`)}${arow('Fator','Padrão 1,5',`<input id="fiF" class="cin" type="number" step="0.1" min="1" max="10" inputmode="decimal" value="${st.fireF||1.5}">`)}
       <p class="legend" style="margin:0 0 8px">${fo?'Ligada desde '+fmt(fo.from)+'.':'Desligada.'} Vale só para partidas feitas enquanto estiver ligada.</p></div>`}
-  if(T==='jog')body=`<div class="agroup"><h4>Jogadores e partidas</h4>${arow('Alterar pontuação','Ajuste manual de um jogador','<button class="cb" id="adjB">✏️ Abrir</button>')}${arow('Importar jogadores','De outro clube','<button class="cb" id="impB">📥 Abrir</button>')}${arow('Levar partidas','Para valer em outro clube','<button class="cb" id="mvOpen">🔗 Abrir</button>')}</div>`
+  if(T==='jog')body=`<div class="agroup"><h4>Jogadores e partidas</h4>${arow('Alterar pontuação','Ajuste manual de um jogador','<button class="cb" id="adjB">✏️ Abrir</button>')}${arow('Enviar mensagem','Aparece no Meu Perfil do jogador, com aviso de nova mensagem','<button class="cb" id="msgB">💬 Abrir</button>')}${arow('Importar jogadores','De outro clube','<button class="cb" id="impB">📥 Abrir</button>')}${arow('Levar partidas','Para valer em outro clube','<button class="cb" id="mvOpen">🔗 Abrir</button>')}</div>`
     +`<div class="agroup"><h4>👑 Jogadores administradores</h4><p class="legend" style="margin:0 0 6px">Quem for marcado aqui só pode ser escolhido em "Meu Perfil" / "Esse sou eu" com o PIN de administrador.</p><details ${window.__admOpen?'open':''} ontoggle="window.__admOpen=this.open"><summary>Escolher jogadores (${S.raw.filter(x=>x.adm&&!x.hidden).length} admin)</summary><div style="max-height:260px;overflow-y:auto;padding:6px 0">${S.raw.filter(x=>!x.hidden).slice().sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')).map(x=>`<label style="display:flex;gap:8px;align-items:center;padding:5px 0"><input type="checkbox" data-adm="${x.id}" ${x.adm?'checked':''}><span>${esc(x.name)}</span></label>`).join('')}</div></details></div>`;
   if(T==='temp'){const ss=st.seasons||[];
     body=`<div class="agroup"><h4>Temporada atual</h4>${arow('Nome','',`<span style="display:flex;gap:6px"><input id="snI" class="cin w" maxlength="40" value="${esc(sN(curS()))}"><button class="cb" id="snB">Salvar</button></span>`)}${arow('Encerrar temporada','Mostra as mudanças antes de confirmar · os pontos continuam','<button class="cb pri2" id="ns">🏁 Encerrar</button>')}</div>`
@@ -2313,6 +2349,18 @@ function renderAdm(){
       const m=S.matches.find(x=>x.id===r.mid); if(m){await delMatch(m); await logA(`Partida apagada (pedido): ${mTxt(m)} (${fmt(m.at)})`)} await setSt('ok');return}
     if(a==='ok'||a==='no'){await setSt(a);return}
     if(a==='del'){await put('settings',{...S.settings,requests:rs.filter(x=>x.id!==r.id)}); renderAdm()}});
+  richBind('bdI','bdPv');
+  bind('annT',async()=>{const v=!S.settings.annOn; await put('settings',{...S.settings,annOn:v}); await logA(v?'Botão AVISOS da tela inicial VISÍVEL':'Botão AVISOS da tela inicial ESCONDIDO'); render(); renderAdm()});
+  bind('bdT',async()=>{const b=S.settings.board||{}, v=!b.on; await put('settings',{...S.settings,board:{...b,on:v,t:$('bdI')?$('bdI').value.trim():(b.t||'')}}); await logA(v?'Quadro de avisos LIGADO':'Quadro de avisos DESLIGADO'); render(); renderAdm()});
+  bind('bdS',async e=>{const b=S.settings.board||{}, t=$('bdI').value.trim(); await put('settings',{...S.settings,board:{...b,t}}); await logA('Quadro de avisos: texto atualizado'); render(); flash(e.currentTarget,'✅ Salvo')});
+  bind('msgB',()=>{
+    const l=[...P].sort(byNameArch); $('msgP').innerHTML=l.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join(''); $('msgT').value=''; richBind('msgT','msgPv');
+    const list=()=>{const p=S.raw.find(x=>x.id===$('msgP').value), M=(p&&p.msgs)||[]; $('msgL').innerHTML=M.length?`<p class="legend" style="margin:0 0 6px">Mensagens deste jogador:</p>`+M.map(m=>`<div class="arow"><div class="al">${esc((x=>x.length>80?x.slice(0,80)+'…':x)(m.t.replace(/\*|\[\/?[gp]\]/g,'')))}<small>${fmt(m.at)} · ${m.seen?'✅ confirmou com Ok'+(m.seenAt?' em '+fmt(m.seenAt):''):'⏳ ainda não confirmou (Ok)'}</small></div><button class="cb" data-md="${m.id}" title="Apagar mensagem">🗑</button></div>`).join(''):'';
+      $('msgL').querySelectorAll('[data-md]').forEach(b=>b.onclick=async()=>{const q=S.raw.find(x=>x.id===$('msgP').value); if(!q)return; await put('players',{...q,msgs:(q.msgs||[]).filter(m=>m.id!==b.dataset.md)}); list()})};
+    $('msgP').onchange=list; list();
+    $('msgOk').onclick=async e=>{const p=S.raw.find(x=>x.id===$('msgP').value), t=$('msgT').value.trim(); if(!p||!t){flash(e.currentTarget,'⚠️ Escolha o jogador e escreva a mensagem');return}
+      await put('players',{...p,msgs:[{id:uid(),t,at:Date.now(),seen:false},...(p.msgs||[])].slice(0,10)}); await logA(`Mensagem enviada para ${p.name}`); $('msgT').value=''; richBind('msgT','msgPv'); list(); flash(e.currentTarget,'✅ Enviada para '+p.name)};
+    open('msgM')});
   bind('achNT',async()=>{const v=!S.settings.achOn; await put('settings',{...S.settings,achOn:v}); await logA(v?'Avisos de conquistas ligados':'Avisos de conquistas desativados'); renderAdm()});
   bind('achT2',async()=>{const v=!S.settings.achOff; await put('settings',{...S.settings,achOff:v}); await logA(v?'Conquistas DESATIVADAS (ocultas)':'Conquistas ATIVADAS'); render(); renderAdm(); if(op('playM'))renderPlayers()});
   bind('addT',async()=>{const v=!S.settings.addOff; await put('settings',{...S.settings,addOff:v}); await logA(v?'Botão Adicionar jogador da tela inicial ESCONDIDO':'Botão Adicionar jogador da tela inicial VISÍVEL'); render(); renderAdm()});
@@ -2446,7 +2494,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.4.10'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.4.10.4'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
@@ -2766,12 +2814,42 @@ function runView(){
   const v=pendingV; if(!v)return; pendingV=null;
   if(v.c&&v.c!==cur&&clubList().some(x=>x.id===v.c))switchClub(v.c);
   if(v.v==='conquistas'){ if(['all','0','1','2','3'].includes(v.n))achTab=v.n; if(v.k&&ACH.some(a=>a.k===v.k)){achSel=v.k; if(achTab!=='all'&&ACH.find(a=>a.k===v.k).lv!==+achTab)achTab=String(ACH.find(a=>a.k===v.k).lv)} }
+  if(v.v==='aviso'||v.v==='avisos'){ if(v.v==='aviso'&&v.a){ if(!(S.settings.ann||[]).some(x=>x.id===v.a)&&(v.tries=(v.tries||0)+1)<6){pendingV=v; setTimeout(()=>{if(pendingV)runView()},900); return} annOpen(v.a)} else annOpen(''); return }
   if(v.v==='inscricoes'){ tv={v:'list',fl:'reg'}; tourRender(); open('tourM'); $('tourM').querySelector('.sheet').scrollTop=0; return }
   if(v.v==='campeonato'&&v.t){ if(!(S.tourns||[]).some(x=>x.id===v.t)&&(v.tries=(v.tries||0)+1)<6){pendingV=v; setTimeout(()=>{if(pendingV)runView()},900); return}
     if((S.tourns||[]).some(x=>x.id===v.t)){tOpenId=v.t; tv={v:'det'}; tourRender(); open('tourM'); return} }
   const b={ranking:'rankBtn',partidas:'matchBtn',jogadores:'playBtn',conquistas:'achBtn',admin:'cfgBtn',ajuda:'helpBtn',campeonato:'tourBtn',campeonatos:'tourBtn',placar:'peBtn'}[v.v]; if(b&&$(b))$(b).click();
 }
 setTimeout(()=>{if(pendingV)runView()},2500);
+let annV={v:'list',id:'',ed:null};
+const annList=()=>[...(S.settings.ann||[])].sort((a,b)=>b.at-a.at), annLink=id=>APP_URL+'#aviso='+id+(cur!=='main'?'&c='+cur:''), annGate=fn=>admin?fn():needAdmin(fn);
+const annSave=async l=>put('settings',{...S.settings,ann:l});
+function annOpen(id){ annV=id?{v:'det',id,ed:null}:{v:'list',id:'',ed:null}; annRender(); open('annM'); const sh=$('annM').querySelector('.sheet'); if(sh)sh.scrollTop=0 }
+async function annCopy(b,id){ const u=annLink(id); try{await navigator.clipboard.writeText(u); flash(b,'✅ Link copiado')}catch(e){try{const i=$('annLk'); if(i){i.focus();i.select(); if(document.execCommand('copy')){flash(b,'✅ Link copiado');return}} prompt('Copie o link:',u)}catch(x){}} }
+function annRender(){
+  const B=$('annB'); if(!B)return; const L=annList(); let a=L.find(x=>x.id===annV.id);
+  if(annV.v==='det'&&!a)annV={v:'list',id:'',ed:null};
+  if(annV.v==='edit'){ const e=annV.ed;
+    B.innerHTML=`<div class="field"><span>Título</span><input id="anT" maxlength="80" placeholder="Ex.: Regras das finais" value="${esc(e.title)}"></div>${richTb}<textarea id="anI" rows="9" maxlength="4000" placeholder="Escreva o aviso completo" style="width:100%;box-sizing:border-box;font:inherit;padding:8px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx)">${esc(e.body)}</textarea><div class="rpv" id="anPv"></div><div id="anE" class="dn" style="margin:6px 0"></div><div class="wrow" style="margin-top:8px"><button class="pri" id="anS" style="margin:0">💾 Salvar aviso</button><button class="sec" id="anC" style="margin:0">Cancelar</button></div>`;
+    richBind('anI','anPv');
+    $('anC').onclick=()=>{annV=e.id?{v:'det',id:e.id,ed:null}:{v:'list',id:'',ed:null}; annRender()};
+    $('anS').onclick=async()=>{ const title=$('anT').value.trim(), body=$('anI').value.trim(); if(!title||!body){$('anE').textContent='Escreva o título e o texto do aviso.';return}
+      const l=S.settings.ann||[]; let id=e.id; if(id){await annSave(l.map(x=>x.id===id?{...x,title,body,upd:Date.now()}:x)); await logA(`Aviso editado: ${title}`)} else {id=uid(); await annSave([{id,title,body,at:Date.now()},...l]); await logA(`Aviso criado: ${title}`)}
+      annV={v:'det',id,ed:null}; annRender()};
+    return }
+  if(annV.v==='det'){
+    B.innerHTML=`<button class="lnk" id="anBk" style="margin:0 0 8px">← Todos os avisos</button><div class="annD"><h2>${esc(a.title)}</h2><small style="color:var(--mut)">${fmt(a.at)}${a.upd?' · editado '+fmt(a.upd):''}</small><div style="margin-top:10px">${rich(a.body)}</div></div>`
+      +(admin?`<div style="margin-top:14px;border-top:1px solid var(--bd);padding-top:10px"><div class="legend" style="margin:0 0 4px">🔗 Link deste aviso (cole no Quadro de avisos):</div><input class="annLk" id="annLk" readonly value="${esc(annLink(a.id))}"><div class="wrow" style="margin-top:8px"><button class="sec" id="anCp" style="margin:0">🔗 Copiar link</button><button class="sec" id="anEd" style="margin:0">✏️ Editar</button><button class="sec" id="anDl" style="margin:0">🗑 Apagar</button></div></div>`:'');
+    $('anBk').onclick=()=>{annV={v:'list',id:'',ed:null}; annRender()};
+    if(admin){ $('annLk').onfocus=e=>e.target.select(); $('anCp').onclick=e=>annCopy(e.currentTarget,a.id); $('anEd').onclick=()=>{annV={v:'edit',id:a.id,ed:{id:a.id,title:a.title,body:a.body}}; annRender()};
+      $('anDl').onclick=e=>sure(e.currentTarget,async()=>{await annSave((S.settings.ann||[]).filter(x=>x.id!==a.id)); await logA(`Aviso apagado: ${a.title}`); annV={v:'list',id:'',ed:null}; annRender()},'Toque de novo para apagar') }
+    return }
+  B.innerHTML=`<div style="margin:0 0 10px"><button class="sec" id="anNew" style="margin:0">➕ Novo aviso</button></div>`+(L.length?L.map(x=>`<button class="annC" data-a="${x.id}"><b>${esc(x.title)}</b><small>${fmt(x.at)} · ${esc((x=>x.length>90?x.slice(0,90)+'…':x)(x.body.replace(/\*|\[\/?[gp]\]|\]\(https?:[^)]*\)|\[/g,'')))}</small></button>`).join(''):'<p class="legend">Nenhum aviso publicado ainda.</p>');
+  $('anNew').onclick=()=>annGate(()=>{annV={v:'edit',id:'',ed:{id:'',title:'',body:''}}; annRender()});
+  B.querySelectorAll('.annC').forEach(b=>b.onclick=()=>{annV={v:'det',id:b.dataset.a,ed:null}; annRender(); $('annM').querySelector('.sheet').scrollTop=0})
+}
+document.addEventListener('click',e=>{ const a=e.target.closest&&e.target.closest('a[href]'); if(!a)return; const h=a.getAttribute('href')||'', m=h.match(/#aviso=([A-Za-z0-9_-]+)/); if(!m||!h.startsWith(APP_URL.split('#')[0]))return; const c=h.match(/[&?]c=([A-Za-z0-9_-]+)/); if(c&&c[1]!==cur)return; e.preventDefault(); annOpen(m[1]) });
+$('annBtn').onclick=()=>annOpen(''); $('annX').onclick=()=>$('annM').classList.remove('on');
 function viewLink(mid){
   let h; if(mid==='playM'&&histId)h='j='+histId;
   else{h={rankM:'ranking',matchM:'partidas',playM:'jogadores',achAllM:'conquistas',admM:'admin',helpM:'ajuda',tourM:(tv.v==='list'&&tLastSel==='reg')?'inscricoes':'campeonatos'}[mid]; if(mid==='achAllM'){h+='&n='+achTab; if(achSel)h+='&k='+achSel} if(cur!=='main')h+='&c='+cur}
