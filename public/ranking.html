@@ -631,10 +631,10 @@ html.cl .tsh.gcl{background:transparent;color:var(--tx);border:2px solid}html.cl
     <div id="meDrop" hidden><div id="meB2"></div><div class="meAct"><button class="sec" id="meProf">👤 Perfil completo</button><button class="sec" id="meSw">🚪 Sair</button></div></div>
   </div>
   <div class="board" id="boardBox" hidden></div>
-  <div class="rbar" id="rulesBar" hidden></div>
   <div id="champBar" class="rbar" hidden></div><div id="champHome" hidden></div>
   <div class="cadt nrm"><span class="ar">⬇️</span> REGISTRAR UMA PARTIDA<span id="cadD"></span> <span class="ar">⬇️</span></div>
   <div class="row nrm"><button class="sq" id="s1"></button><div class="vs">VS</div><button class="sq" id="s2"></button></div>
+  <div class="rbar" id="rulesBar" hidden style="margin-top:10px"></div>
   <div class="nrm" style="text-align:center;margin-top:6px"><button class="lnk" id="clrBtn" hidden>✕ limpar seleção</button></div>
   <div class="panel nrm" id="match" hidden>
     <div class="cap"><button type="button" id="fullBtn" style="background:none;border:0;padding:4px 8px;margin:0;font:inherit;color:inherit;cursor:pointer">Resultado Completo (Opcional) ▾</button></div>
@@ -1627,7 +1627,12 @@ function render(){
   {const n=admin?nRq(S.settings):0; const ex=n?`<b style="color:#d11;text-transform:none" title="Solicitações pendentes">❗❗❗</b>`:''; $('seasonLbl').innerHTML=n?ex+' '+esc(sN(curS()))+' '+ex:esc(sN(curS()))}
   {const fo=inPeriod((S.settings.fire||[]).filter(p=>p.to==null),Date.now()), bo=(S.settings.bonus||[]).find(p=>p.to==null), pr=[];
    if(fo)pr.push('🔥 SEMANA ON FIRE · vitórias ×'+fo.f); if(bo)pr.push('🎯 Bônus de vitória por faixa ativo');
-   $('rulesBar').innerHTML=pr.map(esc).join('<br>'); $('rulesBar').hidden=!pr.length}
+   const TIPS={'🎯':['bonTip','Incentivo a jogar contra jogadores de Ranking superior.'],'🔥':['fireTip','Todos os jogos com bônus de vitória aumentado.']};
+   $('rulesBar').innerHTML=pr.map(t=>{const k=TIPS[[...t][0]]; return k?`<button type="button" class="rbtip" id="${k[0]}" style="background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer">${esc(t)} <span style="opacity:.6">ⓘ</span></button>`:esc(t)}).join('<br>'); $('rulesBar').hidden=!pr.length;
+   Object.values(TIPS).forEach(([id,txt])=>{const bt=$(id); if(bt)bt.onclick=e=>{e.stopPropagation(); const old=$('nPop'); if(old){old.remove(); if(old.dataset.id===id)return} const r=bt.getBoundingClientRect(), el=document.createElement('div'); el.id='nPop'; el.dataset.id=id;
+     el.style.cssText='position:fixed;z-index:60;max-width:260px;padding:8px 12px;border-radius:12px;background:#2b2140;color:#fff;font-size:13px;line-height:1.35;box-shadow:0 6px 18px rgba(0,0,0,.3);font-family:system-ui,sans-serif;letter-spacing:0;text-transform:none;font-weight:600';
+     el.textContent=txt; document.body.appendChild(el); const w=el.offsetWidth; el.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left+r.width/2-w/2))+'px'; el.style.top=(r.bottom+6)+'px';
+     const off=ev=>{if(ev.target===bt)return; el.remove(); document.removeEventListener('click',off,true)}; setTimeout(()=>document.addEventListener('click',off,true),0); setTimeout(()=>{el.remove();document.removeEventListener('click',off,true)},5000)}})}
   [0,1].forEach(i=>{const p=sel[i]?byId(sel[i]):null; if(!p)sel[i]=null; const b=$('s'+(i+1));
     b.className='sq'+(p?' filled t'+tier(p):'');
     const q2=(p&&duoOn()&&dpart[i])?byId(dpart[i]):null, dAvg=q2?Math.round((p.rating+q2.rating)/2):0;
@@ -2653,7 +2658,7 @@ function fitFoot(){const h=document.getElementById('foot'); if(!h)return; h.clas
 addEventListener('resize',fitFoot);
 function fitTitle(){const h=document.querySelector('h1.ttl'); if(!h)return; h.style.fontSize=''; if(!h.clientWidth)return; let fs=parseFloat(getComputedStyle(h).fontSize); while(h.scrollWidth>h.clientWidth+1&&fs>8){fs-=1;h.style.fontSize=fs+'px'}}
 addEventListener('resize',fitTitle); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTitle);
-const APP_VERSION='0.5.1.9'; $('ver').textContent=APP_VERSION;
+const APP_VERSION='0.5.1.11'; $('ver').textContent=APP_VERSION;
 /* rodapé sempre em uma linha: se não couber, diminui a fonte (ver fitFoot) */
 async function saveJpg(btn,name,W,H,paint){
   if(!dl)return; const k=Math.min(2,Math.sqrt(12e6/(W*H))), c=document.createElement('canvas'); c.width=Math.round(W*k); c.height=Math.round(H*k);
